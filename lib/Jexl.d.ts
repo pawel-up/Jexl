@@ -1,10 +1,13 @@
-/*
- * Jexl
- * Copyright 2020 Tom Shawver
- */
+import Expression, { Context } from './Expression';
+import { Grammar } from './grammar';
 
-import Expression from './Expression.js'
-import { getGrammar } from './grammar.js'
+type TransformFunction = (value: any, ...args: any[]) => any;
+
+type BinaryOpFunction = (left: any, right: any) => any;
+
+type UnaryOpFunction = (right: any) => any;
+
+type FunctionFunction = (value: any, ...args: any[]) => any;
 
 /**
  * Jexl is the Javascript Expression Language, capable of parsing and
@@ -12,11 +15,8 @@ import { getGrammar } from './grammar.js'
  * xpath-like drilldown into native Javascript objects.
  */
 export class Jexl {
-  constructor() {
-    // Allow expr to be called outside of the jexl context
-    this.expr = this.expr.bind(this)
-    this._grammar = getGrammar()
-  }
+  _grammar: Grammar;
+  constructor();
 
   /**
    * Adds a binary operator to Jexl at the specified precedence. The higher the
@@ -39,13 +39,7 @@ export class Jexl {
    *      that operand's actual value. This is useful to conditionally evaluate
    *      operands.
    */
-  addBinaryOp(operator, precedence, fn, manualEval) {
-    this._addGrammarElement(operator, {
-      type: 'binaryOp',
-      precedence: precedence,
-      [manualEval ? 'evalOnDemand' : 'eval']: fn
-    })
-  }
+  addBinaryOp(operator: string, precedence: number, fn: BinaryOpFunction): void;
 
   /**
    * Adds or replaces an expression function in this Jexl instance.
@@ -55,9 +49,7 @@ export class Jexl {
    *      expression function is invoked. It will be provided with each argument
    *      supplied in the expression, in the same order.
    */
-  addFunction(name, fn) {
-    this._grammar.functions[name] = fn
-  }
+  addFunction(name: string, fn: FunctionFunction): void;
 
   /**
    * Syntactic sugar for calling {@link #addFunction} repeatedly. This function
@@ -65,11 +57,7 @@ export class Jexl {
    * function counterpart.
    * @param {{}} map A map of expression function names to javascript functions
    */
-  addFunctions(map) {
-    for (let key in map) {
-      this._grammar.functions[key] = map[key]
-    }
-  }
+  addFunctions(map: { [key: string]: FunctionFunction }): void;
 
   /**
    * Adds a unary operator to Jexl. Unary operators are currently only supported
@@ -80,13 +68,7 @@ export class Jexl {
    *      operator. It should return either the resulting value, or a Promise
    *      that resolves with the resulting value.
    */
-  addUnaryOp(operator, fn) {
-    this._addGrammarElement(operator, {
-      type: 'unaryOp',
-      weight: Infinity,
-      eval: fn
-    })
-  }
+  addUnaryOp(operator: string, fn: UnaryOpFunction): void;
 
   /**
    * Adds or replaces a transform function in this Jexl instance.
@@ -97,20 +79,14 @@ export class Jexl {
    *          - {*} value: The value to be transformed
    *          - {...*} args: The arguments for this transform
    */
-  addTransform(name, fn) {
-    this._grammar.transforms[name] = fn
-  }
+  addTransform(name: string, fn: TransformFunction): void;
 
   /**
    * Syntactic sugar for calling {@link #addTransform} repeatedly.  This function
    * accepts a map of one or more transform names to their transform function.
    * @param {{}} map A map of transform names to transform functions
    */
-  addTransforms(map) {
-    for (let key in map) {
-      this._grammar.transforms[key] = map[key]
-    }
-  }
+  addTransforms(map: { [key: string]: TransformFunction }): void;
 
   /**
    * Creates an Expression object from the given Jexl expression string, and
@@ -120,10 +96,7 @@ export class Jexl {
    * @param {string} expression The Jexl expression to be compiled
    * @returns {Expression} The compiled Expression object
    */
-  compile(expression) {
-    const exprObj = this.createExpression(expression)
-    return exprObj.compile()
-  }
+  compile(expression: string): Expression;
 
   /**
    * Constructs an Expression object from a Jexl expression string.
@@ -131,27 +104,21 @@ export class Jexl {
    *    Expression object
    * @returns {Expression} The Expression object representing the given string
    */
-  createExpression(expression) {
-    return new Expression(this._grammar, expression)
-  }
+  createExpression(expression: string): Expression;
 
   /**
    * Retrieves a previously set expression function.
    * @param {string} name The name of the expression function
    * @returns {function} The expression function
    */
-  getFunction(name) {
-    return this._grammar.functions[name]
-  }
+  getFunction(name: string): FunctionFunction;
 
   /**
    * Retrieves a previously set transform function.
    * @param {string} name The name of the transform function
    * @returns {function} The transform function
    */
-  getTransform(name) {
-    return this._grammar.transforms[name]
-  }
+  getTransform(name: string): TransformFunction;
 
   /**
    * Asynchronously evaluates a Jexl string within an optional context.
@@ -160,10 +127,7 @@ export class Jexl {
    *      made accessible to the Jexl expression when evaluating it
    * @returns {Promise<*>} resolves with the result of the evaluation.
    */
-  eval(expression, context = {}) {
-    const exprObj = this.createExpression(expression)
-    return exprObj.eval(context)
-  }
+  eval(expression: string, context?: Context): Promise<any>;
 
   /**
    * Synchronously evaluates a Jexl string within an optional context.
@@ -173,10 +137,7 @@ export class Jexl {
    * @returns {*} the result of the evaluation.
    * @throws {*} on error
    */
-  evalSync(expression, context = {}) {
-    const exprObj = this.createExpression(expression)
-    return exprObj.evalSync(context)
-  }
+  evalSync(expression: string, context?: Context): any;
 
   /**
    * A JavaScript template literal to allow expressions to be defined by the
@@ -184,37 +145,11 @@ export class Jexl {
    * @param {Array<string>} strs
    * @param  {...any} args
    */
-  expr(strs, ...args) {
-    const exprStr = strs.reduce((acc, str, idx) => {
-      const arg = idx < args.length ? args[idx] : ''
-      acc += str + arg
-      return acc
-    }, '')
-    return this.createExpression(exprStr)
-  }
+  expr(strs: string[], ...args: any[]): Expression;
 
   /**
    * Removes a binary or unary operator from the Jexl grammar.
    * @param {string} operator The operator string to be removed
    */
-  removeOp(operator) {
-    if (
-      this._grammar.elements[operator] &&
-      (this._grammar.elements[operator].type === 'binaryOp' ||
-        this._grammar.elements[operator].type === 'unaryOp')
-    ) {
-      delete this._grammar.elements[operator]
-    }
-  }
-
-  /**
-   * Adds an element to the grammar map used by this Jexl instance.
-   * @param {string} str The key string to be added
-   * @param {{type: <string>}} obj A map of configuration options for this
-   *      grammar element
-   * @private
-   */
-  _addGrammarElement(str, obj) {
-    this._grammar.elements[str] = obj
-  }
+  removeOp(operator: string): void;
 }

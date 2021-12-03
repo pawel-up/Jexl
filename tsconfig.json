@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "API Client",
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "lib": ["ES2021"],
+    "strict": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "alwaysStrict": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": false
+  },
+  "include": [
+    "lib/*.js",
+    "lib/**/*.js"
+  ]
+}

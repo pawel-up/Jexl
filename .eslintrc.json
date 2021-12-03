@@ -1,9 +1,10 @@
 {
   "env": {
-    "commonjs": true,
-    "jest": true,
+    "commonjs": false,
+    "jest": false,
     "node": true,
-    "es6": true
+    "es6": true,
+    "mocha": true
   },
   "extends": "prettier",
   "plugins": ["prettier"],
@@ -27,7 +28,7 @@
     "SharedArrayBuffer": "readonly"
   },
   "parserOptions": {
+    "sourceType": "module",
     "ecmaVersion": 2018
-  },
-  "ignorePatterns": ["dist/**/*.js"]
+  }
 }

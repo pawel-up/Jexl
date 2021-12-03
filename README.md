@@ -1,4 +1,7 @@
-# Jexl [![Build Status](https://travis-ci.org/TomFrost/Jexl.svg?branch=master)](https://travis-ci.org/TomFrost/Jexl)
+# Jexl
+
+> This is a port of the original library that was taken to the XXI century.
+> All rights: Tom Shawver
 
 Javascript Expression Language: Powerful context-based expression parser and evaluator
 
