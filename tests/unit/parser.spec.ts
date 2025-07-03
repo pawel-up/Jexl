@@ -94,7 +94,7 @@ test.group('Parser Basic Operations', (group) => {
   })
 })
 
-test.group('Parser Unary and Subexpressions', (group) => {
+test.group('Parser Unary and Sub expressions', (group) => {
   let inst: Parser
 
   group.each.setup(() => {
@@ -160,7 +160,7 @@ test.group('Parser Unary and Subexpressions', (group) => {
   })
 })
 
-test.group('Parser Ternary and Subexpressions', (group) => {
+test.group('Parser Ternary and Sub expressions', (group) => {
   let inst: Parser
 
   group.each.setup(() => {
@@ -223,7 +223,7 @@ test.group('Parser Ternary and Subexpressions', (group) => {
   })
 })
 
-test.group('Parser Binary and Subexpressions', (group) => {
+test.group('Parser Binary and Sub expressions', (group) => {
   let inst: Parser
 
   group.each.setup(() => {
@@ -541,7 +541,7 @@ test.group('Parser Identifiers and Access', (group) => {
     })
   })
 
-  test('allows dot notation on subexpressions', ({ assert }) => {
+  test('allows dot notation on sub expressions', ({ assert }) => {
     inst.addTokens(lexer.tokenize('("foo" + "bar").length'))
     assert.deepEqual(inst.complete(), {
       type: 'Identifier',

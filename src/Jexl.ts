@@ -67,12 +67,15 @@ import {
  * - Boolean logic: `active && verified || admin`
  */
 export class Jexl {
-  private _grammar: Grammar
+  /**
+   * The grammar used by this Jexl instance.
+   */
+  grammar: Grammar
 
   constructor() {
     // Allow expr to be called outside of the jexl context
     this.expr = this.expr.bind(this)
-    this._grammar = getGrammar()
+    this.grammar = getGrammar()
   }
 
   /**
@@ -159,7 +162,7 @@ export class Jexl {
    * ```
    */
   addFunction(name: string, fn: FunctionFunction) {
-    this._grammar.functions[name] = fn
+    this.grammar.functions[name] = fn
   }
 
   /**
@@ -196,7 +199,7 @@ export class Jexl {
       if (Object.prototype.hasOwnProperty.call(map, key)) {
         const fn = map[key]
         if (fn) {
-          this._grammar.functions[key] = fn
+          this.grammar.functions[key] = fn
         }
       }
     }
@@ -277,7 +280,7 @@ export class Jexl {
    * ```
    */
   addTransform(name: string, fn: TransformFunction) {
-    this._grammar.transforms[name] = fn
+    this.grammar.transforms[name] = fn
   }
 
   /**
@@ -314,7 +317,7 @@ export class Jexl {
       if (Object.prototype.hasOwnProperty.call(map, key)) {
         const fn = map[key]
         if (fn) {
-          this._grammar.transforms[key] = fn
+          this.grammar.transforms[key] = fn
         }
       }
     }
@@ -389,7 +392,7 @@ export class Jexl {
    * ```
    */
   createExpression(expression: string): Expression {
-    return new Expression(this._grammar, expression)
+    return new Expression(this.grammar, expression)
   }
 
   /**
@@ -420,7 +423,7 @@ export class Jexl {
    * ```
    */
   getFunction(name: string): FunctionFunction {
-    const fn = this._grammar.functions[name]
+    const fn = this.grammar.functions[name]
     if (!fn) {
       throw new Error(`Function '${name}' is not defined`)
     }
@@ -459,7 +462,7 @@ export class Jexl {
    * ```
    */
   getTransform(name: string): TransformFunction {
-    const fn = this._grammar.transforms[name]
+    const fn = this.grammar.transforms[name]
     if (!fn) {
       throw new Error(`Transform '${name}' is not defined`)
     }
@@ -598,11 +601,11 @@ export class Jexl {
    */
   removeOp(operator: string): void {
     if (
-      this._grammar.elements[operator] &&
-      (this._grammar.elements[operator].type === 'binaryOp' || this._grammar.elements[operator].type === 'unaryOp')
+      this.grammar.elements[operator] &&
+      (this.grammar.elements[operator].type === 'binaryOp' || this.grammar.elements[operator].type === 'unaryOp')
     ) {
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-      delete this._grammar.elements[operator]
+      delete this.grammar.elements[operator]
     }
   }
 
@@ -613,6 +616,10 @@ export class Jexl {
    * @private
    */
   private _addGrammarElement(str: string, obj: GrammarElement): void {
-    this._grammar.elements[str] = obj
+    this.grammar.elements[str] = obj
   }
 }
+
+// Export Validator and related types for advanced use cases
+export { Validator } from './Validator.js'
+export type { ValidationResult, ValidationIssue, ValidationOptions, ValidationSeverity } from './Validator.js'

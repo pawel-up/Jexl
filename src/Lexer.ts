@@ -1,9 +1,4 @@
 /* eslint-disable max-len */
-/*
- * Jexl
- * Copyright 2020 Tom Shawver
- */
-
 import type { Grammar } from './grammar.js'
 
 /**

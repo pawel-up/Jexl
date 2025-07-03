@@ -512,6 +512,162 @@ and transforms from the associated Jexl instance.
 **Returns `{Promise<*>}`.** Evaluates the expression. The context map is
 optional.
 
+## Expression Validation
+
+This modernized version of Jexl includes a powerful `Validator` class that helps you validate expressions before evaluation, providing comprehensive error reporting and analysis.
+
+### Validator Class
+
+The `Validator` class provides static methods to validate Jexl expressions, offering detailed feedback about syntax errors, semantic issues, and potential problems.
+
+#### Key Features
+
+- 🔍 **Comprehensive Validation**: Checks syntax, semantics, and context usage
+- 🚨 **Detailed Error Reporting**: Provides specific error messages with position information
+- ⚠️ **Warning System**: Identifies potential issues and performance concerns
+- ℹ️ **Informational Messages**: Offers suggestions for improvements
+- 🧹 **Automatic Whitespace Trimming**: Cleans expressions before validation
+- 🔧 **Context-Agnostic Mode**: Validates expressions without requiring specific context
+
+#### Basic Usage
+
+```typescript
+import { Validator, Jexl } from '@pawel-up/jexl'
+
+const jexl = new Jexl()
+const validator = new Validator(jexl.grammar)
+
+// Validate a simple expression
+const result = validator.validate('name.first + " " + name.last')
+console.log(result.isValid) // true
+console.log(result.errors) // []
+
+// Validate with context
+const context = { name: { first: 'John', last: 'Doe' } }
+const result2 = validator.validate('name.middle', context)
+console.log(result2.isValid) // false
+console.log(result2.errors[0].message) // "Property 'middle' not found in context object 'name'"
+```
+
+#### Validation Result
+
+The `validate` method returns a `ValidationResult` object with the following properties:
+
+```typescript
+interface ValidationResult {
+  isValid: boolean           // Overall validation status
+  errors: ValidationIssue[]  // Critical errors that prevent execution
+  warnings: ValidationIssue[] // Non-critical issues that might cause problems
+  info: ValidationIssue[]    // Informational suggestions
+  trimmedExpression: string  // Expression after automatic whitespace trimming
+}
+
+interface ValidationIssue {
+  type: 'error' | 'warning' | 'info'
+  message: string
+  position?: number    // Character position in expression
+  line?: number       // Line number (for multi-line expressions)
+  column?: number     // Column number
+}
+```
+
+#### Automatic Whitespace Trimming
+
+The Validator automatically trims leading and trailing whitespace from expressions before validation:
+
+```typescript
+// These expressions are equivalent after trimming
+validator.validate('name.first')
+validator.validate('   name.first   ')
+validator.validate('\t\nname.first\n\t')
+```
+
+#### Context-Agnostic Validation
+
+Use `allowUndefinedContext: true` to validate expressions without providing specific context:
+
+```typescript
+// Validate syntax only, ignore missing context
+const result = validator.validate('user.profile.email', undefined, {
+  allowUndefinedContext: true
+})
+
+console.log(result.isValid) // true (if syntax is correct)
+console.log(result.warnings) // May contain warnings about undefined context
+```
+
+#### Validation Examples
+
+```typescript
+// Syntax error
+const syntaxError = validator.validate('name.first +')
+console.log(syntaxError.errors[0].message) // "Unexpected end of expression"
+
+// Context validation
+const context = { user: { name: 'John' } }
+const contextError = validator.validate('user.age', context)
+console.log(contextError.errors[0].message) // "Property 'age' not found in context object 'user'"
+
+// Performance warning
+const perfWarning = validator.validate('users[.name == "John" && .active == true]')
+console.log(perfWarning.warnings[0].message) // "Complex filter expression may impact performance"
+
+// Style suggestion
+const styleInfo = validator.validate('name["first"]')
+console.log(styleInfo.info[0].message) // "Consider using dot notation: name.first"
+```
+
+#### Advanced Usage
+
+```typescript
+// Validate multiple expressions
+const expressions = [
+  'user.name',
+  'user.age > 18',
+  'users[.active == true].length'
+]
+
+expressions.forEach((expr, index) => {
+  const result = validator.validate(expr, context)
+  if (!result.isValid) {
+    console.log(`Expression ${index + 1} has errors:`, result.errors)
+  }
+  if (result.warnings.length > 0) {
+    console.log(`Expression ${index + 1} has warnings:`, result.warnings)
+  }
+})
+
+// Custom validation with options
+const result = validator.validate('   user.email   ', undefined, {
+  allowUndefinedContext: true
+})
+
+console.log(`Original: "${result.trimmedExpression}"`)
+console.log(`Trimmed: "${result.trimmedExpression}"`)
+console.log(`Valid: ${result.isValid}`)
+```
+
+#### Validator API Reference
+
+##### validate(expression, context?, options?)
+
+**Parameters:**
+
+- `expression` _{string}_: The Jexl expression to validate
+- `context` _{object}_: Optional context object for validation
+- `options` _{object}_: Optional validation options
+  - `allowUndefinedContext` _{boolean}_: Allow undefined context properties (default: false)
+
+**Returns:** `ValidationResult` object with validation details
+
+##### ValidationResult Properties
+
+- `isValid` _{boolean}_: True if expression has no errors
+- `errors` _{ValidationIssue[]}_: Array of critical validation errors
+- `warnings` _{ValidationIssue[]}_: Array of non-critical warnings
+- `info` _{ValidationIssue[]}_: Array of informational suggestions
+- `trimmedExpression` _{string}_: Expression after whitespace trimming
+
 ## Other implementations
 
 [PyJEXL](https://github.com/mozilla/pyjexl) - A Python-based JEXL parser and evaluator.

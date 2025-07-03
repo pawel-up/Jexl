@@ -1,8 +1,3 @@
-/*
- * Jexl
- * Copyright 2020 Tom Shawver
- */
-
 /**
  * Parser State Machine Configuration
  *
@@ -43,11 +38,11 @@
  * }
  * ```
  *
- * ### 2. Subexpression Handling (`subHandler`)
- * States that consume entire subexpressions:
+ * ### 2. Sub expression Handling (`subHandler`)
+ * States that consume entire sub expressions:
  * ```typescript
  * {
- *   subHandler: 'filter',           // Handler to call with parsed subexpression
+ *   subHandler: 'filter',           // Handler to call with parsed sub expression
  *   endStates: {
  *     closeBracket: 'identifier'    // When to end and where to transition
  *   }
@@ -62,8 +57,8 @@
  * ## State Configuration Properties
  *
  * - `tokenTypes`: Map of legal token types to their handling configuration
- * - `subHandler`: Function to call when a subexpression is completely parsed
- * - `endStates`: Tokens that end a subexpression and their target states
+ * - `subHandler`: Function to call when a sub expression is completely parsed
+ * - `endStates`: Tokens that end a sub expression and their target states
  * - `completable`: Whether parsing can successfully end in this state
  *
  * ## Error Handling
@@ -95,7 +90,7 @@ interface TokenTypeConfig {
 }
 
 /**
- * Configuration for a parser state, defining how it handles tokens and subexpressions.
+ * Configuration for a parser state, defining how it handles tokens and sub expressions.
  *
  * @example
  * ```typescript
@@ -108,7 +103,7 @@ interface TokenTypeConfig {
  *   completable: true
  * }
  *
- * // Subexpression-consuming state
+ * // Sub expression-consuming state
  * {
  *   subHandler: 'filter',
  *   endStates: {
@@ -120,9 +115,9 @@ interface TokenTypeConfig {
 interface StateConfig {
   /** Map of legal token types and how to handle them */
   tokenTypes?: Record<string, TokenTypeConfig>
-  /** Handler function for processing complete subexpressions */
+  /** Handler function for processing complete sub expressions */
   subHandler?: string
-  /** Tokens that end subexpression parsing and their target states */
+  /** Tokens that end sub expression parsing and their target states */
   endStates?: Record<string, string>
   /** Whether parsing can successfully complete in this state */
   completable?: boolean

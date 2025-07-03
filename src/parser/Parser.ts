@@ -1,9 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/*
- * Jexl
- * Copyright 2020 Tom Shawver
- */
-
 import type { Grammar } from '../grammar.js'
 import { states } from './states.js'
 
@@ -80,7 +75,7 @@ export interface Token {
  * // Returns complex AST with FilterExpression, Identifier, and FunctionCall nodes
  * ```
  *
- * @example Subexpression parsing
+ * @example Sub expression parsing
  * ```typescript
  * // Used internally for parsing nested expressions like function arguments
  * const subParser = new Parser(grammar, "parentExpr", { ')': 'argEnd' })
@@ -103,10 +98,10 @@ export default class Parser {
   /** Flag indicating if the expression contains relative identifiers (starting with '.') */
   _relative: boolean
 
-  /** Map of token types to stop states for subexpression parsing */
+  /** Map of token types to stop states for sub expression parsing */
   _stopMap: Record<string, unknown>
 
-  /** Subparser instance for handling nested expressions */
+  /** Sub parser instance for handling nested expressions */
   _subParser: any
 
   /** Flag indicating if this parser should stop when encountering a stop token */
@@ -128,8 +123,8 @@ export default class Parser {
    * Creates a new Parser instance for building Abstract Syntax Trees from token streams.
    *
    * @param grammar - Grammar object containing language rules and operators
-   * @param prefix - String prefix for error messages (useful for subexpressions)
-   * @param stopMap - Map of token types to stop states for subexpression parsing
+   * @param prefix - String prefix for error messages (useful for sub expressions)
+   * @param stopMap - Map of token types to stop states for sub expression parsing
    *
    * @example Basic parser creation
    * ```typescript
@@ -137,7 +132,7 @@ export default class Parser {
    * const parser = new Parser(grammar)
    * ```
    *
-   * @example Subexpression parser with stop conditions
+   * @example Sub expression parser with stop conditions
    * ```typescript
    * // Parser that stops when encountering ')' or ',' tokens
    * const subParser = new Parser(grammar, "func(", {
@@ -167,7 +162,7 @@ export default class Parser {
    *
    * This is the core method that drives the parsing process. It examines the current parser state,
    * determines if the token is valid in that state, and either processes it directly or delegates
-   * to a subparser for nested expressions.
+   * to a sub parser for nested expressions.
    *
    * @param token - Token to process (from lexer or as part of AST construction)
    * @returns false if parsing should continue, or stop state value if a stop condition was met
@@ -189,7 +184,7 @@ export default class Parser {
    * // Returns false (continue parsing)
    * ```
    *
-   * @example Subexpression with stop conditions
+   * @example Sub expression with stop conditions
    * ```typescript
    * // Parser configured to stop on ')' token
    * const parser = new Parser(grammar, "", { ')': 'endGroup' })
@@ -362,7 +357,7 @@ export default class Parser {
    * // Returns false (no relative identifiers)
    * ```
    *
-   * @example Used in subexpression parsing
+   * @example Used in sub expression parsing
    * ```typescript
    * // When parsing filter expressions, this helps determine the filter type
    * const filterParser = new Parser(grammar, "", stopMap)
@@ -380,14 +375,14 @@ export default class Parser {
   }
 
   /**
-   * Ends a subexpression by completing the subParser and passing its result
+   * Ends a sub expression by completing the subParser and passing its result
    * to the subHandler configured in the current state.
    * @private
    */
   _endSubExpression() {
     const currentState = states[this._state]
     if (!currentState || !currentState.subHandler) {
-      throw new Error(`Invalid state for ending subexpression: ${this._state}`)
+      throw new Error(`Invalid state for ending sub expression: ${this._state}`)
     }
     const subHandlerName = currentState.subHandler
     const handlerMethod = this._getSubHandlerMethod(subHandlerName)
@@ -499,7 +494,7 @@ export default class Parser {
   }
 
   /**
-   * Prepares the Parser to accept a subexpression by (re)instantiating the
+   * Prepares the Parser to accept a sub expression by (re)instantiating the
    * subParser.
    * @param {string} [exprStr] The expression string to prefix to the new Parser
    * @private
@@ -514,8 +509,8 @@ export default class Parser {
   }
 
   /**
-   * Handles a subexpression that's used to define a transform argument's value.
-   * @param ast The subexpression tree
+   * Handles a sub expression that's used to define a transform argument's value.
+   * @param ast The sub expression tree
    */
   private argVal(this: Parser, ast?: Token) {
     if (ast) {
@@ -535,8 +530,8 @@ export default class Parser {
   }
 
   /**
-   * Handles a subexpression representing an element of an array literal.
-   * @param ast The subexpression tree
+   * Handles a sub expression representing an element of an array literal.
+   * @param ast The sub expression tree
    */
   private arrayVal(ast: Token): void {
     const { _cursor } = this
@@ -636,12 +631,12 @@ export default class Parser {
   }
 
   /**
-   * Handles completed filter subexpressions for array filtering or property access.
+   * Handles completed filter sub expressions for array filtering or property access.
    *
    * Filter expressions use square bracket notation like [expression]. They can be either
    * relative (filtering arrays where each element becomes context) or static (property access).
    *
-   * @param ast - The completed subexpression AST for the filter
+   * @param ast - The completed sub expression AST for the filter
    *
    * @example Relative filter (array filtering)
    * ```typescript
@@ -801,7 +796,7 @@ export default class Parser {
   /**
    * Handles an object value by adding its AST to the queued key on the object
    * literal node currently at the cursor.
-   * @param ast The subexpression tree
+   * @param ast The sub expression tree
    */
   private objVal(ast: Token): void {
     if (this._cursor && this._curObjKey) {
@@ -810,17 +805,17 @@ export default class Parser {
   }
 
   /**
-   * Handles traditional subexpressions, delineated with the groupStart and
+   * Handles traditional sub expressions, delineated with the groupStart and
    * groupEnd elements.
-   * @param ast The subexpression tree
+   * @param ast The sub expression tree
    */
   private subExpression(ast: Token): void {
     this._placeAtCursor(ast)
   }
 
   /**
-   * Handles a completed alternate subexpression of a ternary operator.
-   * @param ast The subexpression tree
+   * Handles a completed alternate sub expression of a ternary operator.
+   * @param ast The sub expression tree
    */
   private ternaryEnd(ast: Token): void {
     if (this._cursor) {
@@ -829,8 +824,8 @@ export default class Parser {
   }
 
   /**
-   * Handles a completed consequent subexpression of a ternary operator.
-   * @param ast The subexpression tree
+   * Handles a completed consequent sub expression of a ternary operator.
+   * @param ast The sub expression tree
    */
   private ternaryMid(ast: Token): void {
     if (this._cursor) {
@@ -1013,7 +1008,7 @@ export default class Parser {
   // Handler methods fall into several categories:
   // 1. Token handlers: Process individual tokens (identifier, literal, binaryOp, etc.)
   // 2. Structure handlers: Handle compound structures (arrays, objects, functions)
-  // 3. Subexpression handlers: Process completed subexpressions (filter, argVal, etc.)
+  // 3. Sub expression handlers: Process completed sub expressions (filter, argVal, etc.)
   // 4. State transition handlers: Manage parser state changes (dot, ternaryStart, etc.)
   //
   // The parser uses a cursor-based approach where _cursor points to the current
