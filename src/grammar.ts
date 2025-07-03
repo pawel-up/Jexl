@@ -1,11 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+// Type for values that can be compared
+export type ComparableValue = string | number | Date | boolean
+
+// Type for evaluation context objects
+export interface EvaluationContext {
+  eval(): Promise<unknown>
+}
+
+// Transform function that accepts any function signature
 export type TransformFunction = (...args: any[]) => any
 
-export type BinaryOpFunction = (left: any, right: any) => any
+export type BinaryOpFunction = (left: unknown, right: unknown) => unknown
 
-export type UnaryOpFunction = (right: any) => any
+export type UnaryOpFunction = (right: unknown) => unknown
 
+// Function that accepts any function signature
 export type FunctionFunction = (...args: any[]) => any
 
 // AST Node Types
@@ -48,7 +58,7 @@ export interface IdentifierNode extends BaseASTNode {
 
 export interface LiteralNode extends BaseASTNode {
   type: 'Literal'
-  value: any
+  value: unknown
 }
 
 export interface ObjectLiteralNode extends BaseASTNode {
@@ -138,37 +148,37 @@ export const getGrammar = (): Grammar => ({
     '+': {
       type: 'binaryOp',
       precedence: 30,
-      eval: (left, right) => left + right,
+      eval: (left, right) => (left as number) + (right as number),
     } as BinaryElement,
     '-': {
       type: 'binaryOp',
       precedence: 30,
-      eval: (left, right) => left - right,
+      eval: (left, right) => (left as number) - (right as number),
     } as BinaryElement,
     '*': {
       type: 'binaryOp',
       precedence: 40,
-      eval: (left, right) => left * right,
+      eval: (left, right) => (left as number) * (right as number),
     } as BinaryElement,
     '/': {
       type: 'binaryOp',
       precedence: 40,
-      eval: (left, right) => left / right,
+      eval: (left, right) => (left as number) / (right as number),
     } as BinaryElement,
     '//': {
       type: 'binaryOp',
       precedence: 40,
-      eval: (left, right) => Math.floor(left / right),
+      eval: (left, right) => Math.floor((left as number) / (right as number)),
     } as BinaryElement,
     '%': {
       type: 'binaryOp',
       precedence: 50,
-      eval: (left, right) => left % right,
+      eval: (left, right) => (left as number) % (right as number),
     } as BinaryElement,
     '^': {
       type: 'binaryOp',
       precedence: 50,
-      eval: (left, right) => Math.pow(left, right),
+      eval: (left, right) => Math.pow(left as number, right as number),
     } as BinaryElement,
     '==': {
       type: 'binaryOp',
@@ -183,30 +193,30 @@ export const getGrammar = (): Grammar => ({
     '>': {
       type: 'binaryOp',
       precedence: 20,
-      eval: (left, right) => left > right,
+      eval: (left, right) => (left as ComparableValue) > (right as ComparableValue),
     } as BinaryElement,
     '>=': {
       type: 'binaryOp',
       precedence: 20,
-      eval: (left, right) => left >= right,
+      eval: (left, right) => (left as ComparableValue) >= (right as ComparableValue),
     } as BinaryElement,
     '<': {
       type: 'binaryOp',
       precedence: 20,
-      eval: (left, right) => left < right,
+      eval: (left, right) => (left as ComparableValue) < (right as ComparableValue),
     } as BinaryElement,
     '<=': {
       type: 'binaryOp',
       precedence: 20,
-      eval: (left, right) => left <= right,
+      eval: (left, right) => (left as ComparableValue) <= (right as ComparableValue),
     } as BinaryElement,
     '&&': {
       type: 'binaryOp',
       precedence: 10,
       evalOnDemand: (left, right) => {
-        return left.eval().then((leftVal: any) => {
+        return (left as EvaluationContext).eval().then((leftVal: unknown) => {
           if (!leftVal) return leftVal
-          return right.eval()
+          return (right as EvaluationContext).eval()
         })
       },
     } as BinaryElement,
@@ -214,9 +224,9 @@ export const getGrammar = (): Grammar => ({
       type: 'binaryOp',
       precedence: 10,
       evalOnDemand: (left, right) => {
-        return left.eval().then((leftVal: any) => {
+        return (left as EvaluationContext).eval().then((leftVal: unknown) => {
           if (leftVal) return leftVal
-          return right.eval()
+          return (right as EvaluationContext).eval()
         })
       },
     } as BinaryElement,
@@ -225,7 +235,7 @@ export const getGrammar = (): Grammar => ({
       precedence: 20,
       eval: (left, right) => {
         if (typeof right === 'string') {
-          return right.indexOf(left) !== -1
+          return right.indexOf(left as string) !== -1
         }
         if (Array.isArray(right)) {
           return right.some((elem) => elem === left)
@@ -242,7 +252,7 @@ export const getGrammar = (): Grammar => ({
 
   /**
    * A map of function names to javascript functions. A Jexl function
-   * takes zero ore more arguemnts:
+   * takes zero ore more arguments:
    *
    *     - {*} ...args: A variable number of arguments passed to this function.
    *       All of these are pre-evaluated to their actual values before calling
@@ -260,7 +270,7 @@ export const getGrammar = (): Grammar => ({
 
   /**
    * A map of transform names to transform functions. A transform function
-   * takes one ore more arguemnts:
+   * takes one ore more arguments:
    *
    *     - {*} val: A value to be transformed
    *     - {*} ...args: A variable number of arguments passed to this transform.
