@@ -60,7 +60,7 @@ export default [
     },
   },
   {
-    files: ['tests/**/*.ts', 'bin/*.ts'],
+    files: ['tests/**/*.ts', 'bin/*.ts', 'scripts/*.js'],
     languageOptions: {
       globals: {
         ...globals.nodeBuiltin, // Enable Node.js globals for these files
