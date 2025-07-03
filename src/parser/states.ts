@@ -4,45 +4,127 @@
  */
 
 /**
- * A mapping of all states in the finite state machine to a set of instructions
- * for handling or transitioning into other states. Each state can be handled
- * in one of two schemes: a tokenType map, or a subHandler.
+ * Parser State Machine Configuration
  *
- * Standard expression elements are handled through the tokenType object. This
- * is an object map of all legal token types to encounter in this state (and
- * any unexpected token types will generate a thrown error) to an options
- * object that defines how they're handled.  The available options are:
+ * This module defines the finite state machine (FSM) that powers the Jexl expression parser.
+ * The parser uses this state machine to understand the structure of Jexl expressions and build
+ * an Abstract Syntax Tree (AST) that can be evaluated later.
  *
- *      {string} toState: The name of the state to which to transition
- *          immediately after handling this token
- *      {string} handler: The handler function to call when this token type is
- *          encountered in this state.  If omitted, the default handler
- *          matching the token's "type" property will be called. If the handler
- *          function does not exist, no call will be made and no error will be
- *          generated.  This is useful for tokens whose sole purpose is to
- *          transition to other states.
+ * ## How the State Machine Works
  *
- * States that consume a subexpression should define a subHandler, the
- * function to be called with an expression tree argument when the
- * subexpression is complete. Completeness is determined through the
- * endStates object, which maps tokens on which an expression should end to the
- * state to which to transition once the subHandler function has been called.
+ * The parser starts in the `expectOperand` state and transitions between states based on the
+ * tokens it encounters. Each state defines what tokens are legal and how to handle them.
  *
- * Additionally, any state in which it is legal to mark the AST as completed
- * should have a 'completable' property set to boolean true.  Attempting to
- * call {@link Parser#complete} in any state without this property will result
- * in a thrown Error.
+ * ### Example Expression Parsing Flow:
+ * ```
+ * Expression: "user.name | upper"
+ *
+ * 1. expectOperand + identifier("user") → identifier state
+ * 2. identifier + dot(".") → traverse state
+ * 3. traverse + identifier("name") → identifier state
+ * 4. identifier + pipe("|") → expectTransform state
+ * 5. expectTransform + identifier("upper") → postTransform state
+ * 6. End of input + completable state → parsing complete
+ * ```
+ *
+ * ## State Types
+ *
+ * States can handle tokens in two ways:
+ *
+ * ### 1. Token Type Mapping (`tokenTypes`)
+ * Standard states that handle individual tokens directly:
+ * ```typescript
+ * {
+ *   tokenTypes: {
+ *     literal: { toState: 'expectBinOp' },        // Transition to new state
+ *     identifier: { toState: 'identifier' },      // Transition to new state
+ *     unaryOp: { handler: 'unaryOp' }            // Call handler, stay in state
+ *   }
+ * }
+ * ```
+ *
+ * ### 2. Subexpression Handling (`subHandler`)
+ * States that consume entire subexpressions:
+ * ```typescript
+ * {
+ *   subHandler: 'filter',           // Handler to call with parsed subexpression
+ *   endStates: {
+ *     closeBracket: 'identifier'    // When to end and where to transition
+ *   }
+ * }
+ * ```
+ *
+ * ## Token Type Configuration Options
+ *
+ * - `toState`: The next state to transition to after handling this token
+ * - `handler`: Custom handler function to call (if omitted, uses default based on token type)
+ *
+ * ## State Configuration Properties
+ *
+ * - `tokenTypes`: Map of legal token types to their handling configuration
+ * - `subHandler`: Function to call when a subexpression is completely parsed
+ * - `endStates`: Tokens that end a subexpression and their target states
+ * - `completable`: Whether parsing can successfully end in this state
+ *
+ * ## Error Handling
+ *
+ * If a token is encountered that isn't defined in the current state's `tokenTypes`,
+ * the parser will throw an error. This ensures that only valid Jexl syntax is accepted.
  */
 
+/**
+ * Configuration for how a specific token type should be handled in a state.
+ *
+ * @example
+ * ```typescript
+ * // Transition to new state after handling token
+ * { toState: 'expectBinOp' }
+ *
+ * // Call custom handler and transition
+ * { toState: 'identifier', handler: 'transform' }
+ *
+ * // Call handler but stay in current state
+ * { handler: 'unaryOp' }
+ * ```
+ */
 interface TokenTypeConfig {
+  /** The state to transition to after handling this token */
   toState?: string
+  /** Custom handler function to call for this token type */
   handler?: string
 }
 
+/**
+ * Configuration for a parser state, defining how it handles tokens and subexpressions.
+ *
+ * @example
+ * ```typescript
+ * // Simple token-based state
+ * {
+ *   tokenTypes: {
+ *     literal: { toState: 'expectBinOp' },
+ *     identifier: { toState: 'identifier' }
+ *   },
+ *   completable: true
+ * }
+ *
+ * // Subexpression-consuming state
+ * {
+ *   subHandler: 'filter',
+ *   endStates: {
+ *     closeBracket: 'identifier'
+ *   }
+ * }
+ * ```
+ */
 interface StateConfig {
+  /** Map of legal token types and how to handle them */
   tokenTypes?: Record<string, TokenTypeConfig>
+  /** Handler function for processing complete subexpressions */
   subHandler?: string
+  /** Tokens that end subexpression parsing and their target states */
   endStates?: Record<string, string>
+  /** Whether parsing can successfully complete in this state */
   completable?: boolean
 }
 

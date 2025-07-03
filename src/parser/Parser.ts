@@ -7,6 +7,29 @@
 import type { Grammar } from '../grammar.js'
 import { states } from './states.js'
 
+/**
+ * Represents a token in the parsing process, which can be either a simple token from the lexer
+ * or a complex AST node being constructed during parsing.
+ *
+ * @example Simple token from lexer
+ * ```typescript
+ * const token: Token = {
+ *   type: 'identifier',
+ *   value: 'username',
+ *   raw: 'username'
+ * }
+ * ```
+ *
+ * @example Complex AST node during parsing
+ * ```typescript
+ * const binaryExpr: Token = {
+ *   type: 'BinaryExpression',
+ *   operator: '+',
+ *   left: { type: 'Identifier', value: 'a' },
+ *   right: { type: 'Literal', value: 5 }
+ * }
+ * ```
+ */
 export interface Token {
   type: string
   raw?: string
@@ -29,36 +52,107 @@ export interface Token {
 }
 
 /**
- * The Parser is a state machine that converts tokens from the {@link Lexer}
- * into an Abstract Syntax Tree (AST), capable of being evaluated in any
- * context by the {@link Evaluator}.  The Parser expects that all tokens
- * provided to it are legal and typed properly according to the grammar, but
- * accepts that the tokens may still be in an invalid order or in some other
- * unparsable configuration that requires it to throw an Error.
- * @param rammar The grammar object to use to parse Jexl strings
- * @param prefix A string prefix to prepend to the expression string
- *      for error messaging purposes.  This is useful for when a new Parser is
- *      instantiated to parse an subexpression, as the parent Parser's
- *      expression string thus far can be passed for a more user-friendly
- *      error message.
- * @param stopMap A mapping of token types to any truthy value. When the
- *      token type is encountered, the parser will return the mapped value
- *      instead of boolean false.
+ * The Parser is a state machine that converts tokens from the {@link Lexer} into an Abstract Syntax Tree (AST).
+ *
+ * The Parser processes tokens sequentially and builds a tree structure that represents the logical
+ * structure of the expression. It handles operator precedence, nested expressions, function calls,
+ * object/array literals, and complex filtering operations.
+ *
+ * @example Basic parsing workflow
+ * ```typescript
+ * const grammar = getGrammar()
+ * const lexer = new Lexer(grammar)
+ * const parser = new Parser(grammar)
+ *
+ * // Parse simple expression: "age + 5"
+ * const tokens = lexer.tokenize("age + 5")
+ * parser.addTokens(tokens)
+ * const ast = parser.complete()
+ * // Returns: { type: 'BinaryExpression', operator: '+', left: {...}, right: {...} }
+ * ```
+ *
+ * @example Parsing complex expressions
+ * ```typescript
+ * // Parse: "users[.age > 18].name|upper"
+ * const tokens = lexer.tokenize("users[.age > 18].name|upper")
+ * parser.addTokens(tokens)
+ * const ast = parser.complete()
+ * // Returns complex AST with FilterExpression, Identifier, and FunctionCall nodes
+ * ```
+ *
+ * @example Subexpression parsing
+ * ```typescript
+ * // Used internally for parsing nested expressions like function arguments
+ * const subParser = new Parser(grammar, "parentExpr", { ')': 'argEnd' })
+ * // Parses until ')' token and returns stop state 'argEnd'
+ * ```
  */
 export default class Parser {
+  /** The grammar object containing language rules, operators, and functions */
   _grammar: Grammar
+
+  /** Current state of the parser state machine (e.g., 'expectOperand', 'expectBinaryOp') */
   _state: string
+
+  /** Root node of the AST being constructed */
   _tree: Token | null
+
+  /** Current expression string being parsed (used for error messages) */
   _exprStr: string
+
+  /** Flag indicating if the expression contains relative identifiers (starting with '.') */
   _relative: boolean
+
+  /** Map of token types to stop states for subexpression parsing */
   _stopMap: Record<string, unknown>
+
+  /** Subparser instance for handling nested expressions */
   _subParser: any
+
+  /** Flag indicating if this parser should stop when encountering a stop token */
   _parentStop: any
+
+  /** Current position in the AST where new nodes are added */
   _cursor?: Token
+
+  /** Flag indicating if the next identifier should encapsulate the current cursor */
   _nextIdentEncapsulate?: boolean
+
+  /** Flag indicating if the next identifier should be relative */
   _nextIdentRelative?: boolean
+
+  /** Currently queued object key waiting for a value */
   _curObjKey?: string
 
+  /**
+   * Creates a new Parser instance for building Abstract Syntax Trees from token streams.
+   *
+   * @param grammar - Grammar object containing language rules and operators
+   * @param prefix - String prefix for error messages (useful for subexpressions)
+   * @param stopMap - Map of token types to stop states for subexpression parsing
+   *
+   * @example Basic parser creation
+   * ```typescript
+   * const grammar = getGrammar()
+   * const parser = new Parser(grammar)
+   * ```
+   *
+   * @example Subexpression parser with stop conditions
+   * ```typescript
+   * // Parser that stops when encountering ')' or ',' tokens
+   * const subParser = new Parser(grammar, "func(", {
+   *   ')': 'functionEnd',
+   *   ',': 'nextArg'
+   * })
+   * ```
+   *
+   * @example Error message prefix
+   * ```typescript
+   * // For better error messages in nested contexts
+   * const parser = new Parser(grammar, "users[.age > ")
+   * // Error messages will include the prefix for context
+   * ```
+   */
   constructor(grammar: Grammar, prefix?: string, stopMap: Record<string, unknown> = {}) {
     this._grammar = grammar
     this._state = 'expectOperand'
@@ -69,14 +163,44 @@ export default class Parser {
   }
 
   /**
-   * Processes a new token into the AST and manages the transitions of the state
-   * machine.
-   * @param token A token object, as provided by the
-   *      {@link Lexer#tokenize} function.
-   * @throws {Error} if a token is added when the Parser has been marked as
-   *      complete by {@link #complete}, or if an unexpected token type is added.
-   * @returns the stopState value if this parser encountered a token
-   *      in the stopState mapb false if tokens can continue.
+   * Processes a single token and advances the parser state machine.
+   *
+   * This is the core method that drives the parsing process. It examines the current parser state,
+   * determines if the token is valid in that state, and either processes it directly or delegates
+   * to a subparser for nested expressions.
+   *
+   * @param token - Token to process (from lexer or as part of AST construction)
+   * @returns false if parsing should continue, or stop state value if a stop condition was met
+   *
+   * @example Processing simple tokens
+   * ```typescript
+   * const parser = new Parser(grammar)
+   *
+   * // Process identifier token
+   * const result1 = parser.addToken({ type: 'identifier', value: 'age', raw: 'age' })
+   * // Returns false (continue parsing)
+   *
+   * // Process operator token
+   * const result2 = parser.addToken({ type: 'binaryOp', value: '+', raw: '+' })
+   * // Returns false (continue parsing)
+   *
+   * // Process literal token
+   * const result3 = parser.addToken({ type: 'literal', value: 5, raw: '5' })
+   * // Returns false (continue parsing)
+   * ```
+   *
+   * @example Subexpression with stop conditions
+   * ```typescript
+   * // Parser configured to stop on ')' token
+   * const parser = new Parser(grammar, "", { ')': 'endGroup' })
+   * parser.addToken({ type: 'identifier', value: 'x', raw: 'x' })
+   * const result = parser.addToken({ type: 'closeParen', raw: ')' })
+   * // Returns 'endGroup' (stop state reached)
+   * ```
+   *
+   * @throws {Error} When parser is already complete
+   * @throws {Error} When unexpected token type is encountered
+   * @throws {Error} When parser state is invalid
    */
   addToken(token: Token): boolean | unknown {
     if (this._state === 'complete') {
@@ -130,22 +254,76 @@ export default class Parser {
   }
 
   /**
-   * Processes an array of tokens iteratively through the {@link #addToken}
-   * function.
-   * @param tokens An array of tokens, as provided by
-   *      the {@link Lexer#tokenize} function.
+   * Processes an array of tokens sequentially using {@link addToken}.
+   *
+   * This is a convenience method for processing multiple tokens at once, typically
+   * the entire token stream from a lexer.
+   *
+   * @param tokens - Array of tokens to process sequentially
+   *
+   * @example Processing token stream from lexer
+   * ```typescript
+   * const lexer = new Lexer(grammar)
+   * const parser = new Parser(grammar)
+   *
+   * const tokens = lexer.tokenize("user.name + ' - ' + user.email")
+   * parser.addTokens(tokens)
+   * const ast = parser.complete()
+   * // Fully parsed AST ready for evaluation
+   * ```
+   *
+   * @example Manual token array
+   * ```typescript
+   * const tokens = [
+   *   { type: 'identifier', value: 'age', raw: 'age' },
+   *   { type: 'binaryOp', value: '>', raw: '>' },
+   *   { type: 'literal', value: 18, raw: '18' }
+   * ]
+   * parser.addTokens(tokens)
+   * // Creates AST for "age > 18"
+   * ```
    */
   addTokens(tokens: Token[]) {
     tokens.forEach(this.addToken, this)
   }
 
   /**
-   * Marks this Parser instance as completed and retrieves the full AST.
-   * @returns a full expression tree, ready for evaluation by the
-   *      {@link Evaluator#eval} function, or null if no tokens were passed to
-   *      the parser before complete was called
-   * @throws {Error} if the parser is not in a state where it's legal to end
-   *      the expression, indicating that the expression is incomplete
+   * Finalizes parsing and returns the completed Abstract Syntax Tree.
+   *
+   * This method should be called after all tokens have been processed. It verifies that
+   * the parser is in a valid end state and returns the root of the constructed AST.
+   *
+   * @returns The root AST node, or null if no tokens were processed
+   *
+   * @example Completing simple expression
+   * ```typescript
+   * const parser = new Parser(grammar)
+   * parser.addTokens(lexer.tokenize("price * quantity"))
+   * const ast = parser.complete()
+   * // Returns:
+   * // {
+   * //   type: 'BinaryExpression',
+   * //   operator: '*',
+   * //   left: { type: 'Identifier', value: 'price' },
+   * //   right: { type: 'Identifier', value: 'quantity' }
+   * // }
+   * ```
+   *
+   * @example Completing complex expression
+   * ```typescript
+   * parser.addTokens(lexer.tokenize("users[.age > 21 && .active].name"))
+   * const ast = parser.complete()
+   * // Returns complex AST with FilterExpression containing nested BinaryExpression
+   * ```
+   *
+   * @example Empty expression
+   * ```typescript
+   * const parser = new Parser(grammar)
+   * const ast = parser.complete()
+   * // Returns null (no tokens processed)
+   * ```
+   *
+   * @throws {Error} When parser is not in a valid completion state (incomplete expression)
    */
   complete(): Token | null {
     const currentState = states[this._state]
@@ -160,8 +338,42 @@ export default class Parser {
   }
 
   /**
-   * Indicates whether the expression tree contains a relative path identifier.
-   * @returns true if a relative identifier exists false otherwise.
+   * Indicates whether the expression contains relative path identifiers.
+   *
+   * Relative identifiers start with '.' and are used in filter expressions to reference
+   * properties of the current context item (e.g., '.age' in 'users[.age > 18]').
+   *
+   * @returns true if relative identifiers are present, false otherwise
+   *
+   * @example Expression with relative identifiers
+   * ```typescript
+   * const parser = new Parser(grammar)
+   * parser.addTokens(lexer.tokenize("users[.age > 18 && .active]"))
+   * parser.complete()
+   * const hasRelative = parser.isRelative()
+   * // Returns true (contains '.age' and '.active')
+   * ```
+   *
+   * @example Expression without relative identifiers
+   * ```typescript
+   * parser.addTokens(lexer.tokenize("user.name + user.email"))
+   * parser.complete()
+   * const hasRelative = parser.isRelative()
+   * // Returns false (no relative identifiers)
+   * ```
+   *
+   * @example Used in subexpression parsing
+   * ```typescript
+   * // When parsing filter expressions, this helps determine the filter type
+   * const filterParser = new Parser(grammar, "", stopMap)
+   * filterParser.addTokens(filterTokens)
+   * const filterAst = filterParser.complete()
+   * if (filterParser.isRelative()) {
+   *   // Use relative filtering (each array element as context)
+   * } else {
+   *   // Use static filtering (property access or boolean check)
+   * }
+   * ```
    */
   isRelative(): boolean {
     return this._relative
@@ -186,10 +398,37 @@ export default class Parser {
   }
 
   /**
-   * Places a new tree node at the current position of the cursor (to the 'right'
-   * property) and then advances the cursor to the new node. This function also
-   * handles setting the parent of the new node.
-   * @param node A node to be added to the AST
+   * Places a new AST node at the current cursor position and advances the cursor.
+   *
+   * This is the primary method for adding nodes to the AST. It handles both root node
+   * creation and linking nodes into the tree structure.
+   *
+   * @param node - AST node to place at the cursor
+   *
+   * @example First node (root)
+   * ```typescript
+   * // When tree is empty, node becomes the root
+   * this._placeAtCursor({ type: 'Identifier', value: 'user' })
+   * // Result: _tree = { type: 'Identifier', value: 'user' }
+   * //         _cursor points to this node
+   * ```
+   *
+   * @example Subsequent nodes
+   * ```typescript
+   * // When cursor exists, node becomes the 'right' child
+   * this._placeAtCursor({ type: 'Literal', value: 5 })
+   * // Result: previous node's 'right' property points to new node
+   * //         _cursor advances to new node
+   * ```
+   *
+   * @example Building binary expression
+   * ```typescript
+   * // For "a + b":
+   * // 1. Place identifier 'a' (becomes root)
+   * // 2. Binary operator '+' restructures tree
+   * // 3. Place identifier 'b' (becomes right child of '+')
+   * ```
+   *
    * @private
    */
   _placeAtCursor(node: Token): void {
@@ -203,11 +442,39 @@ export default class Parser {
   }
 
   /**
-   * Places a tree node before the current position of the cursor, replacing
-   * the node that the cursor currently points to. This should only be called in
-   * cases where the cursor is known to exist, and the provided node already
-   * contains a pointer to what's at the cursor currently.
-   * @param node A node to be added to the AST
+   * Places a node before the current cursor position, effectively replacing the cursor node.
+   *
+   * This method is used when a node needs to "wrap" or "contain" the current cursor node,
+   * such as when creating filter expressions or function calls.
+   *
+   * @param node - AST node that should contain the current cursor node
+   *
+   * @example Creating filter expression
+   * ```typescript
+   * // Current cursor points to 'users' identifier
+   * // Create filter that wraps it:
+   * this._placeBeforeCursor({
+   *   type: 'FilterExpression',
+   *   subject: this._cursor,  // 'users' becomes the subject
+   *   expr: filterAst,
+   *   relative: true
+   * })
+   * // Result: FilterExpression becomes new cursor, containing 'users'
+   * ```
+   *
+   * @example Converting identifier to function call
+   * ```typescript
+   * // Current cursor points to 'max' identifier
+   * // Convert to function call:
+   * this._placeBeforeCursor({
+   *   type: 'FunctionCall',
+   *   name: this._cursor.value,  // 'max'
+   *   args: [],
+   *   pool: 'functions'
+   * })
+   * // Result: FunctionCall replaces identifier, ready for arguments
+   * ```
+   *
    * @private
    */
   _placeBeforeCursor(node: Token): void {
@@ -279,9 +546,34 @@ export default class Parser {
   }
 
   /**
-   * Handles tokens of type 'binaryOp', indicating an operation that has two
-   * inputs: a left side and a right side.
-   * @param token A token object
+   * Handles binary operator tokens and manages operator precedence.
+   *
+   * Binary operators like +, -, *, /, ==, etc. require special handling to ensure correct
+   * operator precedence. This method restructures the AST to maintain proper order of operations.
+   *
+   * @param token - Binary operator token with operator value
+   *
+   * @example Operator precedence handling
+   * ```typescript
+   * // For expression "2 + 3 * 4"
+   * // First processes: 2, then +, then 3, then *
+   * // When * is encountered, it has higher precedence than +
+   * // So the tree gets restructured to ensure 3*4 is evaluated first
+   * //
+   * // Before * token:           After * token:
+   * //     +                        +
+   * //   /   \                    /   \
+   * //  2     3                  2     *
+   * //                                / \
+   * //                               3   (next)
+   * ```
+   *
+   * @example Left-to-right evaluation for same precedence
+   * ```typescript
+   * // For expression "10 - 5 + 2"
+   * // Both - and + have same precedence, so left-to-right evaluation
+   * // Final AST: ((10 - 5) + 2)
+   * ```
    */
   private binaryOp(token: Token): void {
     const precedence = (this._grammar.elements[token.value as string] as any)?.precedence || 0
@@ -303,9 +595,33 @@ export default class Parser {
   }
 
   /**
-   * Handles successive nodes in an identifier chain.  More specifically, it
-   * sets values that determine how the following identifier gets placed in the
-   * AST.
+   * Handles dot (.) tokens for property access and relative identifier setup.
+   *
+   * The dot operator is used for property access (user.name) and to indicate relative
+   * identifiers in filters (.age). This method sets up state flags that control how
+   * the next identifier will be processed.
+   *
+   * @example Property access chain
+   * ```typescript
+   * // For "user.profile.avatar"
+   * // Each dot sets up the next identifier to be chained from the previous
+   * // Creates: { type: 'Identifier', value: 'avatar', from: { ... } }
+   * ```
+   *
+   * @example Relative identifier in filter
+   * ```typescript
+   * // For "users[.age > 18]"
+   * // The dot before 'age' marks it as relative to the current filter context
+   * // Creates: { type: 'Identifier', value: 'age', relative: true }
+   * ```
+   *
+   * @example Mixed access patterns
+   * ```typescript
+   * // For "data.items[.value > threshold].name"
+   * // First dot: normal property access (data.items)
+   * // Second dot: relative identifier (.value)
+   * // Third dot: property access on filtered result (.name)
+   * ```
    */
   private dot(): void {
     this._nextIdentEncapsulate = Boolean(
@@ -320,9 +636,36 @@ export default class Parser {
   }
 
   /**
-   * Handles a subexpression used for filtering an array returned by an
-   * identifier chain.
-   * @param ast The subexpression tree
+   * Handles completed filter subexpressions for array filtering or property access.
+   *
+   * Filter expressions use square bracket notation like [expression]. They can be either
+   * relative (filtering arrays where each element becomes context) or static (property access).
+   *
+   * @param ast - The completed subexpression AST for the filter
+   *
+   * @example Relative filter (array filtering)
+   * ```typescript
+   * // For "users[.age > 18]"
+   * // Creates FilterExpression with:
+   * // - subject: 'users' identifier
+   * // - expr: binary expression '.age > 18'
+   * // - relative: true (because subParser.isRelative() returns true)
+   * ```
+   *
+   * @example Static filter (property access)
+   * ```typescript
+   * // For "config['api' + 'Key']"
+   * // Creates FilterExpression with:
+   * // - subject: 'config' identifier
+   * // - expr: binary expression '"api" + "Key"'
+   * // - relative: false (no relative identifiers in expression)
+   * ```
+   *
+   * @example Dynamic array indexing
+   * ```typescript
+   * // For "items[currentIndex + 1]"
+   * // Creates FilterExpression for computed array access
+   * ```
    */
   private filter(ast: Token): void {
     this._placeBeforeCursor({
@@ -347,8 +690,37 @@ export default class Parser {
   }
 
   /**
-   * Handles identifier tokens by adding them as a new node in the AST.
-   * @param token A token object
+   * Handles identifier tokens by creating Identifier AST nodes.
+   *
+   * Identifiers represent variable names, property names, or function names. Their placement
+   * in the AST depends on context - they can be standalone, part of a property chain, or
+   * relative to a filter context.
+   *
+   * @param token - Identifier token with the name value
+   *
+   * @example Simple identifier
+   * ```typescript
+   * // For "username"
+   * // Creates: { type: 'Identifier', value: 'username' }
+   * ```
+   *
+   * @example Property access
+   * ```typescript
+   * // For "user.name" - when processing 'name' after dot
+   * // Creates: { type: 'Identifier', value: 'name', from: userIdentifier }
+   * ```
+   *
+   * @example Relative identifier in filter
+   * ```typescript
+   * // For ".age" in filter context
+   * // Creates: { type: 'Identifier', value: 'age', relative: true }
+   * ```
+   *
+   * @example Function name
+   * ```typescript
+   * // For "max(" - identifier before parentheses
+   * // Later converted to FunctionCall node by functionCall handler
+   * ```
    */
   private identifier(token: Token): void {
     const node: Token = {
@@ -369,9 +741,36 @@ export default class Parser {
   }
 
   /**
-   * Handles literal values, such as strings, booleans, and numerics, by adding
-   * them as a new node in the AST.
-   * @param token A token object
+   * Handles literal value tokens (strings, numbers, booleans, null).
+   *
+   * Literals represent constant values in expressions. They are the simplest AST nodes
+   * and are always leaf nodes (no children).
+   *
+   * @param token - Literal token containing the parsed value
+   *
+   * @example String literal
+   * ```typescript
+   * // For '"Hello World"'
+   * // Creates: { type: 'Literal', value: 'Hello World' }
+   * ```
+   *
+   * @example Number literal
+   * ```typescript
+   * // For '42.5'
+   * // Creates: { type: 'Literal', value: 42.5 }
+   * ```
+   *
+   * @example Boolean literal
+   * ```typescript
+   * // For 'true'
+   * // Creates: { type: 'Literal', value: true }
+   * ```
+   *
+   * @example Null literal
+   * ```typescript
+   * // For 'null'
+   * // Creates: { type: 'Literal', value: null }
+   * ```
    */
   private literal(token: Token): void {
     this._placeAtCursor({
@@ -440,9 +839,29 @@ export default class Parser {
   }
 
   /**
-   * Handles the start of a new ternary expression by encapsulating the entire
-   * AST in a ConditionalExpression node, and using the existing tree as the
-   * test element.
+   * Initiates a ternary conditional expression by wrapping the current AST as the test condition.
+   *
+   * Ternary expressions have the form: test ? consequent : alternate
+   * This method is called when the '?' token is encountered.
+   *
+   * @example Standard ternary
+   * ```typescript
+   * // For "age >= 18 ? 'adult' : 'minor'"
+   * // When '?' is encountered, wraps existing "age >= 18" as test:
+   * // {
+   * //   type: 'ConditionalExpression',
+   * //   test: { type: 'BinaryExpression', ... },  // age >= 18
+   * //   consequent: undefined,  // will be set by ternaryMid
+   * //   alternate: undefined    // will be set by ternaryEnd
+   * // }
+   * ```
+   *
+   * @example Elvis operator (missing consequent)
+   * ```typescript
+   * // For "nickname ?: 'Anonymous'"
+   * // Similar structure but consequent will remain undefined
+   * // Evaluator will use test result as consequent
+   * ```
    */
   private ternaryStart(): void {
     this._tree = {
@@ -453,9 +872,42 @@ export default class Parser {
   }
 
   /**
-   * Handles identifier tokens when used to indicate the name of a transform to
-   * be applied.
-   * @param token A token object
+   * Converts an identifier token into a transform function call.
+   *
+   * Transform functions are applied using the pipe operator (|). This method converts
+   * the identifier following a pipe into a FunctionCall node in the transforms pool.
+   *
+   * @param token - Identifier token with the transform function name
+   *
+   * @example Simple transform
+   * ```typescript
+   * // For "name|upper"
+   * // When processing 'upper' after pipe:
+   * // Creates: {
+   * //   type: 'FunctionCall',
+   * //   name: 'upper',
+   * //   args: [nameIdentifier],  // current cursor becomes first argument
+   * //   pool: 'transforms'
+   * // }
+   * ```
+   *
+   * @example Transform with arguments
+   * ```typescript
+   * // For "value|multiply(2, 3)"
+   * // Creates FunctionCall node, args will be populated by argVal handler:
+   * // {
+   * //   type: 'FunctionCall',
+   * //   name: 'multiply',
+   * //   args: [valueIdentifier, 2, 3],
+   * //   pool: 'transforms'
+   * // }
+   * ```
+   *
+   * @example Chained transforms
+   * ```typescript
+   * // For "name|lower|trim"
+   * // Each transform becomes a FunctionCall wrapping the previous result
+   * ```
    */
   private transform(token: Token): void {
     this._placeBeforeCursor({
@@ -554,4 +1006,17 @@ export default class Parser {
   }
 
   // ===== Private Handler Methods =====
+  //
+  // The following methods handle specific token types and AST node construction.
+  // They are called by the state machine based on current state and token type.
+  //
+  // Handler methods fall into several categories:
+  // 1. Token handlers: Process individual tokens (identifier, literal, binaryOp, etc.)
+  // 2. Structure handlers: Handle compound structures (arrays, objects, functions)
+  // 3. Subexpression handlers: Process completed subexpressions (filter, argVal, etc.)
+  // 4. State transition handlers: Manage parser state changes (dot, ternaryStart, etc.)
+  //
+  // The parser uses a cursor-based approach where _cursor points to the current
+  // position in the AST where new nodes should be added or where modifications
+  // should be made.
 }
