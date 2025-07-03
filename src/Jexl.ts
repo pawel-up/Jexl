@@ -1,10 +1,21 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /*
  * Jexl
  * Copyright 2020 Tom Shawver
  */
 
 import Expression, { type Context } from './Expression.js'
-import { type BinaryOpFunction, type FunctionFunction, getGrammar, type UnaryOpFunction, type Grammar, type TransformFunction, GrammarElement, BinaryElement, UnaryElement } from './grammar.js'
+import {
+  type BinaryOpFunction,
+  type FunctionFunction,
+  getGrammar,
+  type UnaryOpFunction,
+  type Grammar,
+  type TransformFunction,
+  GrammarElement,
+  BinaryElement,
+  UnaryElement,
+} from './grammar.js'
 
 /**
  * Jexl is the Javascript Expression Language, capable of parsing and
@@ -72,7 +83,7 @@ export class Jexl {
    * function counterpart.
    * @param map A map of expression function names to javascript functions
    */
-  addFunctions(map: { [key: string]: FunctionFunction }) {
+  addFunctions(map: Record<string, FunctionFunction>) {
     for (const key in map) {
       if (Object.prototype.hasOwnProperty.call(map, key)) {
         const fn = map[key]
@@ -96,7 +107,7 @@ export class Jexl {
     const element: UnaryElement = {
       type: 'unaryOp',
       weight: Infinity,
-      eval: fn
+      eval: fn,
     }
     this._addGrammarElement(operator, element)
   }
@@ -119,7 +130,7 @@ export class Jexl {
    * accepts a map of one or more transform names to their transform function.
    * @param map A map of transform names to transform functions
    */
-  addTransforms(map: { [key: string]: TransformFunction }) {
+  addTransforms(map: Record<string, TransformFunction>) {
     for (const key in map) {
       if (Object.prototype.hasOwnProperty.call(map, key)) {
         const fn = map[key]
@@ -210,7 +221,7 @@ export class Jexl {
    * A JavaScript template literal to allow expressions to be defined by the
    * syntax: expr`40 + 2`
    */
-  expr(strs: string[], ...args: any[]): Expression {
+  expr(strs: string[] | TemplateStringsArray, ...args: unknown[]): Expression {
     const exprStr = strs.reduce((acc, str, idx) => {
       const arg = idx < args.length ? args[idx] : ''
       acc += str + arg
@@ -226,9 +237,9 @@ export class Jexl {
   removeOp(operator: string): void {
     if (
       this._grammar.elements[operator] &&
-      (this._grammar.elements[operator].type === 'binaryOp' ||
-        this._grammar.elements[operator].type === 'unaryOp')
+      (this._grammar.elements[operator].type === 'binaryOp' || this._grammar.elements[operator].type === 'unaryOp')
     ) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete this._grammar.elements[operator]
     }
   }

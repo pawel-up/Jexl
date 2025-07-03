@@ -1,78 +1,75 @@
-/*
- * Jexl
- * Copyright 2020 Tom Shawver
- */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-export type TransformFunction = (value: any, ...args: any[]) => any;
+export type TransformFunction = (...args: any[]) => any
 
-export type BinaryOpFunction = (left: any, right: any) => any;
+export type BinaryOpFunction = (left: any, right: any) => any
 
-export type UnaryOpFunction = (right: any) => any;
+export type UnaryOpFunction = (right: any) => any
 
-export type FunctionFunction = (value: any, ...args: any[]) => any;
+export type FunctionFunction = (...args: any[]) => any
 
 // AST Node Types
 export interface BaseASTNode {
-  type: string;
+  type: string
 }
 
 export interface ArrayLiteralNode extends BaseASTNode {
-  type: 'ArrayLiteral';
-  value: ASTNode[];
+  type: 'ArrayLiteral'
+  value: ASTNode[]
 }
 
 export interface BinaryExpressionNode extends BaseASTNode {
-  type: 'BinaryExpression';
-  operator: string;
-  left: ASTNode;
-  right: ASTNode;
+  type: 'BinaryExpression'
+  operator: string
+  left: ASTNode
+  right: ASTNode
 }
 
 export interface ConditionalExpressionNode extends BaseASTNode {
-  type: 'ConditionalExpression';
-  test: ASTNode;
-  consequent: ASTNode;
-  alternate: ASTNode;
+  type: 'ConditionalExpression'
+  test: ASTNode
+  consequent: ASTNode
+  alternate: ASTNode
 }
 
 export interface FilterExpressionNode extends BaseASTNode {
-  type: 'FilterExpression';
-  subject: ASTNode;
-  expr: ASTNode;
-  relative: boolean;
+  type: 'FilterExpression'
+  subject: ASTNode
+  expr: ASTNode
+  relative: boolean
 }
 
 export interface IdentifierNode extends BaseASTNode {
-  type: 'Identifier';
-  value: string;
-  from?: ASTNode;
-  relative?: boolean;
+  type: 'Identifier'
+  value: string
+  from?: ASTNode
+  relative?: boolean
 }
 
 export interface LiteralNode extends BaseASTNode {
-  type: 'Literal';
-  value: any;
+  type: 'Literal'
+  value: any
 }
 
 export interface ObjectLiteralNode extends BaseASTNode {
-  type: 'ObjectLiteral';
-  value: Record<string, ASTNode>;
+  type: 'ObjectLiteral'
+  value: Record<string, ASTNode>
 }
 
 export interface FunctionCallNode extends BaseASTNode {
-  type: 'FunctionCall';
-  name: string;
-  args?: ASTNode[];
-  pool: 'functions' | 'transforms';
+  type: 'FunctionCall'
+  name: string
+  args?: ASTNode[]
+  pool: 'functions' | 'transforms'
 }
 
 export interface UnaryExpressionNode extends BaseASTNode {
-  type: 'UnaryExpression';
-  operator: string;
-  right: ASTNode;
+  type: 'UnaryExpression'
+  operator: string
+  right: ASTNode
 }
 
-export type ASTNode = 
+export type ASTNode =
   | ArrayLiteralNode
   | BinaryExpressionNode
   | ConditionalExpressionNode
@@ -81,10 +78,23 @@ export type ASTNode =
   | LiteralNode
   | ObjectLiteralNode
   | FunctionCallNode
-  | UnaryExpressionNode;
+  | UnaryExpressionNode
 
 export interface GrammarElement {
-  type: 'dot' | 'openBracket' | 'closeBracket' | 'pipe' | 'openCurl' | 'closeCurl' | 'colon' | 'comma' | 'openParen' | 'closeParen' | 'question' | 'binaryOp' | 'unaryOp'
+  type:
+    | 'dot'
+    | 'openBracket'
+    | 'closeBracket'
+    | 'pipe'
+    | 'openCurl'
+    | 'closeCurl'
+    | 'colon'
+    | 'comma'
+    | 'openParen'
+    | 'closeParen'
+    | 'question'
+    | 'binaryOp'
+    | 'unaryOp'
   raw?: string
 }
 
@@ -103,9 +113,9 @@ export interface UnaryElement extends GrammarElement {
 }
 
 export interface Grammar {
-  elements: Record<string, GrammarElement | BinaryElement | UnaryElement>,
-  functions: Record<string, FunctionFunction>,
-  transforms: Record<string, TransformFunction>,
+  elements: Record<string, GrammarElement | BinaryElement | UnaryElement>
+  functions: Record<string, FunctionFunction>
+  transforms: Record<string, TransformFunction>
 }
 
 export const getGrammar = (): Grammar => ({
@@ -128,67 +138,67 @@ export const getGrammar = (): Grammar => ({
     '+': {
       type: 'binaryOp',
       precedence: 30,
-      eval: (left, right) => left + right
+      eval: (left, right) => left + right,
     } as BinaryElement,
     '-': {
       type: 'binaryOp',
       precedence: 30,
-      eval: (left, right) => left - right
+      eval: (left, right) => left - right,
     } as BinaryElement,
     '*': {
       type: 'binaryOp',
       precedence: 40,
-      eval: (left, right) => left * right
+      eval: (left, right) => left * right,
     } as BinaryElement,
     '/': {
       type: 'binaryOp',
       precedence: 40,
-      eval: (left, right) => left / right
+      eval: (left, right) => left / right,
     } as BinaryElement,
     '//': {
       type: 'binaryOp',
       precedence: 40,
-      eval: (left, right) => Math.floor(left / right)
+      eval: (left, right) => Math.floor(left / right),
     } as BinaryElement,
     '%': {
       type: 'binaryOp',
       precedence: 50,
-      eval: (left, right) => left % right
+      eval: (left, right) => left % right,
     } as BinaryElement,
     '^': {
       type: 'binaryOp',
       precedence: 50,
-      eval: (left, right) => Math.pow(left, right)
+      eval: (left, right) => Math.pow(left, right),
     } as BinaryElement,
     '==': {
       type: 'binaryOp',
       precedence: 20,
-      eval: (left, right) => left == right
+      eval: (left, right) => left == right,
     } as BinaryElement,
     '!=': {
       type: 'binaryOp',
       precedence: 20,
-      eval: (left, right) => left != right
+      eval: (left, right) => left != right,
     } as BinaryElement,
     '>': {
       type: 'binaryOp',
       precedence: 20,
-      eval: (left, right) => left > right
+      eval: (left, right) => left > right,
     } as BinaryElement,
     '>=': {
       type: 'binaryOp',
       precedence: 20,
-      eval: (left, right) => left >= right
+      eval: (left, right) => left >= right,
     } as BinaryElement,
     '<': {
       type: 'binaryOp',
       precedence: 20,
-      eval: (left, right) => left < right
+      eval: (left, right) => left < right,
     } as BinaryElement,
     '<=': {
       type: 'binaryOp',
       precedence: 20,
-      eval: (left, right) => left <= right
+      eval: (left, right) => left <= right,
     } as BinaryElement,
     '&&': {
       type: 'binaryOp',
@@ -198,7 +208,7 @@ export const getGrammar = (): Grammar => ({
           if (!leftVal) return leftVal
           return right.eval()
         })
-      }
+      },
     } as BinaryElement,
     '||': {
       type: 'binaryOp',
@@ -208,9 +218,9 @@ export const getGrammar = (): Grammar => ({
           if (leftVal) return leftVal
           return right.eval()
         })
-      }
+      },
     } as BinaryElement,
-    in: {
+    'in': {
       type: 'binaryOp',
       precedence: 20,
       eval: (left, right) => {
@@ -221,13 +231,13 @@ export const getGrammar = (): Grammar => ({
           return right.some((elem) => elem === left)
         }
         return false
-      }
+      },
     } as BinaryElement,
     '!': {
       type: 'unaryOp',
       precedence: Infinity,
-      eval: (right) => !right
-    } as UnaryElement
+      eval: (right) => !right,
+    } as UnaryElement,
   },
 
   /**
@@ -265,5 +275,5 @@ export const getGrammar = (): Grammar => ({
    * appropriate when the transform would normally return a value, but
    * cannot due to some other failure.
    */
-  transforms: {}
+  transforms: {},
 })

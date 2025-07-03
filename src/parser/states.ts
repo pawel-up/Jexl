@@ -35,18 +35,18 @@
  */
 
 interface TokenTypeConfig {
-  toState?: string;
-  handler?: string;
+  toState?: string
+  handler?: string
 }
 
 interface StateConfig {
-  tokenTypes?: { [tokenType: string]: TokenTypeConfig };
-  subHandler?: string;
-  endStates?: { [tokenType: string]: string };
-  completable?: boolean;
+  tokenTypes?: Record<string, TokenTypeConfig>
+  subHandler?: string
+  endStates?: Record<string, string>
+  completable?: boolean
 }
 
-export const states: { [stateName: string]: StateConfig } = {
+export const states: Record<string, StateConfig> = {
   expectOperand: {
     tokenTypes: {
       literal: { toState: 'expectBinOp' },
@@ -55,34 +55,34 @@ export const states: { [stateName: string]: StateConfig } = {
       openParen: { toState: 'subExpression' },
       openCurl: { toState: 'expectObjKey', handler: 'objStart' },
       dot: { toState: 'traverse' },
-      openBracket: { toState: 'arrayVal', handler: 'arrayStart' }
-    }
+      openBracket: { toState: 'arrayVal', handler: 'arrayStart' },
+    },
   },
   expectBinOp: {
     tokenTypes: {
       binaryOp: { toState: 'expectOperand' },
       pipe: { toState: 'expectTransform' },
       dot: { toState: 'traverse' },
-      question: { toState: 'ternaryMid', handler: 'ternaryStart' }
+      question: { toState: 'ternaryMid', handler: 'ternaryStart' },
     },
-    completable: true
+    completable: true,
   },
   expectTransform: {
     tokenTypes: {
-      identifier: { toState: 'postTransform', handler: 'transform' }
-    }
+      identifier: { toState: 'postTransform', handler: 'transform' },
+    },
   },
   expectObjKey: {
     tokenTypes: {
       literal: { toState: 'expectKeyValSep', handler: 'objKey' },
       identifier: { toState: 'expectKeyValSep', handler: 'objKey' },
-      closeCurl: { toState: 'expectBinOp' }
-    }
+      closeCurl: { toState: 'expectBinOp' },
+    },
   },
   expectKeyValSep: {
     tokenTypes: {
-      colon: { toState: 'objVal' }
-    }
+      colon: { toState: 'objVal' },
+    },
   },
   postTransform: {
     tokenTypes: {
@@ -90,18 +90,18 @@ export const states: { [stateName: string]: StateConfig } = {
       binaryOp: { toState: 'expectOperand' },
       dot: { toState: 'traverse' },
       openBracket: { toState: 'filter' },
-      pipe: { toState: 'expectTransform' }
+      pipe: { toState: 'expectTransform' },
     },
-    completable: true
+    completable: true,
   },
   postArgs: {
     tokenTypes: {
       binaryOp: { toState: 'expectOperand' },
       dot: { toState: 'traverse' },
       openBracket: { toState: 'filter' },
-      pipe: { toState: 'expectTransform' }
+      pipe: { toState: 'expectTransform' },
     },
-    completable: true
+    completable: true,
   },
   identifier: {
     tokenTypes: {
@@ -110,56 +110,56 @@ export const states: { [stateName: string]: StateConfig } = {
       openBracket: { toState: 'filter' },
       openParen: { toState: 'argVal', handler: 'functionCall' },
       pipe: { toState: 'expectTransform' },
-      question: { toState: 'ternaryMid', handler: 'ternaryStart' }
+      question: { toState: 'ternaryMid', handler: 'ternaryStart' },
     },
-    completable: true
+    completable: true,
   },
   traverse: {
     tokenTypes: {
-      identifier: { toState: 'identifier' }
-    }
+      identifier: { toState: 'identifier' },
+    },
   },
   filter: {
     subHandler: 'filter',
     endStates: {
-      closeBracket: 'identifier'
-    }
+      closeBracket: 'identifier',
+    },
   },
   subExpression: {
     subHandler: 'subExpression',
     endStates: {
-      closeParen: 'expectBinOp'
-    }
+      closeParen: 'expectBinOp',
+    },
   },
   argVal: {
     subHandler: 'argVal',
     endStates: {
       comma: 'argVal',
-      closeParen: 'postArgs'
-    }
+      closeParen: 'postArgs',
+    },
   },
   objVal: {
     subHandler: 'objVal',
     endStates: {
       comma: 'expectObjKey',
-      closeCurl: 'expectBinOp'
-    }
+      closeCurl: 'expectBinOp',
+    },
   },
   arrayVal: {
     subHandler: 'arrayVal',
     endStates: {
       comma: 'arrayVal',
-      closeBracket: 'expectBinOp'
-    }
+      closeBracket: 'expectBinOp',
+    },
   },
   ternaryMid: {
     subHandler: 'ternaryMid',
     endStates: {
-      colon: 'ternaryEnd'
-    }
+      colon: 'ternaryEnd',
+    },
   },
   ternaryEnd: {
     subHandler: 'ternaryEnd',
-    completable: true
-  }
+    completable: true,
+  },
 }

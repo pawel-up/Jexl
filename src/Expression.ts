@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /*
  * Jexl
  * Copyright 2020 Tom Shawver
@@ -57,9 +58,7 @@ export default class Expression {
    * @deprecated Use eval() instead for proper async evaluation
    */
   evalSync(_context: Context = {}): never {
-    throw new Error(
-      'Synchronous evaluation is not supported. Use eval() for asynchronous evaluation.'
-    )
+    throw new Error('Synchronous evaluation is not supported. Use eval() for asynchronous evaluation.')
   }
 
   /**
@@ -72,11 +71,11 @@ export default class Expression {
     if (!ast) {
       throw new Error('No AST available for evaluation. Expression may not be compiled.')
     }
-    
+
     const evaluator = new Evaluator(
       this._grammar,
       context,
-      context  // Use the same context as relative context
+      context // Use the same context as relative context
     )
     return evaluator.eval(ast)
   }

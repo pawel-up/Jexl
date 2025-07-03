@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /*
  * Jexl
  * Copyright 2020 Tom Shawver
@@ -6,7 +7,7 @@
 import type { Grammar } from '../grammar.js'
 import { states } from './states.js'
 
-export interface Token { 
+export interface Token {
   type: string
   raw?: string
   right?: Token
@@ -102,7 +103,7 @@ export default class Parser {
       if (!typeOpts) {
         throw new Error(`No type options for token ${token.type}`)
       }
-      
+
       // Use internal handler methods instead of external handlers
       if (typeOpts.handler) {
         const handlerMethod = this._getTokenHandlerMethod(typeOpts.handler)
@@ -116,16 +117,14 @@ export default class Parser {
           handlerMethod(token)
         }
       }
-      
+
       if (typeOpts.toState) {
         this._state = typeOpts.toState
       }
     } else if (this._stopMap[token.type]) {
       return this._stopMap[token.type]
     } else {
-      throw new Error(
-        `Token ${token.raw} (${token.type}) unexpected in expression: ${this._exprStr}`
-      )
+      throw new Error(`Token ${token.raw} (${token.type}) unexpected in expression: ${this._exprStr}`)
     }
     return false
   }
@@ -228,7 +227,7 @@ export default class Parser {
   _setParent(node: Token, parent: Token): void {
     Object.defineProperty(node, '_parent', {
       value: parent,
-      writable: true
+      writable: true,
     })
   }
 
@@ -264,7 +263,7 @@ export default class Parser {
   private arrayStart() {
     this._placeAtCursor({
       type: 'ArrayLiteral',
-      value: []
+      value: [],
     })
   }
 
@@ -287,20 +286,18 @@ export default class Parser {
   private binaryOp(token: Token): void {
     const precedence = (this._grammar.elements[token.value as string] as any)?.precedence || 0
     let parent = this._cursor?._parent
-    while (
-      parent &&
-      parent.operator &&
-      (this._grammar.elements[parent.operator] as any)?.precedence >= precedence
-    ) {
+    while (parent && parent.operator && (this._grammar.elements[parent.operator] as any)?.precedence >= precedence) {
       this._cursor = parent
       parent = parent._parent
     }
     const node: Token = {
       type: 'BinaryExpression',
       operator: token.value as string,
-      left: this._cursor
+      left: this._cursor,
     }
-    this._setParent(this._cursor!, node)
+    if (this._cursor) {
+      this._setParent(this._cursor, node)
+    }
     this._cursor = parent
     this._placeAtCursor(node)
   }
@@ -313,12 +310,10 @@ export default class Parser {
   private dot(): void {
     this._nextIdentEncapsulate = Boolean(
       this._cursor &&
-      this._cursor.type !== 'UnaryExpression' &&
-      (this._cursor.type !== 'BinaryExpression' ||
-        (this._cursor.type === 'BinaryExpression' && this._cursor.right))
+        this._cursor.type !== 'UnaryExpression' &&
+        (this._cursor.type !== 'BinaryExpression' || (this._cursor.type === 'BinaryExpression' && this._cursor.right))
     )
-    this._nextIdentRelative =
-      !this._cursor || (this._cursor && !this._nextIdentEncapsulate)
+    this._nextIdentRelative = !this._cursor || (this._cursor && !this._nextIdentEncapsulate)
     if (this._nextIdentRelative) {
       this._relative = true
     }
@@ -334,7 +329,7 @@ export default class Parser {
       type: 'FilterExpression',
       expr: ast,
       relative: this._subParser.isRelative(),
-      subject: this._cursor
+      subject: this._cursor,
     })
   }
 
@@ -347,7 +342,7 @@ export default class Parser {
       type: 'FunctionCall',
       name: this._cursor?.value as string,
       args: [],
-      pool: 'functions'
+      pool: 'functions',
     })
   }
 
@@ -358,7 +353,7 @@ export default class Parser {
   private identifier(token: Token): void {
     const node: Token = {
       type: 'Identifier',
-      value: token.value
+      value: token.value,
     }
     if (this._nextIdentEncapsulate) {
       node.from = this._cursor
@@ -381,7 +376,7 @@ export default class Parser {
   private literal(token: Token): void {
     this._placeAtCursor({
       type: 'Literal',
-      value: token.value
+      value: token.value,
     })
   }
 
@@ -400,7 +395,7 @@ export default class Parser {
   private objStart(): void {
     this._placeAtCursor({
       type: 'ObjectLiteral',
-      value: {}
+      value: {},
     })
   }
 
@@ -411,7 +406,7 @@ export default class Parser {
    */
   private objVal(ast: Token): void {
     if (this._cursor && this._curObjKey) {
-      (this._cursor.value as Record<string, Token>)[this._curObjKey] = ast
+      ;(this._cursor.value as Record<string, Token>)[this._curObjKey] = ast
     }
   }
 
@@ -452,7 +447,7 @@ export default class Parser {
   private ternaryStart(): void {
     this._tree = {
       type: 'ConditionalExpression',
-      test: this._tree || undefined
+      test: this._tree || undefined,
     }
     this._cursor = this._tree
   }
@@ -467,7 +462,7 @@ export default class Parser {
       type: 'FunctionCall',
       name: token.value as string,
       args: this._cursor ? [this._cursor] : [],
-      pool: 'transforms'
+      pool: 'transforms',
     })
   }
 
@@ -479,7 +474,7 @@ export default class Parser {
   private unaryOp(token: Token): void {
     this._placeAtCursor({
       type: 'UnaryExpression',
-      operator: token.value as string
+      operator: token.value as string,
     })
   }
 
@@ -559,5 +554,4 @@ export default class Parser {
   }
 
   // ===== Private Handler Methods =====
-
 }

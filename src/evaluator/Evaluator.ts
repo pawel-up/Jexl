@@ -1,8 +1,21 @@
-import type { Grammar, ASTNode, ArrayLiteralNode, BinaryExpressionNode, ConditionalExpressionNode, FilterExpressionNode, IdentifierNode, LiteralNode, ObjectLiteralNode, FunctionCallNode, UnaryExpressionNode } from '../grammar.js'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type {
+  Grammar,
+  ASTNode,
+  ArrayLiteralNode,
+  BinaryExpressionNode,
+  ConditionalExpressionNode,
+  FilterExpressionNode,
+  IdentifierNode,
+  LiteralNode,
+  ObjectLiteralNode,
+  FunctionCallNode,
+  UnaryExpressionNode,
+} from '../grammar.js'
 
 const poolNames = {
   functions: 'Jexl Function',
-  transforms: 'Transform'
+  transforms: 'Transform',
 } as const
 
 /**
@@ -119,7 +132,7 @@ export default class Evaluator {
    * @private
    */
   async _filterRelative(subject: unknown, expr: ASTNode): Promise<unknown[]> {
-    const promises: Array<Promise<unknown>> = []
+    const promises: Promise<unknown>[] = []
     let subjectArray: unknown[]
     if (!Array.isArray(subject)) {
       subjectArray = subject === undefined ? [] : [subject]
@@ -127,11 +140,7 @@ export default class Evaluator {
       subjectArray = subject
     }
     subjectArray.forEach((elem) => {
-      const evalInst = new Evaluator(
-        this._grammar,
-        this._context,
-        elem as Record<string, unknown>
-      )
+      const evalInst = new Evaluator(this._grammar, this._context, elem as Record<string, unknown>)
       promises.push(evalInst.eval(expr))
     })
     const values = await Promise.all(promises)
@@ -192,24 +201,21 @@ export default class Evaluator {
    */
   private async _handleBinaryExpression(ast: BinaryExpressionNode): Promise<unknown> {
     const grammarOp = this._grammar.elements[ast.operator]
-    
+
     if (!grammarOp) {
       throw new Error(`Unknown binary operator: ${ast.operator}`)
     }
-    
+
     if ('evalOnDemand' in grammarOp && grammarOp.evalOnDemand) {
       const wrap = (subAst: ASTNode) => ({ eval: () => this.eval(subAst) })
       return grammarOp.evalOnDemand(wrap(ast.left), wrap(ast.right))
     }
-    
+
     if ('eval' in grammarOp && grammarOp.eval) {
-      const [leftVal, rightVal] = await Promise.all([
-        this.eval(ast.left), 
-        this.eval(ast.right)
-      ])
+      const [leftVal, rightVal] = await Promise.all([this.eval(ast.left), this.eval(ast.right)])
       return grammarOp.eval(leftVal, rightVal)
     }
-    
+
     throw new Error(`Binary operator ${ast.operator} has no eval function`)
   }
 
@@ -250,17 +256,17 @@ export default class Evaluator {
     if (!ast.from) {
       return ast.relative ? this._relContext[ast.value] : this._context[ast.value]
     }
-    
+
     const context = await this.eval(ast.from)
     if (context === undefined || context === null) {
       return undefined
     }
-    
+
     let targetContext = context
     if (Array.isArray(context)) {
       targetContext = context[0]
     }
-    
+
     return (targetContext as any)?.[ast.value]
   }
 
@@ -288,13 +294,13 @@ export default class Evaluator {
     if (!poolName) {
       throw new Error(`Corrupt AST: Pool '${ast.pool}' not found`)
     }
-    
+
     const pool = this._grammar[ast.pool]
     const func = pool[ast.name]
     if (!func) {
       throw new Error(`${poolName} ${ast.name} is not defined.`)
     }
-    
+
     const args = await this.evalArray(ast.args || [])
     return (func as any)(...args)
   }
@@ -306,16 +312,16 @@ export default class Evaluator {
   private async _handleUnaryExpression(ast: UnaryExpressionNode): Promise<unknown> {
     const right = await this.eval(ast.right)
     const grammarOp = this._grammar.elements[ast.operator]
-    
+
     if (!grammarOp) {
       throw new Error(`Unknown unary operator: ${ast.operator}`)
     }
-    
+
     if ('eval' in grammarOp && grammarOp.eval) {
       // Unary operators only take one argument
       return (grammarOp.eval as any)(right)
     }
-    
+
     throw new Error(`Unary operator ${ast.operator} has no eval function`)
   }
 }

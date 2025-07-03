@@ -1,16 +1,17 @@
+/* eslint-disable max-len */
 /*
  * Jexl
  * Copyright 2020 Tom Shawver
  */
 
-import type { Grammar } from "./grammar.js"
+import type { Grammar } from './grammar.js'
 
 const numericRegex = /^-?(?:(?:[0-9]*\.[0-9]+)|[0-9]+)$/
 const identRegex =
   /^[a-zA-Zа-яА-Я_\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF$][a-zA-Zа-яА-Я0-9_\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF$]*$/
 const escEscRegex = /\\\\/
 const whitespaceRegex = /^\s*$/
-const preOpRegexElems = [
+const preOpRegexElements = [
   // Strings
   "'(?:(?:\\\\')|[^'])*'",
   '"(?:(?:\\\\")|[^"])*"',
@@ -18,27 +19,21 @@ const preOpRegexElems = [
   '\\s+',
   // Booleans
   '\\btrue\\b',
-  '\\bfalse\\b'
+  '\\bfalse\\b',
 ]
-const postOpRegexElems = [
+const postOpRegexElements = [
   // Identifiers
   '[a-zA-Zа-яА-Я_\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF\\$][a-zA-Z0-9а-яА-Я_\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF\\$]*',
   // Numerics (without negative symbol)
-  '(?:(?:[0-9]*\\.[0-9]+)|[0-9]+)'
+  '(?:(?:[0-9]*\\.[0-9]+)|[0-9]+)',
 ]
-const minusNegatesAfter = [
-  'binaryOp',
-  'unaryOp',
-  'openParen',
-  'openBracket',
-  'question',
-  'colon'
-]
+const minusNegatesAfter = ['binaryOp', 'unaryOp', 'openParen', 'openBracket', 'question', 'colon']
 
 interface Token {
-  type: string; 
-  value: any; 
-  raw: string;
+  type: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any
+  raw: string
 }
 
 /**
@@ -88,10 +83,10 @@ export default class Lexer {
     for (let i = 0; i < elements.length; i++) {
       const element = elements[i]
       if (!element) continue // Skip empty elements
-      
+
       if (this._isWhitespace(element)) {
         if (tokens.length > 0) {
-          tokens[tokens.length - 1]!.raw += element
+          tokens[tokens.length - 1].raw += element
         }
       } else if (element === '-' && this._isNegative(tokens)) {
         negate = true
@@ -100,7 +95,7 @@ export default class Lexer {
           elements[i] = '-' + element
           negate = false
         }
-        tokens.push(this._createToken(elements[i]!))
+        tokens.push(this._createToken(elements[i]))
       }
     }
     // Catch a - at the end of the string. Let the parser handle that issue.
@@ -138,7 +133,7 @@ export default class Lexer {
    * @returns An array of token objects.
    * @throws {Error} if the provided string contains an invalid token.
    */
-  tokenize(str: string): Array<Token> {
+  tokenize(str: string): Token[] {
     const elements = this.getElements(str)
     return this.getTokens(elements)
   }
@@ -155,7 +150,7 @@ export default class Lexer {
     const token: Token = {
       type: 'literal',
       value: element,
-      raw: element
+      raw: element,
     }
     if (element[0] === '"' || element[0] === "'") {
       token.value = this._unquote(element)
@@ -206,13 +201,7 @@ export default class Lexer {
           return this._escapeRegExp(elem)
         }, this)
       this._splitRegex = new RegExp(
-        '(' +
-          [
-            preOpRegexElems.join('|'),
-            elemArray.join('|'),
-            postOpRegexElems.join('|')
-          ].join('|') +
-          ')'
+        '(' + [preOpRegexElements.join('|'), elemArray.join('|'), postOpRegexElements.join('|')].join('|') + ')'
       )
     }
     return this._splitRegex
@@ -231,9 +220,7 @@ export default class Lexer {
     if (!tokens.length) return true
     const lastToken = tokens[tokens.length - 1]
     if (!lastToken) return true
-    return minusNegatesAfter.some(
-      (type) => type === lastToken.type
-    )
+    return minusNegatesAfter.some((type) => type === lastToken.type)
   }
 
   /**
