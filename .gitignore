@@ -56,5 +56,5 @@ $RECYCLE.BIN/
 
 node_modules
 coverage
-build
 .nyc_output
+lib
