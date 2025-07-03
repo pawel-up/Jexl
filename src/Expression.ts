@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/*
- * Jexl
- * Copyright 2020 Tom Shawver
- */
-
 import Evaluator from './evaluator/Evaluator.js'
 import { Grammar, ASTNode } from './grammar.js'
 import Lexer from './Lexer.js'
@@ -47,18 +41,6 @@ export default class Expression {
    */
   eval(context: Context = {}): Promise<unknown> {
     return this._eval(context)
-  }
-
-  /**
-   * Synchronously evaluates the expression within an optional context.
-   * Note: This method throws an error since the evaluator is inherently async.
-   * Use eval() for asynchronous evaluation.
-   * @param _context A mapping of variables to values
-   * @throws {Error} Always throws since synchronous evaluation is not supported
-   * @deprecated Use eval() instead for proper async evaluation
-   */
-  evalSync(_context: Context = {}): never {
-    throw new Error('Synchronous evaluation is not supported. Use eval() for asynchronous evaluation.')
   }
 
   /**

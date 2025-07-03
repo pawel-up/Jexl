@@ -80,7 +80,6 @@ test.group('Jexl expr template literal', (group) => {
   test('returns an evaluatable instance of Expression', ({ assert }) => {
     const expr = inst.expr`2+2`
     assert.instanceOf(expr, Expression)
-    // Note: evalSync throws now, so we test the expression creation only
   })
 
   test('functions as a template string', ({ assert }) => {
@@ -198,7 +197,6 @@ test.group('Jexl addBinaryOp', (group) => {
       return elem
     })
 
-    // Since evalSync is not supported, we test with eval
     const result1 = await inst.eval('-2|inc $$ 5|inc')
     assert.equal(result1, 5)
     assert.equal(count, 2)

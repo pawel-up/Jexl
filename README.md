@@ -24,9 +24,6 @@ const context = {
 await const res = jexl.eval('assoc[.first == "Lana"].last', context)
 console.log(res) // Output: Kane
 
-// Or synchronously!
-console.log(jexl.evalSync('assoc[.first == "Lana"].last')) // Output: Kane
-
 // Do math
 await jexl.eval('age * (3 - 1)', context)
 // 72
@@ -82,8 +79,8 @@ await jexl.eval('"Guest" _= "gUeSt"')
 // Compile your expression once, evaluate many times!
 const { expr } = jexl
 const danger = expr`"Danger " + place` // Also: jexl.compile('"Danger " + place')
-danger.evalSync({ place: 'zone' }) // Danger zone
-danger.evalSync({ place: 'ZONE!!!' }) // Danger ZONE!!! (Doesn't recompile the expression!)
+await danger.eval({ place: 'zone' }) // Danger zone
+await danger.eval({ place: 'ZONE!!!' }) // Danger ZONE!!! (Doesn't recompile the expression!)
 ```
 
 ## Play with it
@@ -97,25 +94,15 @@ Jexl works on the backend, and on the frontend if bundled using a bundler like P
 
 Install from npm:
 
-    npm install jexl --save
-
-or yarn:
-
-    yarn add jexl
+```sh
+npm install jexl --save
+```
 
 and use it:
 
-    const jexl = require('jexl')
-
-## Async vs Sync: Which to use
-
-There is little performance difference between `eval` and `evalSync`. The functional
-difference is that, if `eval` is used, Jexl can be customized with asynchronous operators,
-transforms, and even wait for unresolved promises in the context object with zero additional
-overhead or handling on the programmer's part. `evalSync` eliminates those advantages,
-exposing the expression to raw Promise objects if any are returned as the result of a
-custom transform or operator. However, if your application doesn't require async methods,
-the `evalSync` API can be simpler to use.
+```javascript
+comport { jexl } from 'jexl'
+```
 
 ## All the details
 
@@ -266,7 +253,7 @@ jexl.addTransform('lower', (val) => val.toLowerCase())
 
 | Expression                                 | Result                |
 | ------------------------------------------ | --------------------- |
-| "Pam Poovey"&#124;lower&#124;split(' ')[1] | poovey                |
+| "Pam Poovey"&#124;lower&#124;split[' '](1) | poovey                |
 | "password==guest"&#124;split('=' + '=')    | ['password', 'guest'] |
 
 #### Advanced Transforms
@@ -403,11 +390,6 @@ or `undefined` if no function of that name exists.
 
 **Returns `{Promise<*>}`.** Evaluates an expression. The context map is optional.
 
-#### jexl.evalSync(_{string} expression_, _{{}} [context]_)
-
-**Returns `{*}`.** Evaluates an expression and returns the result. The context map
-is optional.
-
 #### jexl.expr: _tagged template literal_
 
 A convenient bit of syntactic sugar for `jexl.createExpression`
@@ -415,7 +397,7 @@ A convenient bit of syntactic sugar for `jexl.createExpression`
 ```javascript
 const someNumber = 10
 const expression = jexl.expr`5 + ${someNumber}`
-console.log(expression.evalSync()) // 15
+console.log(await expression.eval()) // 15
 ```
 
 Note that `expr` will stay bound to its associated Jexl instance even if it's
@@ -425,7 +407,7 @@ pulled out of context:
 const { expr } = jexl
 jexl.addTransform('double', (val) => val * 2)
 const expression = expr`2|double`
-console.log(expression.evalSync()) // 4
+console.log(await expression.eval()) // 4
 ```
 
 #### jexl.removeOp(_{string} operator_)
@@ -449,11 +431,6 @@ and transforms from the associated Jexl instance.
 
 **Returns `{Promise<*>}`.** Evaluates the expression. The context map is
 optional.
-
-#### expression.evalSync(_{{}} [context]_)
-
-**Returns `{*}`.** Evaluates the expression and returns the result. The context
-map is optional.
 
 ## Other implementations
 

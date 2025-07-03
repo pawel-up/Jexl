@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/*
- * Jexl
- * Copyright 2020 Tom Shawver
- */
-
 import Expression, { type Context } from './Expression.js'
 import {
   type BinaryOpFunction,
@@ -20,10 +14,10 @@ import {
 /**
  * Jexl is the Javascript Expression Language, capable of parsing and
  * evaluating basic to complex expression strings, combined with advanced
- * xpath-like drilldown into native Javascript objects.
+ * xpath-like drill down into native Javascript objects.
  */
 export class Jexl {
-  _grammar: Grammar
+  private _grammar: Grammar
 
   constructor() {
     // Allow expr to be called outside of the jexl context
@@ -197,7 +191,7 @@ export class Jexl {
    * @param expression The Jexl expression to be evaluated
    * @param context A mapping of variables to values, which will be
    *      made accessible to the Jexl expression when evaluating it
-   * @returns {Promise<*>} resolves with the result of the evaluation.
+   * @returns resolves with the result of the evaluation.
    */
   eval(expression: string, context: Context = {}): Promise<unknown> {
     const exprObj = this.createExpression(expression)
@@ -205,24 +199,11 @@ export class Jexl {
   }
 
   /**
-   * Synchronously evaluates a Jexl string within an optional context.
-   * @param _expression The Jexl expression to be evaluated
-   * @param _context A mapping of variables to values, which will be
-   *      made accessible to the Jexl expression when evaluating it
-   * @returns the result of the evaluation.
-   * @throws {Error} always - synchronous evaluation is no longer supported
-   * @deprecated Use eval() instead for asynchronous evaluation
-   */
-  evalSync(_expression: string, _context: Context = {}): never {
-    throw new Error('Synchronous evaluation is no longer supported. Use eval() instead for asynchronous evaluation.')
-  }
-
-  /**
    * A JavaScript template literal to allow expressions to be defined by the
    * syntax: expr`40 + 2`
    */
-  expr(strs: string[] | TemplateStringsArray, ...args: unknown[]): Expression {
-    const exprStr = strs.reduce((acc, str, idx) => {
+  expr(strings: string[] | TemplateStringsArray, ...args: unknown[]): Expression {
+    const exprStr = strings.reduce((acc, str, idx) => {
       const arg = idx < args.length ? args[idx] : ''
       acc += str + arg
       return acc
@@ -247,11 +228,10 @@ export class Jexl {
   /**
    * Adds an element to the grammar map used by this Jexl instance.
    * @param str The key string to be added
-   * @param obj A map of configuration options for this
-   *      grammar element
+   * @param obj A map of configuration options for this grammar element
    * @private
    */
-  _addGrammarElement(str: string, obj: GrammarElement): void {
+  private _addGrammarElement(str: string, obj: GrammarElement): void {
     this._grammar.elements[str] = obj
   }
 }

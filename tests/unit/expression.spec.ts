@@ -55,9 +55,4 @@ test.group('Expression', (group) => {
     await expr.eval()
     assert.equal(spy.callCount, 1)
   })
-
-  test('evalSync throws error (not supported)', ({ assert }) => {
-    const expr = inst.createExpression('2 % 2')
-    assert.throws(() => expr.evalSync(), 'Synchronous evaluation is not supported')
-  })
 })
