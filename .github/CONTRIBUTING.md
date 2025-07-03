@@ -19,6 +19,6 @@ After you have created an issue report and picked the right repository you now a
 - Understand the reasons for the distributed architecture and honor the structure of the project. Most likely you want to introduce changes to the `core` repository. Less likely others.
 - We are here to help. Ask us questions about the architecture or how stuff work.
 
-------
+---
 
 That's it. We are thrilled seeing you contributing to the project. Drop us a message in case you have any questions.

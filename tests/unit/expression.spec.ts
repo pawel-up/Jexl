@@ -5,7 +5,7 @@ import { Jexl } from '../../src/Jexl.js'
 test.group('Expression', (group) => {
   let inst: Jexl
 
-  group.setup(() => {
+  group.each.setup(() => {
     inst = new Jexl()
   })
 
@@ -46,6 +46,14 @@ test.group('Expression', (group) => {
     const expr = inst.createExpression('foo')
     const result = await expr.eval({ foo: 'bar' })
     assert.equal(result, 'bar')
+  })
+
+  test('eval handles chained transforms', async ({ assert }) => {
+    inst.addTransform('upper', (val: string) => val.toUpperCase())
+    inst.addTransform('split', (val: string, delimiter: string) => val.split(delimiter))
+    const expr = inst.createExpression('name | upper | split(" ")')
+    const result = await expr.eval({ name: 'john doe' })
+    assert.deepEqual(result, ['JOHN', 'DOE'])
   })
 
   test('eval never compiles more than once', async ({ assert }) => {

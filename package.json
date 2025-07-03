@@ -32,7 +32,9 @@
     "typecheck": "tsc --noEmit",
     "test": "node --import ts-node-maintained/register/esm --enable-source-maps bin/test.ts",
     "coverage": "c8 --reporter lcov --reporter text node --import ts-node-maintained/register/esm --enable-source-maps bin/test.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "benchmark:expressions": "node --import ts-node-maintained/register/esm --enable-source-maps benchmarks/expressions.ts",
+    "benchmark:validation": "node --import ts-node-maintained/register/esm --enable-source-maps benchmarks/validation.ts"
   },
   "repository": {
     "type": "git",
@@ -74,6 +76,7 @@
     "@eslint/js": "^9.23.0",
     "@japa/assert": "^4.0.1",
     "@japa/runner": "^4.2.0",
+    "@pawel-up/benchmark": "^1.0.5",
     "@pawel-up/semver": "^0.1.4",
     "@types/sinon": "^17.0.4",
     "c8": "^10.1.3",

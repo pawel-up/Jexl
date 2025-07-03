@@ -4,23 +4,23 @@
     // Modern ESM and Node.js LTS (24) support
     "target": "ES2024",
     "module": "ESNext",
-    "moduleResolution": "Bundler", 
+    "moduleResolution": "Bundler",
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
-    
+
     // Output configuration for dual package (Node.js + Browser)
     "outDir": "./lib",
     "rootDir": "./src",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    
+
     // Modern JavaScript features
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "allowImportingTsExtensions": false,
     "allowArbitraryExtensions": false,
     "noEmitOnError": true,
-    
+
     // Strict type checking for modern development
     "strict": true,
     "exactOptionalPropertyTypes": false,
@@ -31,29 +31,19 @@
     "noUncheckedIndexedAccess": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    
+
     // Better error reporting and performance
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": false,
-    
+
     // JSON resolution for modern tooling
     "resolveJsonModule": true,
-    
+
     // Remove deprecated options
     "useDefineForClassFields": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "lib",
-    "build",
-    "dist",
-    "tests",
-    "**/*.test.ts",
-    "**/*.spec.ts"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "lib", "build", "dist", "tests", "**/*.test.ts", "**/*.spec.ts"]
 }

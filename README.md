@@ -359,7 +359,7 @@ const context = {
         <FirstName>Cyril</FirstName>
         <LastName>Figgis</LastName>
       </Employee>
-    </Employees>`
+    </Employees>`,
 }
 
 var expr = 'xmlDoc|xml.Employees.Employee[.LastName == "Figgis"].FirstName'
@@ -555,19 +555,19 @@ The `validate` method returns a `ValidationResult` object with the following pro
 
 ```typescript
 interface ValidationResult {
-  isValid: boolean           // Overall validation status
-  errors: ValidationIssue[]  // Critical errors that prevent execution
+  isValid: boolean // Overall validation status
+  errors: ValidationIssue[] // Critical errors that prevent execution
   warnings: ValidationIssue[] // Non-critical issues that might cause problems
-  info: ValidationIssue[]    // Informational suggestions
-  trimmedExpression: string  // Expression after automatic whitespace trimming
+  info: ValidationIssue[] // Informational suggestions
+  trimmedExpression: string // Expression after automatic whitespace trimming
 }
 
 interface ValidationIssue {
   type: 'error' | 'warning' | 'info'
   message: string
-  position?: number    // Character position in expression
-  line?: number       // Line number (for multi-line expressions)
-  column?: number     // Column number
+  position?: number // Character position in expression
+  line?: number // Line number (for multi-line expressions)
+  column?: number // Column number
 }
 ```
 
@@ -589,7 +589,7 @@ Use `allowUndefinedContext: true` to validate expressions without providing spec
 ```typescript
 // Validate syntax only, ignore missing context
 const result = validator.validate('user.profile.email', undefined, {
-  allowUndefinedContext: true
+  allowUndefinedContext: true,
 })
 
 console.log(result.isValid) // true (if syntax is correct)
@@ -621,11 +621,7 @@ console.log(styleInfo.info[0].message) // "Consider using dot notation: name.fir
 
 ```typescript
 // Validate multiple expressions
-const expressions = [
-  'user.name',
-  'user.age > 18',
-  'users[.active == true].length'
-]
+const expressions = ['user.name', 'user.age > 18', 'users[.active == true].length']
 
 expressions.forEach((expr, index) => {
   const result = validator.validate(expr, context)
@@ -639,7 +635,7 @@ expressions.forEach((expr, index) => {
 
 // Custom validation with options
 const result = validator.validate('   user.email   ', undefined, {
-  allowUndefinedContext: true
+  allowUndefinedContext: true,
 })
 
 console.log(`Original: "${result.trimmedExpression}"`)
