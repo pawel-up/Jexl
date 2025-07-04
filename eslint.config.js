@@ -10,7 +10,6 @@ export const GLOBAL_IGNORE_LIST = [
   '.github/',
   '.husky/',
   '.vscode/',
-  '.wireit/',
   'node_modules',
   '*.min.*',
   '*.d.ts',
