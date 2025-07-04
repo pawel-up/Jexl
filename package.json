@@ -1,6 +1,6 @@
 {
   "name": "@pawel-up/jexl",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Javascript Expression Language: Powerful context-based expression parser and evaluator",
   "type": "module",
   "main": "./lib/Jexl.js",
