@@ -227,7 +227,7 @@ export const getGrammar = (): Grammar => ({
     } as BinaryElement,
     '||': {
       type: 'binaryOp',
-      precedence: 10,
+      precedence: 5,
       evalOnDemand: (left, right) => {
         return (left as EvaluationContext).eval().then((leftVal: unknown) => {
           if (leftVal) return leftVal

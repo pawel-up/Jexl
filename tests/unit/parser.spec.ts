@@ -92,6 +92,26 @@ test.group('Parser Basic Operations', (group) => {
       right: { type: 'Literal', value: 3 },
     })
   })
+
+  test('handles logical operator precedence', ({ assert }) => {
+    inst.addTokens(lexer.tokenize('true && true || false && false'))
+    assert.deepEqual(inst.complete(), {
+      type: 'BinaryExpression',
+      operator: '||',
+      left: {
+        type: 'BinaryExpression',
+        operator: '&&',
+        left: { type: 'Literal', value: true },
+        right: { type: 'Literal', value: true },
+      },
+      right: {
+        type: 'BinaryExpression',
+        operator: '&&',
+        left: { type: 'Literal', value: false },
+        right: { type: 'Literal', value: false },
+      },
+    })
+  })
 })
 
 test.group('Parser Unary and Sub expressions', (group) => {

@@ -68,6 +68,11 @@ test.group('Jexl eval', (group) => {
     const result = await inst.eval('a[.b in ["A","B"]]', context)
     assert.deepEqual(result, [{ b: 'A' }, { b: 'B' }])
   })
+
+  test('handles logical operator precedence correctly', async ({ assert }) => {
+    const result = await inst.eval('true && true || false && false')
+    assert.isTrue(result)
+  })
 })
 
 test.group('Jexl eval with null/undefined', (group) => {
