@@ -74,7 +74,7 @@ test.group('Context validation', (group) => {
     )
     assert.isTrue(result.valid) // syntax is valid
     assert.isAbove(result.warnings.length, 0)
-    assert.include(result.warnings[0].message, 'not found in context')
+    assert.include(result.warnings[0].message, "Property 'age' not found on object")
   })
 
   test('should allow undefined context in lenient mode', ({ assert }) => {
@@ -111,6 +111,94 @@ test.group('Context validation', (group) => {
   test('should allow custom transforms', ({ assert }) => {
     const result = validator.validate('value | customTransform', {}, { customTransforms: ['customTransform'] })
     assert.isTrue(result.valid)
+  })
+})
+
+test.group('Nested context validation', (group) => {
+  let jexl: Jexl
+  let validator: Validator
+
+  group.each.setup(() => {
+    jexl = new Jexl()
+    validator = new Validator(jexl.grammar)
+  })
+
+  test('should validate valid deep property access', ({ assert }) => {
+    const context = { user: { profile: { name: 'John' } } }
+    const result = validator.validate('user.profile.name', context, { allowUndefinedContext: false })
+    assert.isTrue(result.valid)
+    assert.lengthOf(result.warnings, 0)
+  })
+
+  test('should warn on missing intermediate property', ({ assert }) => {
+    const context = { user: { name: 'John' } } // no 'profile'
+    const result = validator.validate('user.profile.name', context, { allowUndefinedContext: false })
+    assert.isTrue(result.valid) // syntax is valid
+    assert.lengthOf(result.warnings, 1)
+    assert.equal(result.warnings[0].code, 'UNDEFINED_PROPERTY')
+    assert.include(result.warnings[0].message, "Property 'profile' not found on object")
+  })
+
+  test('should warn on missing final property', ({ assert }) => {
+    const context = { user: { profile: {} } } // 'name' is missing
+    const result = validator.validate('user.profile.name', context, { allowUndefinedContext: false })
+    assert.isTrue(result.valid)
+    assert.lengthOf(result.warnings, 1)
+    assert.equal(result.warnings[0].code, 'UNDEFINED_PROPERTY')
+    assert.include(result.warnings[0].message, "Property 'name' not found on object")
+  })
+
+  test('should warn on property access on non-object', ({ assert }) => {
+    const context = { user: { name: 'John' } }
+    const result = validator.validate('user.name.first', context, { allowUndefinedContext: false })
+    assert.isTrue(result.valid)
+    assert.lengthOf(result.warnings, 1)
+    assert.equal(result.warnings[0].code, 'PROPERTY_ACCESS_ON_NON_OBJECT')
+    assert.include(result.warnings[0].message, "Cannot access property 'first' on non-object value of type string")
+  })
+
+  test('should warn on property access on null', ({ assert }) => {
+    const context = { user: null }
+    const result = validator.validate('user.name', context, { allowUndefinedContext: false })
+    assert.isTrue(result.valid)
+    assert.lengthOf(result.warnings, 1)
+    assert.equal(result.warnings[0].code, 'PROPERTY_ACCESS_ON_NULL')
+    assert.include(result.warnings[0].message, "Cannot access property 'name' of null")
+  })
+
+  test('should validate relative paths in filters correctly', ({ assert }) => {
+    const context = { users: [{ active: true }, { active: false }] }
+    const result = validator.validate('users[.active]', context, { allowUndefinedContext: false })
+    assert.isTrue(result.valid)
+    assert.lengthOf(result.warnings, 0)
+  })
+
+  test('should warn on missing property in relative filter path', ({ assert }) => {
+    const context = { users: [{ name: 'A' }, { name: 'B' }] } // 'active' is missing
+    const result = validator.validate('users[.active]', context, { allowUndefinedContext: false })
+    assert.isTrue(result.valid)
+    assert.lengthOf(result.warnings, 1)
+    assert.equal(result.warnings[0].code, 'UNDEFINED_PROPERTY')
+    assert.include(result.warnings[0].message, "Property 'active' not found on relative context object")
+  })
+
+  test('should validate non-relative paths in filters against global context', ({ assert }) => {
+    const context = { users: [{ id: 1 }, { id: 2 }], threshold: 1 }
+    // 'id' is not relative, so it's looked for on the global context, not the user object.
+    const result = validator.validate('users[id > threshold]', context, { allowUndefinedContext: false })
+    assert.isTrue(result.valid) // syntax is valid
+    assert.lengthOf(result.warnings, 1)
+    assert.equal(result.warnings[0].code, 'UNDEFINED_IDENTIFIER')
+    assert.include(result.warnings[0].message, "Identifier 'id' not found in context")
+  })
+
+  test('should handle complex valid expressions with relative and absolute paths', ({ assert }) => {
+    const context = { app: { users: [{ settings: { theme: 'dark' } }], config: { defaultTheme: 'dark' } } }
+    const result = validator.validate('app.users[.settings.theme == app.config.defaultTheme]', context, {
+      allowUndefinedContext: false,
+    })
+    assert.isTrue(result.valid)
+    assert.lengthOf(result.warnings, 0)
   })
 })
 

@@ -675,10 +675,6 @@ export class Validator {
     }
   }
 
-  /**
-   * Validates that identifiers exist in the provided context.
-   * @private
-   */
   private _validateContext(
     ast: ASTNode,
     context: Record<string, unknown>,
@@ -686,91 +682,208 @@ export class Validator {
     issues: ValidationIssue[],
     options: Required<ValidationOptions>
   ): void {
-    this._validateContextNode(ast, context, expression, issues, options)
+    this._validateContextPath(ast, context, context, expression, issues, options)
   }
 
   /**
-   * Recursively validates context for an AST node.
+   * Recursively validates an AST node's context path.
+   * @param node The AST node to validate
+   * @param localContext The current context for this node
+   * @param globalContext The top-level context
+   * @param expression The full expression string
+   * @param issues The array of issues to populate
+   * @param options Validation options
+   * @returns The resolved value from the context if the path is valid and static, otherwise undefined.
    * @private
    */
-  private _validateContextNode(
+  private _validateContextPath(
     node: ASTNode,
-    context: Record<string, unknown>,
-    _expression: string,
+    localContext: unknown,
+    globalContext: unknown,
+    expression: string,
     issues: ValidationIssue[],
-    _options: Required<ValidationOptions>
-  ): void {
-    if (!node) return
+    options: Required<ValidationOptions>
+  ): unknown {
+    if (!node) return undefined
 
-    if (node.type === 'Identifier') {
-      const identifierNode = node as IdentifierNode
-      const identifier = identifierNode.value
-      if (identifier && !(identifier in context)) {
+    switch (node.type) {
+      case 'Identifier':
+        const idNode = node as IdentifierNode
+        if (idNode.from) {
+          const parentContext = this._validateContextPath(
+            idNode.from,
+            localContext,
+            globalContext,
+            expression,
+            issues,
+            options
+          )
+          if (parentContext === undefined) {
+            // Cannot resolve parent, or error already reported.
+            return undefined
+          }
+          if (parentContext === null) {
+            issues.push({
+              severity: ValidationSeverity.WARNING,
+              message: `Cannot access property '${idNode.value}' of null`,
+              token: idNode.value,
+              code: 'PROPERTY_ACCESS_ON_NULL',
+            })
+            return undefined
+          }
+          if (typeof parentContext !== 'object') {
+            issues.push({
+              severity: ValidationSeverity.WARNING,
+              message: `Cannot access property '${idNode.value}' on non-object value of type ${typeof parentContext}`,
+              token: idNode.value,
+              code: 'PROPERTY_ACCESS_ON_NON_OBJECT',
+            })
+            return undefined
+          }
+          if (!(idNode.value in parentContext)) {
+            issues.push({
+              severity: ValidationSeverity.WARNING,
+              message: `Property '${idNode.value}' not found on object`,
+              token: idNode.value,
+              code: 'UNDEFINED_PROPERTY',
+            })
+            return undefined
+          }
+          return (parentContext as Record<string, unknown>)[idNode.value]
+        }
+        if (idNode.relative) {
+          // This is for relative identifiers like '.' or '.foo'
+          if (!idNode.value) {
+            // This is for '.' which refers to the context element itself
+            return localContext
+          }
+          // This is for '.foo' which is a property on the context element
+          const parentContext = localContext
+          if (parentContext === null) {
+            issues.push({
+              severity: ValidationSeverity.WARNING,
+              message: `Cannot access property '${idNode.value}' of null`,
+              token: idNode.value,
+              code: 'PROPERTY_ACCESS_ON_NULL',
+            })
+            return undefined
+          }
+          if (typeof parentContext !== 'object') {
+            issues.push({
+              severity: ValidationSeverity.WARNING,
+              message: `Cannot access property '${idNode.value}' on non-object value of type ${typeof parentContext}`,
+              token: idNode.value,
+              code: 'PROPERTY_ACCESS_ON_NON_OBJECT',
+            })
+            return undefined
+          }
+          if (!(idNode.value in parentContext)) {
+            issues.push({
+              severity: ValidationSeverity.WARNING,
+              message: `Property '${idNode.value}' not found on relative context object`,
+              token: idNode.value,
+              code: 'UNDEFINED_PROPERTY',
+            })
+            return undefined
+          }
+          return (parentContext as Record<string, unknown>)[idNode.value]
+        }
+        if (typeof globalContext === 'object' && globalContext !== null && idNode.value in globalContext) {
+          return (globalContext as Record<string, unknown>)[idNode.value]
+        }
         issues.push({
           severity: ValidationSeverity.WARNING,
-          message: `Identifier '${identifier}' not found in context`,
-          token: identifier,
+          message: `Identifier '${idNode.value}' not found in context`,
+          token: idNode.value,
           code: 'UNDEFINED_IDENTIFIER',
         })
-      }
-    }
+        return undefined
 
-    // Recursively check children based on node type
-    switch (node.type) {
+      case 'Literal':
+        return node.value
+
+      case 'ArrayLiteral':
+        const arrayNode = node as ArrayLiteralNode
+        return arrayNode.value.map((item) =>
+          this._validateContextPath(item, localContext, globalContext, expression, issues, options)
+        )
+
+      case 'ObjectLiteral':
+        const objectNode = node as ObjectLiteralNode
+        const newObj: Record<string, unknown> = {}
+        for (const key in objectNode.value) {
+          newObj[key] = this._validateContextPath(
+            objectNode.value[key],
+            localContext,
+            globalContext,
+            expression,
+            issues,
+            options
+          )
+        }
+        return newObj
+
       case 'BinaryExpression':
         const binaryNode = node as BinaryExpressionNode
-        this._validateContextNode(binaryNode.left, context, _expression, issues, _options)
-        this._validateContextNode(binaryNode.right, context, _expression, issues, _options)
-        break
+        this._validateContextPath(binaryNode.left, localContext, globalContext, expression, issues, options)
+        this._validateContextPath(binaryNode.right, localContext, globalContext, expression, issues, options)
+        return undefined // Result of binary expression is dynamic
 
       case 'UnaryExpression':
         const unaryNode = node as UnaryExpressionNode
-        this._validateContextNode(unaryNode.right, context, _expression, issues, _options)
-        break
+        this._validateContextPath(unaryNode.right, localContext, globalContext, expression, issues, options)
+        return undefined // Result of unary expression is dynamic
 
       case 'ConditionalExpression':
         const conditionalNode = node as ConditionalExpressionNode
-        this._validateContextNode(conditionalNode.test, context, _expression, issues, _options)
-        this._validateContextNode(conditionalNode.consequent, context, _expression, issues, _options)
-        this._validateContextNode(conditionalNode.alternate, context, _expression, issues, _options)
-        break
+        this._validateContextPath(conditionalNode.test, localContext, globalContext, expression, issues, options)
+        this._validateContextPath(conditionalNode.consequent, localContext, globalContext, expression, issues, options)
+        this._validateContextPath(conditionalNode.alternate, localContext, globalContext, expression, issues, options)
+        return undefined // Result of conditional is dynamic
 
       case 'FilterExpression':
         const filterNode = node as FilterExpressionNode
-        this._validateContextNode(filterNode.subject, context, _expression, issues, _options)
-        this._validateContextNode(filterNode.expr, context, _expression, issues, _options)
-        break
+        const subjectContext = this._validateContextPath(
+          filterNode.subject,
+          localContext,
+          globalContext,
+          expression,
+          issues,
+          options
+        )
+        if (subjectContext === undefined) return undefined
 
-      case 'Identifier':
-        const identifierNode = node as IdentifierNode
-        if (identifierNode.from) {
-          this._validateContextNode(identifierNode.from, context, _expression, issues, _options)
+        if (filterNode.relative) {
+          if (!Array.isArray(subjectContext)) {
+            if (subjectContext !== undefined) {
+              issues.push({
+                severity: ValidationSeverity.WARNING,
+                message: 'Relative filter expression used on non-array value',
+                code: 'FILTER_ON_NON_ARRAY',
+              })
+            }
+            return undefined
+          }
+          // For relative filters, the context for the inner expression is an element of the array.
+          // We can't know which one, so we use the first element if available, or an empty object as a placeholder.
+          const relativeContext = subjectContext.length > 0 ? subjectContext[0] : {}
+          this._validateContextPath(filterNode.expr, relativeContext, globalContext, expression, issues, options)
+        } else {
+          // For static filters, the inner expression is evaluated against the main context.
+          this._validateContextPath(filterNode.expr, localContext, globalContext, expression, issues, options)
         }
-        break
+        return undefined // Result of a filter is dynamic
 
       case 'FunctionCall':
         const functionNode = node as FunctionCallNode
         if (functionNode.args) {
-          functionNode.args.forEach((arg: ASTNode) => {
-            this._validateContextNode(arg, context, _expression, issues, _options)
-          })
+          functionNode.args.forEach((arg) =>
+            this._validateContextPath(arg, localContext, globalContext, expression, issues, options)
+          )
         }
-        break
-
-      case 'ArrayLiteral':
-        const arrayNode = node as ArrayLiteralNode
-        arrayNode.value.forEach((item: ASTNode) => {
-          this._validateContextNode(item, context, _expression, issues, _options)
-        })
-        break
-
-      case 'ObjectLiteral':
-        const objectNode = node as ObjectLiteralNode
-        Object.values(objectNode.value).forEach((value: ASTNode) => {
-          this._validateContextNode(value, context, _expression, issues, _options)
-        })
-        break
+        return undefined // Result of a function call is dynamic
     }
+    return undefined
   }
 
   /**

@@ -69,7 +69,7 @@ export default [
       'no-restricted-globals': [
         'error',
         ...Object.keys(globals.browser).filter(
-          // Disallow Node-specific globals (unless they are shared)
+          // Disallow browser-specific globals (unless they are shared)
           (g) => !Object.prototype.hasOwnProperty.call(globals.nodeBuiltin, g)
         ),
       ],
