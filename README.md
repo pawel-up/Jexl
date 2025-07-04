@@ -528,6 +528,10 @@ The `Validator` class provides static methods to validate Jexl expressions, offe
 - ℹ️ **Informational Messages**: Offers suggestions for improvements
 - 🧹 **Automatic Whitespace Trimming**: Cleans expressions before validation
 - 🔧 **Context-Agnostic Mode**: Validates expressions without requiring specific context
+- **JavaScript-aligned Logic**: Correctly distinguishes between `null` and `undefined` and handles `&&`/`||` operator precedence just like in JS.
+- **Powerful Operators**: Full support for unary minus and plus on expressions (e.g., `-myFunc()`, `+variable`).
+- **Robust Parsing**: Handles complex cases like negative numbers in function arguments (`myFunc(5, -3)`), ternary operators after function calls, and leading decimal numbers (`.5`).
+- **Clear Error Handling**: Provides precise errors for ambiguous syntax like `2++2`.
 
 #### Basic Usage
 
