@@ -517,6 +517,90 @@ export class Jexl {
   }
 
   /**
+   * Evaluates a Jexl expression and coerces the result to a string.
+   * @param expression The Jexl expression string to evaluate.
+   * @param context Optional context object.
+   * @returns A promise that resolves to the string result.
+   */
+  evalAsString(expression: string, context: Context = {}): Promise<string> {
+    const exprObj = this.createExpression<string>(expression)
+    return exprObj.evalAsString(context)
+  }
+
+  /**
+   * Evaluates a Jexl expression and coerces the result to a number.
+   * `null` and `undefined` results are coerced to `NaN`.
+   * @param expression The Jexl expression string to evaluate.
+   * @param context Optional context object.
+   * @returns A promise that resolves to the number result.
+   */
+  evalAsNumber(expression: string, context: Context = {}): Promise<number> {
+    const exprObj = this.createExpression<number>(expression)
+    return exprObj.evalAsNumber(context)
+  }
+
+  /**
+   * Evaluates a Jexl expression and coerces the result to a boolean.
+   * Uses standard JavaScript truthiness rules.
+   * @param expression The Jexl expression string to evaluate.
+   * @param context Optional context object.
+   * @returns A promise that resolves to the boolean result.
+   */
+  evalAsBoolean(expression: string, context: Context = {}): Promise<boolean> {
+    const exprObj = this.createExpression<boolean>(expression)
+    return exprObj.evalAsBoolean(context)
+  }
+
+  /**
+   * Evaluates a Jexl expression and ensures the result is an array.
+   * - If the result is an array, it's returned as is.
+   * - If the result is `null` or `undefined`, an empty array `[]` is returned.
+   * - Otherwise, the result is wrapped in an array.
+   * @template T The expected type of elements in the array.
+   * @param expression The Jexl expression string to evaluate.
+   * @param context Optional context object.
+   * @returns A promise that resolves with the result as an array.
+   */
+  evalAsArray<T = unknown>(expression: string, context: Context = {}): Promise<T[]> {
+    // The expression can return a single item of type T, or an array of T.
+    // We set the expression's expected type R to T | T[] to cover both cases.
+    const exprObj = this.createExpression<T>(expression)
+    return exprObj.evalAsArray(context) as Promise<T[]>
+  }
+
+  /**
+   * Evaluates a Jexl expression and validates it against a list of allowed values.
+   * @template T The type of the enum values.
+   * @param expression The Jexl expression string to evaluate.
+   * @param context A mapping of variables to values.
+   * @param allowedValues An array of allowed values for the result.
+   * @returns A promise that resolves with the result if it's in the `allowedValues` list, otherwise `undefined`.
+   */
+  evalAsEnum<T = string | number | boolean>(
+    expression: string,
+    context: Context = {},
+    allowedValues: readonly T[]
+  ): Promise<T | undefined> {
+    const exprObj = this.createExpression<T>(expression)
+    return exprObj.evalAsEnum(context, allowedValues)
+  }
+
+  /**
+   * Evaluates a Jexl expression, returning a default value if the result is `null` or `undefined`.
+   * This is useful for providing defaults for optional paths without relying on the `||` operator,
+   * which would also override falsy values like `0`, `false`, or `""`.
+   * @template T The expected type of the result.
+   * @param expression The Jexl expression string to evaluate.
+   * @param context A mapping of variables to values.
+   * @param defaultValue The value to return if the expression result is `null` or `undefined`.
+   * @returns A promise that resolves with the expression's result or the default value.
+   */
+  evalWithDefault<T = unknown>(expression: string, context: Context = {}, defaultValue: T): Promise<T> {
+    const exprObj = this.createExpression<T>(expression)
+    return exprObj.evalWithDefault(context, defaultValue)
+  }
+
+  /**
    * Template literal function for creating Jexl expressions with embedded JavaScript values.
    * Allows you to interpolate variables directly into expression strings using template syntax.
    *

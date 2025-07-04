@@ -369,3 +369,164 @@ test.group('Jexl removeOp', (group) => {
     }, /invalid/i)
   })
 })
+
+test.group('evalAsString', (group) => {
+  let jexl: Jexl
+
+  group.each.setup(() => {
+    jexl = new Jexl()
+  })
+
+  test('should coerce a number to a string', async ({ assert }) => {
+    const result = await jexl.evalAsString('123')
+    assert.equal(result, '123')
+  })
+
+  test('should coerce null to "null"', async ({ assert }) => {
+    const result = await jexl.evalAsString('null')
+    assert.equal(result, 'null')
+  })
+
+  test('should coerce undefined to "undefined"', async ({ assert }) => {
+    const result = await jexl.evalAsString('undefined')
+    assert.equal(result, 'undefined')
+  })
+})
+
+test.group('evalAsNumber', (group) => {
+  let jexl: Jexl
+
+  group.each.setup(() => {
+    jexl = new Jexl()
+  })
+
+  test('should coerce a string number to a number', async ({ assert }) => {
+    const result = await jexl.evalAsNumber('"42"')
+    assert.equal(result, 42)
+  })
+
+  test('should coerce null to NaN', async ({ assert }) => {
+    const result = await jexl.evalAsNumber('null')
+    assert.isNaN(result)
+  })
+
+  test('should coerce undefined to NaN', async ({ assert }) => {
+    const result = await jexl.evalAsNumber('undefined')
+    assert.isNaN(result)
+  })
+
+  test('should coerce true to 1', async ({ assert }) => {
+    const result = await jexl.evalAsNumber('true')
+    assert.equal(result, 1)
+  })
+})
+
+test.group('evalAsBoolean', (group) => {
+  let jexl: Jexl
+
+  group.each.setup(() => {
+    jexl = new Jexl()
+  })
+
+  test('should return true for truthy values', async ({ assert }) => {
+    assert.isTrue(await jexl.evalAsBoolean('true'))
+    assert.isTrue(await jexl.evalAsBoolean('1'))
+    assert.isTrue(await jexl.evalAsBoolean('"hello"'))
+    assert.isTrue(await jexl.evalAsBoolean('{}'))
+  })
+
+  test('should return false for falsy values', async ({ assert }) => {
+    assert.isFalse(await jexl.evalAsBoolean('false'))
+    assert.isFalse(await jexl.evalAsBoolean('0'))
+    assert.isFalse(await jexl.evalAsBoolean('""'))
+    assert.isFalse(await jexl.evalAsBoolean('null'))
+    assert.isFalse(await jexl.evalAsBoolean('undefined'))
+  })
+})
+
+test.group('evalAsArray', (group) => {
+  let jexl: Jexl
+
+  group.each.setup(() => {
+    jexl = new Jexl()
+  })
+
+  test('should return an array as-is', async ({ assert }) => {
+    const result = await jexl.evalAsArray<number>('[1, 2, 3]')
+    assert.deepEqual(result, [1, 2, 3])
+  })
+
+  test('should wrap a single item in an array', async ({ assert }) => {
+    const result = await jexl.evalAsArray<string>('"hello"')
+    assert.deepEqual(result, ['hello'])
+  })
+
+  test('should return an empty array for null', async ({ assert }) => {
+    const result = await jexl.evalAsArray('null')
+    assert.deepEqual(result, [])
+  })
+
+  test('should handle expression returning an array from context', async ({ assert }) => {
+    const context = { items: ['a', 'b'] }
+    const result = await jexl.evalAsArray<string>('items', context)
+    assert.deepEqual(result, ['a', 'b'])
+  })
+
+  test('should handle expression returning a single item from context', async ({ assert }) => {
+    const context = { item: 'a' }
+    const result = await jexl.evalAsArray<string>('item', context)
+    assert.deepEqual(result, ['a'])
+  })
+})
+
+test.group('evalAsEnum', (group) => {
+  let jexl: Jexl
+
+  group.each.setup(() => {
+    jexl = new Jexl()
+  })
+
+  const allowed = ['active', 'inactive', 'pending'] as const
+
+  test('should return the value if it is in the allowed list', async ({ assert }) => {
+    const result = await jexl.evalAsEnum('"active"', {}, allowed)
+    assert.equal(result, 'active')
+  })
+
+  test('should return undefined if the value is not in the allowed list', async ({ assert }) => {
+    const result = await jexl.evalAsEnum('"archived"', {}, allowed)
+    assert.isUndefined(result)
+  })
+
+  test('should work with numeric enums', async ({ assert }) => {
+    const numericAllowed = [10, 20, 30] as const
+    const result = await jexl.evalAsEnum('20', {}, numericAllowed)
+    assert.equal(result, 20)
+    const invalidResult = await jexl.evalAsEnum('25', {}, numericAllowed)
+    assert.isUndefined(invalidResult)
+  })
+})
+
+test.group('evalWithDefault', (group) => {
+  let jexl: Jexl
+
+  group.each.setup(() => {
+    jexl = new Jexl()
+  })
+
+  test('should return the default value for null', async ({ assert }) => {
+    const result = await jexl.evalWithDefault('null', {}, 'default')
+    assert.equal(result, 'default')
+  })
+
+  test('should return the default value for undefined', async ({ assert }) => {
+    const result = await jexl.evalWithDefault('undefined', {}, 'default')
+    assert.equal(result, 'default')
+  })
+
+  test('should return the original value if it is not null or undefined', async ({ assert }) => {
+    assert.equal(await jexl.evalWithDefault('0', {}, 10), 0)
+    assert.equal(await jexl.evalWithDefault('""', {}, 'default'), '')
+    assert.isFalse(await jexl.evalWithDefault('false', {}, true))
+  })
+})

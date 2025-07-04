@@ -124,6 +124,103 @@ export default class Expression<R = unknown> {
   }
 
   /**
+   * Asynchronously evaluates the expression and coerces the result to a string.
+   * @param context A mapping of variables to values.
+   * @returns A promise that resolves with the result of the evaluation as a string.
+   */
+  async evalAsString(context: Context = {}): Promise<string> {
+    const result = await this.eval(context)
+    if (result === null) {
+      return 'null'
+    }
+    if (result === undefined) {
+      return 'undefined'
+    }
+    return String(result)
+  }
+
+  /**
+   * Asynchronously evaluates the expression and coerces the result to a number.
+   * `null` and `undefined` are coerced to `NaN`, as you suggested.
+   * @param context A mapping of variables to values.
+   * @returns A promise that resolves with the result of the evaluation as a number.
+   */
+  async evalAsNumber(context: Context = {}): Promise<number> {
+    const result = await this.eval(context)
+    if (result === null || result === undefined) {
+      return NaN
+    }
+    return Number(result)
+  }
+
+  /**
+   * Asynchronously evaluates the expression and coerces the result to a boolean.
+   * Uses standard JavaScript truthiness.
+   * @param context A mapping of variables to values.
+   * @returns A promise that resolves with the result of the evaluation as a boolean.
+   */
+  async evalAsBoolean(context: Context = {}): Promise<boolean> {
+    const result = await this.eval(context)
+    return !!result
+  }
+
+  /**
+   * Asynchronously evaluates the expression and ensures the result is an array.
+   * - If the result is an array, it's returned as is.
+   * - If the result is `null` or `undefined`, an empty array `[]` is returned.
+   * - Otherwise, the result is wrapped in an array.
+   *
+   * The element type of the returned array is inferred from the Expression's
+   * generic type `R`. If `R` is `T[]`, elements are of type `T`. If `R` is `T`,
+   * elements are also of type `T`.
+   *
+   * @param context A mapping of variables to values.
+   * @returns A promise that resolves with the result as an array.
+   */
+  async evalAsArray(context: Context = {}): Promise<(R extends (infer E)[] ? E : R)[]> {
+    const result = await this.eval(context)
+    if (result === null || result === undefined) {
+      return []
+    }
+    if (Array.isArray(result)) {
+      return result
+    }
+    return [result as R extends (infer E)[] ? E : R]
+  }
+
+  /**
+   * Asynchronously evaluates the expression and validates it against a list of allowed values.
+   *
+   * @param context A mapping of variables to values.
+   * @param allowedValues An array of allowed values for the result.
+   * @returns A promise that resolves with the result if it's in the `allowedValues` list, otherwise `undefined`.
+   */
+  async evalAsEnum(context: Context = {}, allowedValues: readonly R[]): Promise<R | undefined> {
+    const result = await this.eval(context)
+    if (allowedValues.includes(result as R)) {
+      return result as R
+    }
+    return undefined
+  }
+
+  /**
+   * Asynchronously evaluates the expression, returning a default value if the result is `null` or `undefined`.
+   * This is useful for providing defaults for optional paths without relying on the `||` operator,
+   * which would also override falsy values like `0`, `false`, or `""`.
+   * @template T The expected type of the result.
+   * @param context A mapping of variables to values.
+   * @param defaultValue The value to return if the expression result is `null` or `undefined`.
+   * @returns A promise that resolves with the expression's result or the default value.
+   */
+  async evalWithDefault(context: Context = {}, defaultValue: R): Promise<R> {
+    const result = await this.eval(context)
+    if (result === null || result === undefined) {
+      return defaultValue
+    }
+    return result
+  }
+
+  /**
    * Internal evaluation method that handles the actual evaluation logic.
    * @param context The evaluation context
    * @returns Promise that resolves to the evaluation result

@@ -64,3 +64,91 @@ test.group('Expression', (group) => {
     assert.equal(spy.callCount, 1)
   })
 })
+
+test.group('Expression Semantic Layer', (group) => {
+  let inst: Jexl
+
+  group.each.setup(() => {
+    inst = new Jexl()
+  })
+
+  test('evalAsString should work on a compiled expression', async ({ assert }) => {
+    const expr = inst.compile('foo')
+    const result = await expr.evalAsString({ foo: 42 })
+    assert.equal(result, '42')
+  })
+
+  test('evalAsNumber should work on a compiled expression', async ({ assert }) => {
+    const expr = inst.compile('foo')
+    const result = await expr.evalAsNumber({ foo: '55' })
+    assert.equal(result, 55)
+  })
+
+  test('evalAsBoolean should work on a compiled expression', async ({ assert }) => {
+    const expr = inst.compile('foo')
+    const result = await expr.evalAsBoolean({ foo: 1 })
+    assert.isTrue(result)
+  })
+})
+
+test.group('evalAsArray', (group) => {
+  let inst: Jexl
+
+  group.each.setup(() => {
+    inst = new Jexl()
+  })
+
+  test('should work on a compiled expression returning a single item', async ({ assert }) => {
+    const expr = inst.compile('foo')
+    const result = await expr.evalAsArray({ foo: 'bar' })
+    assert.deepEqual(result, ['bar'])
+  })
+
+  test('should work on a compiled expression returning an array', async ({ assert }) => {
+    const expr = inst.compile('foo')
+    const result = await expr.evalAsArray({ foo: ['bar', 'baz'] })
+    assert.deepEqual(result, ['bar', 'baz'])
+  })
+
+  test('should work on a compiled expression returning null', async ({ assert }) => {
+    const expr = inst.compile('foo')
+    const result = await expr.evalAsArray({ foo: null })
+    assert.deepEqual(result, [])
+  })
+})
+
+test.group('evalAsEnum', (group) => {
+  let inst: Jexl
+
+  group.each.setup(() => {
+    inst = new Jexl()
+  })
+
+  const allowed = ['active', 'inactive', 'pending'] as const
+
+  test('should work on a compiled expression with a valid value', async ({ assert }) => {
+    const expr = inst.compile('foo')
+    const result = await expr.evalAsEnum({ foo: 'pending' }, allowed)
+    assert.equal(result, 'pending')
+  })
+
+  test('should work on a compiled expression with an invalid value', async ({ assert }) => {
+    const expr = inst.compile('foo')
+    const result = await expr.evalAsEnum({ foo: 'archived' }, allowed)
+    assert.isUndefined(result)
+  })
+})
+
+test.group('evalWithDefault', (group) => {
+  let inst: Jexl
+
+  group.each.setup(() => {
+    inst = new Jexl()
+  })
+
+  test('should work on a compiled expression with a null value', async ({ assert }) => {
+    const expr = inst.compile('foo')
+    const result = await expr.evalWithDefault({ foo: null }, 'default value')
+    assert.equal(result, 'default value')
+  })
+})
