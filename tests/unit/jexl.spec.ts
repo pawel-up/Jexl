@@ -175,6 +175,30 @@ test.group('Jexl addFunction', (group) => {
   })
 })
 
+test.group('Jexl eval with unary minus on expressions', (group) => {
+  let inst: Jexl
+
+  group.each.setup(() => {
+    inst = new Jexl()
+    inst.addFunction('add', (a: number, b: number) => a + b)
+  })
+
+  test('handles unary minus on function calls with arguments', async ({ assert }) => {
+    const result = await inst.eval('-add(2, 3)')
+    assert.equal(result, -5)
+  })
+
+  test('handles unary minus on identifiers', async ({ assert }) => {
+    const result = await inst.eval('-foo', { foo: 10 })
+    assert.equal(result, -10)
+  })
+
+  test('handles unary minus on parenthesized expressions', async ({ assert }) => {
+    const result = await inst.eval('-(2+3)')
+    assert.equal(result, -5)
+  })
+})
+
 test.group('Jexl addTransform', (group) => {
   let inst: Jexl
 

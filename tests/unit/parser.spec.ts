@@ -158,6 +158,29 @@ test.group('Parser Unary and Sub expressions', (group) => {
       right: { type: 'Literal', value: 5 },
     })
   })
+
+  test('handles unary minus on an identifier', ({ assert }) => {
+    inst.addTokens(lexer.tokenize('-foo'))
+    assert.deepEqual(inst.complete(), {
+      type: 'UnaryExpression',
+      operator: '-',
+      right: { type: 'Identifier', value: 'foo' },
+    })
+  })
+
+  test('handles unary minus on a function call', ({ assert }) => {
+    inst.addTokens(lexer.tokenize('-foo()'))
+    assert.deepEqual(inst.complete(), {
+      type: 'UnaryExpression',
+      operator: '-',
+      right: {
+        type: 'FunctionCall',
+        name: 'foo',
+        pool: 'functions',
+        args: [],
+      },
+    })
+  })
 })
 
 test.group('Parser Ternary and Sub expressions', (group) => {

@@ -172,7 +172,22 @@ export default class Lexer {
           tokens[tokens.length - 1].raw += element
         }
       } else if (element === '-' && this._isNegative(tokens)) {
-        negate = true
+        let nextElement = ''
+        for (let j = i + 1; j < elements.length; j++) {
+          if (!this._isWhitespace(elements[j])) {
+            nextElement = elements[j]
+            break
+          }
+        }
+        if (nextElement.match(numericRegex)) {
+          negate = true
+        } else {
+          // It's a unary minus on a non-numeric token (identifier, sub-expression)
+          // so we'll emit a unaryOp token and let the parser handle it.
+          const token = this._createToken(element)
+          token.type = 'unaryOp'
+          tokens.push(token)
+        }
       } else {
         if (negate) {
           elements[i] = '-' + element
