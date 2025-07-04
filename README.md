@@ -666,7 +666,8 @@ console.log(`Valid: ${result.isValid}`)
 
 ## Other implementations
 
-[PyJEXL](https://github.com/mozilla/pyjexl) - A Python-based JEXL parser and evaluator.
+- [PyJEXL](https://github.com/mozilla/pyjexl) - A Python-based JEXL parser and evaluator.
+- [JexlApex](https://github.com/the-last-byte/JexlApex) - A Salesforce Apex JEXL parser and evaluator.
 
 ## License
 
