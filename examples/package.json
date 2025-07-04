@@ -1,0 +1,19 @@
+{
+  "name": "jexl-examples",
+  "version": "1.0.0",
+  "description": "Examples for the @pawel-up/jexl library",
+  "type": "module",
+  "scripts": {
+    "basic": "node --import ts-node-maintained/register/esm --enable-source-maps basic-usage.ts",
+    "transforms": "node --import ts-node-maintained/register/esm --enable-source-maps custom-transforms.ts",
+    "functions": "node --import ts-node-maintained/register/esm --enable-source-maps custom-functions.ts",
+    "operators": "node --import ts-node-maintained/register/esm --enable-source-maps custom-operators.ts",
+    "advanced": "node --import ts-node-maintained/register/esm --enable-source-maps advanced-features.ts",
+    "real-world": "node --import ts-node-maintained/register/esm --enable-source-maps real-world-use-cases.ts",
+    "api": "node --import ts-node-maintained/register/esm --enable-source-maps api-integration.ts",
+    "all": "npm run basic && npm run transforms && npm run functions && npm run operators && npm run advanced && npm run real-world && npm run api"
+  },
+  "dependencies": {
+    "@pawel-up/jexl": "^3.0.0"
+  }
+}

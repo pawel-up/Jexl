@@ -1,0 +1,182 @@
+name: Auto Release
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  FORCE_COLOR: 1
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - uses: google/wireit@setup-github-actions-caching/v2
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install playwright browsers
+        run: npx playwright install --with-deps
+      
+      - name: Run tests
+        run: npm test
+
+  determine-release:
+    name: Determine Release Type
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      should-release: ${{ steps.release-check.outputs.should-release }}
+      release-type: ${{ steps.release-check.outputs.release-type }}
+      new-version: ${{ steps.release-check.outputs.new-version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Determine release type
+        id: release-check
+        run: |
+          # Get the last tag
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "Last tag: $LAST_TAG"
+          
+          # Get commits since last tag
+          COMMITS=$(git log --pretty=format:"%s" ${LAST_TAG}..HEAD)
+          echo "Commits since last tag:"
+          echo "$COMMITS"
+          
+          # Check if there are any commits to release
+          if [ -z "$COMMITS" ]; then
+            echo "No new commits since last tag"
+            echo "should-release=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # Determine release type based on commit messages
+          RELEASE_TYPE="patch"
+          
+          # Check for breaking changes
+          if echo "$COMMITS" | grep -q "BREAKING CHANGE" || echo "$COMMITS" | grep -q '!:'; then
+            RELEASE_TYPE="major"
+          # Check for new features
+          elif echo "$COMMITS" | grep -q "^feat"; then
+            RELEASE_TYPE="minor"
+          fi
+          
+          echo "Release type: $RELEASE_TYPE"
+          
+          # Calculate new version
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "Current version: $CURRENT_VERSION"
+          
+          # Use semver to calculate new version
+          NEW_VERSION=$(node -e "
+            const SemVer = require('@pawel-up/semver/classes/semver.js').default || require('@pawel-up/semver/classes/semver.js');
+            const ver = new SemVer('$CURRENT_VERSION');
+            ver.inc('$RELEASE_TYPE');
+            console.log(ver.format());
+          " CURRENT_VERSION="$CURRENT_VERSION" RELEASE_TYPE="$RELEASE_TYPE")
+          
+          echo "New version: $NEW_VERSION"
+          
+          echo "should-release=true" >> $GITHUB_OUTPUT
+          echo "release-type=$RELEASE_TYPE" >> $GITHUB_OUTPUT
+          echo "new-version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+  release:
+    name: Create Release
+    needs: [test, determine-release]
+    if: needs.determine-release.outputs.should-release == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Update version
+        run: |
+          # Update package.json version
+          NEW_VERSION="${{ needs.determine-release.outputs.new-version }}"
+          npm version $NEW_VERSION --no-git-tag-version
+          git add package.json
+          
+          # Commit version bump
+          # git config --local user.email "action@github.com"
+          # git config --local user.name "GitHub Action"
+          # git add package.json
+          # git commit -m "chore: bump version to $NEW_VERSION"
+          # git push
+
+      - uses: qoomon/actions--create-commit@v1
+        id: commit
+        with:
+          message: "chore: bump version to ${{ needs.determine-release.outputs.new-version }}"
+          skip-empty: true
+      
+      - run: git push
+      
+      - name: Build
+        run: npm run build:ts
+      
+      - name: Generate changelog
+        id: changelog
+        run: |
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          npx conventional-changelog-cli@latest release --preset conventionalcommits --release-count 1 >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.determine-release.outputs.new-version }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
+          generate_release_notes: false
+      
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} 

@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig",
+  "include": ["../src/**/*", "../tests/**/*", "../bin/test.ts"],
+  "exclude": ["**/node_modules", "../lib"],
+  "compilerOptions": {
+    "rootDir": "../",
+    "skipLibCheck": true,
+    "noImplicitAny": false
+  }
+}

@@ -2,23 +2,59 @@
   "name": "@pawel-up/jexl",
   "version": "3.0.0",
   "description": "Javascript Expression Language: Powerful context-based expression parser and evaluator",
-  "main": "lib/Jexl.js",
   "type": "module",
+  "main": "./lib/Jexl.js",
+  "module": "./lib/Jexl.js",
+  "types": "./lib/Jexl.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/Jexl.d.ts",
+      "import": "./lib/Jexl.js"
+    },
+    "./package.json": "./package.json",
+    "./math.js": "./lib/definitions/math.js",
+    "./string.js": "./lib/definitions/string.js",
+    "./date.js": "./lib/definitions/date.js",
+    "./array.js": "./lib/definitions/array.js",
+    "./operators.js": "./lib/definitions/operators.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "files": [
-    "lib"
+    "lib",
+    "README.md",
+    "LICENSE.txt",
+    "CHANGELOG.md"
   ],
   "scripts": {
-    "format": "prettier --write '**/*.{json,js,md}'",
-    "lint": "eslint '**/*.js'",
-    "test": "npm run lint && npm run test:mocha",
-    "test:mocha": "nyc --reporter=lcov --reporter=text mocha tests/**/*.js tests/**/**/*.js",
-    "test:watch": "NODE_PATH=./ RESOURCES_PATH=./lib jest --watchAll --colors",
-    "prepublishOnly": "npm test",
-    "prepare": "husky install"
+    "build": "tsc -p tsconfig.build.json",
+    "build:watch": "tsc -p tsconfig.build.json --watch",
+    "clean": "rm -rf lib build dist",
+    "lint": "npm run lint:prettier && npm run lint:eslint",
+    "lint:eslint": "eslint --color --cache --cache-location .eslintcache .",
+    "lint:prettier": "prettier \"**/*.{json,js,ts,md}\" --check",
+    "format": "npm run format:prettier && npm run format:eslint",
+    "format:prettier": "prettier --write \"**/*.{json,js,ts,md}\"",
+    "format:eslint": "eslint --color --cache --fix --cache-location .eslintcache .",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import ts-node-maintained/register/esm --enable-source-maps bin/test.ts",
+    "coverage": "c8 --reporter lcov --reporter text node --import ts-node-maintained/register/esm --enable-source-maps bin/test.ts",
+    "prepare": "husky",
+    "benchmark:expressions": "node --import ts-node-maintained/register/esm --enable-source-maps benchmarks/expressions.ts",
+    "benchmark:validation": "node --import ts-node-maintained/register/esm --enable-source-maps benchmarks/validation.ts",
+    "example:quick": "node --import ts-node-maintained/register/esm --enable-source-maps examples/quick-start.ts",
+    "example:basic": "node --import ts-node-maintained/register/esm --enable-source-maps examples/basic-usage.ts",
+    "example:transforms": "node --import ts-node-maintained/register/esm --enable-source-maps examples/custom-transforms.ts",
+    "example:functions": "node --import ts-node-maintained/register/esm --enable-source-maps examples/custom-functions.ts",
+    "example:operators": "node --import ts-node-maintained/register/esm --enable-source-maps examples/custom-operators.ts",
+    "example:advanced": "node --import ts-node-maintained/register/esm --enable-source-maps examples/advanced-features.ts",
+    "example:real-world": "node --import ts-node-maintained/register/esm --enable-source-maps examples/real-world-use-cases.ts",
+    "example:all": "npm run example:basic && npm run example:transforms && npm run example:functions && npm run example:operators && npm run example:advanced && npm run example:real-world"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/TomFrost/jexl"
+    "url": "https://github.com/pawel-up/jexl"
   },
   "keywords": [
     "JSON",
@@ -34,13 +70,8 @@
   "author": "Tom Shawver <tom@frosteddesign.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/TomFrost/jexl/issues"
+    "url": "https://github.com/pawel-up/jexl/issues"
   },
-  "homepage": "https://github.com/TomFrost/jexl",
-  "eslintIgnore": [
-    "node_modules",
-    "coverage"
-  ],
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -50,26 +81,31 @@
     "**/*.{md,json}": [
       "prettier --write"
     ],
-    "**/*.js": [
+    "*.ts": [
       "eslint --fix"
     ]
   },
   "devDependencies": {
-    "@types/chai": "^4.2.22",
-    "@types/mocha": "^9.0.0",
-    "chai": "^4.3.4",
-    "chai-as-promised": "^7.1.1",
-    "chai-spies": "^1.0.0",
-    "eslint": "^8.3.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^7.0.4",
-    "jest": "^27.4.3",
-    "lint-staged": "^12.1.2",
-    "mocha": "^9.1.3",
-    "nyc": "^15.1.0",
-    "prettier": "^2.5.0",
-    "sinon": "^12.0.1",
-    "typescript": "^4.5.2"
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.23.0",
+    "@japa/assert": "^4.0.1",
+    "@japa/runner": "^4.2.0",
+    "@pawel-up/benchmark": "^1.0.5",
+    "@pawel-up/semver": "^0.1.4",
+    "@types/sinon": "^17.0.4",
+    "c8": "^10.1.3",
+    "eslint": "^9.23.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.6",
+    "globals": "^16.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
+    "prettier": "^3.5.3",
+    "sinon": "^20.0.0",
+    "ts-node-maintained": "^10.9.5",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.29.0"
   }
 }
