@@ -3,26 +3,28 @@
   "version": "3.2.1",
   "description": "Javascript Expression Language: Powerful context-based expression parser and evaluator",
   "type": "module",
-  "main": "./lib/Jexl.js",
-  "module": "./lib/Jexl.js",
-  "types": "./lib/Jexl.d.ts",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "exports": {
     ".": {
-      "types": "./lib/Jexl.d.ts",
-      "import": "./lib/Jexl.js"
+      "types": "./lib/index.ts",
+      "import": "./lib/index.js"
     },
     "./package.json": "./package.json",
     "./math.js": "./lib/definitions/math.js",
     "./string.js": "./lib/definitions/string.js",
     "./date.js": "./lib/definitions/date.js",
     "./array.js": "./lib/definitions/array.js",
-    "./operators.js": "./lib/definitions/operators.js"
+    "./operators.js": "./lib/definitions/operators.js",
+    "./Jexl.js": "./lib/Jexl.js"
   },
   "engines": {
     "node": ">=20.0.0"
   },
   "files": [
     "lib",
+    "src",
     "README.md",
     "LICENSE.txt",
     "CHANGELOG.md"
