@@ -158,7 +158,7 @@ jobs:
       - run: git push
       
       - name: Build
-        run: npm run build:ts
+        run: npm run build
       
       - name: Generate changelog
         id: changelog
