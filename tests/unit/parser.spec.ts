@@ -264,6 +264,21 @@ test.group('Parser Ternary and Sub expressions', (group) => {
       alternate: { type: 'Literal', value: 'baz' },
     })
   })
+
+  test('handles a ternary expression on a function call', ({ assert }) => {
+    inst.addTokens(lexer.tokenize('foo() ? 1 : 0'))
+    assert.deepEqual(inst.complete(), {
+      type: 'ConditionalExpression',
+      test: {
+        type: 'FunctionCall',
+        name: 'foo',
+        pool: 'functions',
+        args: [],
+      },
+      consequent: { type: 'Literal', value: 1 },
+      alternate: { type: 'Literal', value: 0 },
+    })
+  })
 })
 
 test.group('Parser Binary and Sub expressions', (group) => {

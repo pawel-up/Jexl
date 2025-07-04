@@ -204,6 +204,26 @@ test.group('Jexl eval with unary minus on expressions', (group) => {
   })
 })
 
+test.group('Jexl eval with functions in ternary', (group) => {
+  let inst: Jexl
+
+  group.each.setup(() => {
+    inst = new Jexl()
+    inst.addFunction('parseInt', (arg) => Number.parseInt(arg as any))
+    inst.addFunction('isNaN', (arg) => Number.isNaN(arg as any))
+  })
+
+  test('handles function calls in ternary test', async ({ assert }) => {
+    const result = await inst.eval('isNaN(parseInt(size)) ? 0 : parseInt(size)', { size: '' })
+    assert.equal(result, 0)
+  })
+
+  test('handles function calls in ternary test with comparison', async ({ assert }) => {
+    const result = await inst.eval('isNaN(parseInt(size)) == true ? 0 : parseInt(size)', { size: '' })
+    assert.equal(result, 0)
+  })
+})
+
 test.group('Jexl addTransform', (group) => {
   let inst: Jexl
 

@@ -176,6 +176,7 @@ export const states: Record<string, StateConfig> = {
       binaryOp: { toState: 'expectOperand' },
       dot: { toState: 'traverse' },
       openBracket: { toState: 'filter' },
+      question: { toState: 'ternaryMid', handler: 'ternaryStart' },
       pipe: { toState: 'expectTransform' },
     },
     completable: true,
