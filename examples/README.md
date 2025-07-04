@@ -39,7 +39,7 @@ Learn the fundamental features of Jexl including:
 
 ```javascript
 // Basic arithmetic
-await jexl.eval('2 + 3 * 4')  // 14
+await jexl.eval('2 + 3 * 4') // 14
 
 // Property access
 await jexl.eval('user.profile.location', context)
@@ -66,8 +66,10 @@ Discover how to create and use custom transforms with the pipe operator (`|`):
 
 ```javascript
 // Add custom transforms
-jexl.addTransform('currency', (val, symbol = '$') => 
-  `${symbol}${val.toLocaleString('en-US', { minimumFractionDigits: 2 })}`)
+jexl.addTransform(
+  'currency',
+  (val, symbol = '$') => `${symbol}${val.toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+)
 
 // Use in expressions
 await jexl.eval('user.salary | currency', context)
@@ -93,11 +95,14 @@ Learn to create and use custom functions for complex operations:
 
 ```javascript
 // Add custom functions
-jexl.addFunction('average', (arr) => 
-  arr.reduce((sum, val) => sum + val, 0) / arr.length)
+jexl.addFunction('average', (arr) => arr.reduce((sum, val) => sum + val, 0) / arr.length)
 
 jexl.addFunction('slugify', (str) =>
-  str.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-'))
+  str
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+)
 
 // Use in expressions
 await jexl.eval('average(users.map(.salary))', context)
@@ -119,17 +124,16 @@ Explore creating custom binary and unary operators:
 ```javascript
 // Add custom binary operators
 jexl.addBinaryOp('**', 70, (left, right) => Math.pow(left, right))
-jexl.addBinaryOp('~=', 20, (left, right) => 
-  left.toLowerCase() === right.toLowerCase())
+jexl.addBinaryOp('~=', 20, (left, right) => left.toLowerCase() === right.toLowerCase())
 
 // Add custom unary operators
 jexl.addUnaryOp('||', (val) => Math.abs(val))
-jexl.addUnaryOp('#', (val) => Array.isArray(val) ? val.length : Object.keys(val).length)
+jexl.addUnaryOp('#', (val) => (Array.isArray(val) ? val.length : Object.keys(val).length))
 
 // Use in expressions
-await jexl.eval('2 ** 8')  // Power operation
-await jexl.eval('"HELLO" ~= "hello"')  // Case-insensitive comparison
-await jexl.eval('||-15')  // Absolute value
+await jexl.eval('2 ** 8') // Power operation
+await jexl.eval('"HELLO" ~= "hello"') // Case-insensitive comparison
+await jexl.eval('||-15') // Absolute value
 ```
 
 ## Advanced Features
@@ -156,7 +160,7 @@ const calculator = jexl.compile('users.map(u => u.salary * 0.15)')
 await calculator.eval(context)
 
 // Error handling
-jexl.addFunction('safeDivide', (a, b) => b === 0 ? null : a / b)
+jexl.addFunction('safeDivide', (a, b) => (b === 0 ? null : a / b))
 ```
 
 ## Real-world Use Cases
@@ -173,22 +177,28 @@ See practical applications in real scenarios:
 
 ```javascript
 // E-commerce product filtering
-await jexl.eval(`
+await jexl.eval(
+  `
   products[
     .category == filters.category && 
     .price >= filters.minPrice && 
     .inStock == true
   ]
-`, context)
+`,
+  context
+)
 
 // HR performance analysis
-await jexl.eval(`
+await jexl.eval(
+  `
   employees.map(e => {
     name: e.name,
     yearsOfService: yearsOfService(e.startDate, company.currentYear),
     currentRating: e.performance[e.performance.length - 1].rating
   })
-`, context)
+`,
+  context
+)
 ```
 
 ## API Integration
@@ -205,22 +215,28 @@ Learn to process API responses and handle real data:
 
 ```javascript
 // REST API response processing
-await jexl.eval(`
+await jexl.eval(
+  `
   users.data[.subscription.plan == "premium"].map({
     name: .name,
     loginCount: .activity.loginCount,
     location: .profile.location
   })
-`, apiResponse)
+`,
+  apiResponse
+)
 
 // Event processing
-await jexl.eval(`
+await jexl.eval(
+  `
   events[.type == "subscription.upgraded"].map({
     userId: .data.userId,
     revenue: .data.revenue,
     upgrade: .data.fromPlan + " → " + .data.toPlan
   })
-`, webhookData)
+`,
+  webhookData
+)
 ```
 
 ## Common Patterns
@@ -229,21 +245,25 @@ await jexl.eval(`
 
 ```javascript
 // Transform API response for frontend
-await jexl.eval(`
+await jexl.eval(
+  `
   users.map({
     id: .id,
     displayName: .name,
     isActive: .lastLogin > "2024-01-01",
     summary: .name + " (" + .email + ")"
   })
-`, context)
+`,
+  context
+)
 ```
 
 ### Filtering and Aggregation
 
 ```javascript
 // Complex filtering with aggregation
-await jexl.eval(`
+await jexl.eval(
+  `
   orders[.status == "completed" && .total > 100]
     .groupBy("category")
     .map((items, category) => {
@@ -251,20 +271,25 @@ await jexl.eval(`
       count: items.length,
       total: items.map(.total).reduce((a, b) => a + b, 0)
     })
-`, context)
+`,
+  context
+)
 ```
 
 ### Validation Rules
 
 ```javascript
 // Business validation
-await jexl.eval(`
+await jexl.eval(
+  `
   {
     isValid: user.age >= 18 && isValidEmail(user.email) && user.agreeToTerms,
     canPurchase: user.age >= 18 && user.paymentMethod && user.address,
     membershipLevel: user.totalSpent > 1000 ? "gold" : user.totalSpent > 500 ? "silver" : "bronze"
   }
-`, context)
+`,
+  context
+)
 ```
 
 ## Best Practices
