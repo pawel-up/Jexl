@@ -70,6 +70,44 @@ test.group('Jexl eval', (group) => {
   })
 })
 
+test.group('Jexl eval with null/undefined', (group) => {
+  let inst: Jexl
+
+  group.each.setup(() => {
+    inst = new Jexl()
+  })
+
+  test('evaluates null literal', async ({ assert }) => {
+    const result = await inst.eval('null')
+    assert.isNull(result)
+  })
+
+  test('evaluates undefined literal', async ({ assert }) => {
+    const result = await inst.eval('undefined')
+    assert.isUndefined(result)
+  })
+
+  test('evaluates property on a null context variable', async ({ assert }) => {
+    const result = await inst.eval('foo.bar', { foo: null })
+    assert.isNull(result)
+  })
+
+  test('evaluates property on an undefined context variable', async ({ assert }) => {
+    const result = await inst.eval('foo.bar', { foo: undefined })
+    assert.isUndefined(result)
+  })
+
+  test('evaluates property on a missing context variable', async ({ assert }) => {
+    const result = await inst.eval('foo.bar', {})
+    assert.isUndefined(result)
+  })
+
+  test('uses null and undefined as falsy in conditionals', async ({ assert }) => {
+    assert.equal(await inst.eval('null ? "yes" : "no"'), 'no')
+    assert.equal(await inst.eval('undefined ? "yes" : "no"'), 'no')
+  })
+})
+
 test.group('Jexl expr template literal', (group) => {
   let inst: Jexl
 

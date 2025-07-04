@@ -32,6 +32,10 @@ const preOpRegexElements = [
   // Booleans
   '\\btrue\\b',
   '\\bfalse\\b',
+  // Null
+  '\\bnull\\b',
+  // Undefined
+  '\\bundefined\\b',
 ]
 /**
  * Regex elements that are processed after operator elements.
@@ -254,6 +258,10 @@ export default class Lexer {
       token.value = parseFloat(element)
     } else if (element === 'true' || element === 'false') {
       token.value = element === 'true'
+    } else if (element === 'null') {
+      token.value = null
+    } else if (element === 'undefined') {
+      token.value = undefined
     } else if (this._grammar.elements[element]) {
       token.type = this._grammar.elements[element].type
     } else if (element.match(identRegex)) {

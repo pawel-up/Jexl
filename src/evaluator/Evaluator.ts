@@ -409,7 +409,13 @@ export default class Evaluator {
       return res ? subject : undefined
     }
     // Type guard for indexable types
-    if (subject != null && (typeof subject === 'object' || Array.isArray(subject))) {
+    if (subject === undefined) {
+      return undefined
+    }
+    if (subject === null) {
+      return null
+    }
+    if (typeof subject === 'object' || Array.isArray(subject)) {
       return (subject as any)[res as string | number]
     }
     return undefined
@@ -646,8 +652,11 @@ export default class Evaluator {
     }
 
     const context = await this.eval(ast.from)
-    if (context === undefined || context === null) {
+    if (context === undefined) {
       return undefined
+    }
+    if (context === null) {
+      return null
     }
 
     let targetContext = context

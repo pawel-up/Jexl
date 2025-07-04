@@ -231,3 +231,70 @@ test.group('Evaluator', () => {
     assert.equal(result, 26)
   })
 })
+
+test.group('Evaluator: Null and Undefined', () => {
+  test('evaluates null literal to null', async ({ assert }) => {
+    const e = new Evaluator(grammar, {})
+    const result = await e.eval(toTree('null'))
+    assert.isNull(result)
+  })
+
+  test('evaluates undefined literal to undefined', async ({ assert }) => {
+    const e = new Evaluator(grammar, {})
+    const result = await e.eval(toTree('undefined'))
+    assert.isUndefined(result)
+  })
+
+  test('evaluates an identifier with a null value', async ({ assert }) => {
+    const context = { foo: null }
+    const e = new Evaluator(grammar, context)
+    const result = await e.eval(toTree('foo'))
+    assert.isNull(result)
+  })
+
+  test('evaluates property access on a null object to null', async ({ assert }) => {
+    const context = { foo: null }
+    const e = new Evaluator(grammar, context)
+    const result = await e.eval(toTree('foo.bar'))
+    assert.isNull(result)
+  })
+
+  test('evaluates property access on an undefined object to undefined', async ({ assert }) => {
+    const context = { foo: undefined }
+    const e = new Evaluator(grammar, context)
+    const result = await e.eval(toTree('foo.bar'))
+    assert.isUndefined(result)
+  })
+
+  test('evaluates property access on a missing object to undefined', async ({ assert }) => {
+    const e = new Evaluator(grammar, {})
+    const result = await e.eval(toTree('foo.bar'))
+    assert.isUndefined(result)
+  })
+
+  test('evaluates bracket access on a null object to null', async ({ assert }) => {
+    const context = { foo: null }
+    const e = new Evaluator(grammar, context)
+    const result = await e.eval(toTree('foo["bar"]'))
+    assert.isNull(result)
+  })
+
+  test('evaluates bracket access on an undefined object to undefined', async ({ assert }) => {
+    const context = { foo: undefined }
+    const e = new Evaluator(grammar, context)
+    const result = await e.eval(toTree('foo["bar"]'))
+    assert.isUndefined(result)
+  })
+
+  test('evaluates conditional with null', async ({ assert }) => {
+    const e = new Evaluator(grammar, {})
+    const result = await e.eval(toTree('null ? "truthy" : "falsy"'))
+    assert.equal(result, 'falsy')
+  })
+
+  test('evaluates conditional with undefined', async ({ assert }) => {
+    const e = new Evaluator(grammar, {})
+    const result = await e.eval(toTree('undefined ? "truthy" : "falsy"'))
+    assert.equal(result, 'falsy')
+  })
+})

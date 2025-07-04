@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { test } from '@japa/runner'
-import { Jexl, Validator } from '../../src/Jexl.js'
+import { Jexl, Validator } from '../../src/index.js'
 
 test.group('Basic validation', (group) => {
   let jexl: Jexl

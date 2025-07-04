@@ -120,6 +120,28 @@ test.group('Lexer Tokens', (group) => {
     ])
   })
 
+  test('recognizes null', ({ assert }) => {
+    const tokens = inst.getTokens(['null'])
+    assert.deepEqual(tokens, [
+      {
+        type: 'literal',
+        value: null,
+        raw: 'null',
+      },
+    ])
+  })
+
+  test('recognizes undefined', ({ assert }) => {
+    const tokens = inst.getTokens(['undefined'])
+    assert.deepEqual(tokens, [
+      {
+        type: 'literal',
+        value: undefined,
+        raw: 'undefined',
+      },
+    ])
+  })
+
   test('recognizes numerics', ({ assert }) => {
     const tokens = inst.getTokens(['-7.6', '20'])
     assert.deepEqual(tokens, [
