@@ -34,7 +34,15 @@
     "coverage": "c8 --reporter lcov --reporter text node --import ts-node-maintained/register/esm --enable-source-maps bin/test.ts",
     "prepare": "husky",
     "benchmark:expressions": "node --import ts-node-maintained/register/esm --enable-source-maps benchmarks/expressions.ts",
-    "benchmark:validation": "node --import ts-node-maintained/register/esm --enable-source-maps benchmarks/validation.ts"
+    "benchmark:validation": "node --import ts-node-maintained/register/esm --enable-source-maps benchmarks/validation.ts",
+    "example:quick": "node --import ts-node-maintained/register/esm --enable-source-maps examples/quick-start.ts",
+    "example:basic": "node --import ts-node-maintained/register/esm --enable-source-maps examples/basic-usage.ts",
+    "example:transforms": "node --import ts-node-maintained/register/esm --enable-source-maps examples/custom-transforms.ts",
+    "example:functions": "node --import ts-node-maintained/register/esm --enable-source-maps examples/custom-functions.ts",
+    "example:operators": "node --import ts-node-maintained/register/esm --enable-source-maps examples/custom-operators.ts",
+    "example:advanced": "node --import ts-node-maintained/register/esm --enable-source-maps examples/advanced-features.ts",
+    "example:real-world": "node --import ts-node-maintained/register/esm --enable-source-maps examples/real-world-use-cases.ts",
+    "example:all": "npm run example:basic && npm run example:transforms && npm run example:functions && npm run example:operators && npm run example:advanced && npm run example:real-world"
   },
   "repository": {
     "type": "git",

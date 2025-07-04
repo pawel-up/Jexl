@@ -11,9 +11,9 @@ export interface EvaluationContext {
 // Transform function that accepts any function signature
 export type TransformFunction = (...args: any[]) => any
 
-export type BinaryOpFunction = (left: unknown, right: unknown) => unknown
+export type BinaryOpFunction = (left: any, right: any) => unknown
 
-export type UnaryOpFunction = (right: unknown) => unknown
+export type UnaryOpFunction = (right: any) => unknown
 
 // Function that accepts any function signature
 export type FunctionFunction = (...args: any[]) => any

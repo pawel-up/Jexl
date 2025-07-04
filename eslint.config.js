@@ -77,6 +77,19 @@ export default [
     },
   },
   {
+    files: ['examples/**/*.ts', 'examples/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.nodeBuiltin, // Enable Node.js globals for these files
+      },
+    },
+    rules: {
+      'no-restricted-globals': ['error', ...{ ...Object.keys(globals.node), ...Object.keys(globals.nodeBuiltin) }],
+      'max-len': 'off',
+      'no-console': 'off',
+    },
+  },
+  {
     ignores: GLOBAL_IGNORE_LIST,
   },
 ]
