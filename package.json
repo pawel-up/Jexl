@@ -1,6 +1,6 @@
 {
   "name": "@pawel-up/jexl",
-  "version": "3.2.2",
+  "version": "4.0.0",
   "description": "Javascript Expression Language: Powerful context-based expression parser and evaluator",
   "type": "module",
   "main": "./lib/index.js",
