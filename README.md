@@ -331,8 +331,8 @@ jexl.addTransform('split', (val, char) => val.split(char))
 jexl.addTransform('lower', (val) => val.toLowerCase())
 ```
 
-| Expression                                 | Result                |
-| ------------------------------------------ | --------------------- |
+| Expression                               | Result                |
+| ---------------------------------------- | --------------------- |
 | `"Pam Poovey" \| lower \| split[' '](1)` | poovey                |
 | `"password==guest" \| split('=' + '=')`  | ['password', 'guest'] |
 
