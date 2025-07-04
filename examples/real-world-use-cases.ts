@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Real-world Use Cases Examples
  *
@@ -22,18 +23,14 @@ async function realWorldUseCases() {
     // Manually add functions/transforms needed in the sub-expression context if they are not global
     Object.assign(subJexl.grammar.functions, jexl.grammar.functions)
     Object.assign(subJexl.grammar.transforms, jexl.grammar.transforms)
-    const results = await Promise.all(
-      val.map(item => subJexl.eval(expr, item))
-    )
+    const results = await Promise.all(val.map((item) => subJexl.eval(expr, item)))
     return results
   })
   jexl.addTransform('filter', async (val: any[], expr: any) => {
     const subJexl = new Jexl()
     Object.assign(subJexl.grammar.functions, jexl.grammar.functions)
     Object.assign(subJexl.grammar.transforms, jexl.grammar.transforms)
-    const results = await Promise.all(
-      val.map(item => subJexl.eval(expr, item))
-    )
+    const results = await Promise.all(val.map((item) => subJexl.eval(expr, item)))
     return val.filter((_, i) => results[i])
   })
 
@@ -132,19 +129,14 @@ async function realWorldUseCases() {
     })
   })
 
-  console.log(
-    'Products with final prices:',
-    await jexl.eval('formatProducts(products)', ecommerceData)
-  )
+  console.log('Products with final prices:', await jexl.eval('formatProducts(products)', ecommerceData))
 
   // Personalized recommendations
   jexl.addFunction('getRecommendations', (products: any[], user: any) => {
     return products
       .filter(
         (p: any) =>
-          p.price <= user.budget &&
-          user.preferences.some((pref: string) => p.tags.includes(pref)) &&
-          p.rating >= 4.0
+          p.price <= user.budget && user.preferences.some((pref: string) => p.tags.includes(pref)) && p.rating >= 4.0
       )
       .map((p: any) => {
         const finalPrice = Math.round(p.price * (1 - p.discount) * 100) / 100
@@ -155,10 +147,7 @@ async function realWorldUseCases() {
         }
       })
   })
-  console.log(
-    'Personalized recommendations:',
-    await jexl.eval('getRecommendations(products, user)', ecommerceData)
-  )
+  console.log('Personalized recommendations:', await jexl.eval('getRecommendations(products, user)', ecommerceData))
   console.log()
 
   // Employee HR System
@@ -232,37 +221,27 @@ async function realWorldUseCases() {
         yearsOfService: years,
         currentRating: lastPerf.rating,
         goalCompletion: (lastPerf.achieved / lastPerf.goals) * 100,
-        recommendedRaise: (jexl as any).grammar.functions.calculateRaise(
-          e.salary,
-          lastPerf.rating,
-          years
-        ),
+        recommendedRaise: (jexl as any).grammar.functions.calculateRaise(e.salary, lastPerf.rating, years),
       }
     })
   })
 
-  console.log(
-    'Employee performance summary:',
-    await jexl.eval('summarizePerformance(employees, company)', hrData)
-  )
+  console.log('Employee performance summary:', await jexl.eval('summarizePerformance(employees, company)', hrData))
 
   // Skills gap analysis
   jexl.addFunction('createSkillsInventory', (employees: any[]) => {
-    const allSkills = employees.flatMap(e => e.skills)
+    const allSkills = employees.flatMap((e) => e.skills)
     const uniqueSkills = [...new Set(allSkills)]
-    return uniqueSkills.map(skill => {
-      const employeesWithSkill = employees.filter(e => e.skills.includes(skill))
+    return uniqueSkills.map((skill) => {
+      const employeesWithSkill = employees.filter((e) => e.skills.includes(skill))
       return {
         skill,
         employeeCount: employeesWithSkill.length,
-        departments: [...new Set(employeesWithSkill.map(e => e.department))],
+        departments: [...new Set(employeesWithSkill.map((e) => e.department))],
       }
     })
   })
-  console.log(
-    'Skills inventory:',
-    await jexl.eval('createSkillsInventory(employees)', hrData)
-  )
+  console.log('Skills inventory:', await jexl.eval('createSkillsInventory(employees)', hrData))
   console.log()
 
   // Financial Report Generation
@@ -308,12 +287,8 @@ async function realWorldUseCases() {
   )
 
   jexl.addFunction('getFinancialSummary', (transactions: any[]) => {
-    const totalRevenue = transactions
-      .filter(t => t.type === 'revenue')
-      .reduce((sum, t) => sum + t.amount, 0)
-    const totalExpenses = transactions
-      .filter(t => t.type === 'expense')
-      .reduce((sum, t) => sum + t.amount, 0)
+    const totalRevenue = transactions.filter((t) => t.type === 'revenue').reduce((sum, t) => sum + t.amount, 0)
+    const totalExpenses = transactions.filter((t) => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0)
     const netIncome = totalRevenue + totalExpenses
     return {
       totalRevenue,
@@ -324,17 +299,14 @@ async function realWorldUseCases() {
     }
   })
 
-  console.log(
-    'Financial summary:',
-    await jexl.eval('getFinancialSummary(transactions)', financialData)
-  )
+  console.log('Financial summary:', await jexl.eval('getFinancialSummary(transactions)', financialData))
 
   // Department spending analysis
   jexl.addFunction('analyzeSpending', (transactions: any[]) => {
-    const spending = transactions.filter(t => t.type === 'expense')
-    const depts = [...new Set(spending.map(t => t.department))]
-    return depts.map(dept => {
-      const deptTxns = spending.filter(t => t.department === dept)
+    const spending = transactions.filter((t) => t.type === 'expense')
+    const depts = [...new Set(spending.map((t) => t.department))]
+    return depts.map((dept) => {
+      const deptTxns = spending.filter((t) => t.department === dept)
       const spent = deptTxns.reduce((sum, t) => sum + t.amount, 0) * -1
       return {
         department: dept,
@@ -344,10 +316,7 @@ async function realWorldUseCases() {
       }
     })
   })
-  console.log(
-    'Department spending analysis:',
-    await jexl.eval('analyzeSpending(transactions)', financialData)
-  )
+  console.log('Department spending analysis:', await jexl.eval('analyzeSpending(transactions)', financialData))
   console.log()
 
   // Data Validation System
@@ -439,10 +408,7 @@ async function realWorldUseCases() {
     }))
   })
 
-  console.log(
-    'User validation results:',
-    await jexl.eval('getValidationResults(userRegistrations)', validationData)
-  )
+  console.log('User validation results:', await jexl.eval('getValidationResults(userRegistrations)', validationData))
 
   // Bulk validation summary
   jexl.addFunction('getValidationSummary', (users: any[]) => {
@@ -461,10 +427,7 @@ async function realWorldUseCases() {
       commonErrors,
     }
   })
-  console.log(
-    'Validation summary:',
-    await jexl.eval('getValidationSummary(userRegistrations)', validationData)
-  )
+  console.log('Validation summary:', await jexl.eval('getValidationSummary(userRegistrations)', validationData))
   console.log()
 
   // Business Rules Engine

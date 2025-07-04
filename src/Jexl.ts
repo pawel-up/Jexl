@@ -354,8 +354,8 @@ export class Jexl {
    * const result2 = await complexExpr.eval({ items: luxuryItems })
    * ```
    */
-  compile(expression: string): Expression {
-    const exprObj = this.createExpression(expression)
+  compile<R>(expression: string): Expression<R> {
+    const exprObj = this.createExpression<R>(expression)
     return exprObj.compile()
   }
 
@@ -391,8 +391,8 @@ export class Jexl {
    * expressions[1].compile()
    * ```
    */
-  createExpression(expression: string): Expression {
-    return new Expression(this.grammar, expression)
+  createExpression<R = unknown>(expression: string): Expression<R> {
+    return new Expression<R>(this.grammar, expression)
   }
 
   /**
@@ -511,8 +511,8 @@ export class Jexl {
    * }) // 2
    * ```
    */
-  eval(expression: string, context: Context = {}): Promise<unknown> {
-    const exprObj = this.createExpression(expression)
+  eval<R = unknown>(expression: string, context: Context = {}): Promise<R> {
+    const exprObj = this.createExpression<R>(expression)
     return exprObj.eval(context)
   }
 

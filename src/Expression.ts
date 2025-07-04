@@ -68,8 +68,10 @@ export type Context = Record<string, unknown>
  * - **Reusability**: Compile once, evaluate many times
  * - **Efficiency**: No repeated parsing overhead
  * - **Type Safety**: Compile-time validation of expression syntax
+ *
+ * @template R The type of the result returned by the expression evaluation
  */
-export default class Expression {
+export default class Expression<R = unknown> {
   /** The grammar configuration used for parsing and evaluation */
   _grammar: Grammar
   /** The original expression string provided during construction */
@@ -105,11 +107,9 @@ export default class Expression {
   compile(): this {
     const lexer = new Lexer(this._grammar)
     const parser = new Parser(this._grammar)
-    const tokens = lexer.tokenize(this._exprStr)
-    parser.addTokens(tokens)
-    const result = parser.complete()
+    parser.addTokens(lexer.tokenize(this._exprStr))
     // Convert Token to ASTNode - they have compatible structures
-    this._ast = result as ASTNode | null
+    this._ast = parser.complete() as ASTNode | null
     return this
   }
 
@@ -119,7 +119,7 @@ export default class Expression {
    *      made accessible to the Jexl expression when evaluating it
    * @returns resolves with the result of the evaluation.
    */
-  eval(context: Context = {}): Promise<unknown> {
+  eval(context: Context = {}): Promise<R> {
     return this._eval(context)
   }
 
@@ -128,7 +128,7 @@ export default class Expression {
    * @param context The evaluation context
    * @returns Promise that resolves to the evaluation result
    */
-  async _eval(context: Context): Promise<unknown> {
+  async _eval(context: Context): Promise<R> {
     const ast = this._getAst()
     if (!ast) {
       throw new Error('No AST available for evaluation. Expression may not be compiled.')
@@ -139,7 +139,7 @@ export default class Expression {
       context,
       context // Use the same context as relative context
     )
-    return evaluator.eval(ast)
+    return evaluator.eval(ast) as Promise<R>
   }
 
   /**

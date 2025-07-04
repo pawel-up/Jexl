@@ -18,10 +18,9 @@ async function basicUsageExamples() {
 
   // Add common transforms and functions that will be used in examples
   jexl.addTransform('indexOf', (str: string, searchValue: string) => str.indexOf(searchValue))
-  jexl.addTransform('join', (arr: unknown[], separator: string = ',') => arr.join(separator))
+  jexl.addTransform('join', (arr: unknown[], separator = ',') => arr.join(separator))
   jexl.addTransform('toString', (value: unknown) => String(value))
-  jexl.addTransform('map', (arr: Record<string, unknown>[], property: string) => 
-    arr.map(item => item[property]))
+  jexl.addTransform('map', (arr: Record<string, unknown>[], property: string) => arr.map((item) => item[property]))
   jexl.addTransform('sum', (arr: number[]) => arr.reduce((a, b) => a + b, 0))
 
   // Sample context data

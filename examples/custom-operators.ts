@@ -14,10 +14,10 @@ async function customOperatorsExamples() {
   console.log('=== Custom Operators Examples ===\n')
 
   // Add transforms that will be used in examples
-  jexl.addTransform('map', (arr: Record<string, unknown>[], property: string) => 
-    arr.map(item => item[property]))
-  jexl.addTransform('filter', (arr: Record<string, unknown>[], property: string, value: unknown) => 
-    arr.filter(item => item[property] === value))
+  jexl.addTransform('map', (arr: Record<string, unknown>[], property: string) => arr.map((item) => item[property]))
+  jexl.addTransform('filter', (arr: Record<string, unknown>[], property: string, value: unknown) =>
+    arr.filter((item) => item[property] === value)
+  )
   jexl.addTransform('length', (arr: unknown[]) => arr.length)
   jexl.addTransform('reduce', (arr: number[], fn: string, initial: number) => {
     // For demo purposes, only supporting sum operation
@@ -157,14 +157,15 @@ async function customOperatorsExamples() {
   console.log('--- Complex Expressions with Custom Operators ---')
 
   // Add helper function for power comparison
-  jexl.addFunction('powerFilter', (users: Record<string, unknown>[]) => 
-    users.filter(user => Math.pow(user.age as number, 2) > 700).map(user => user.name))
+  jexl.addFunction('powerFilter', (users: Record<string, unknown>[]) =>
+    users.filter((user) => Math.pow(user.age as number, 2) > 700).map((user) => user.name)
+  )
   console.log('Power and comparison:', await jexl.eval('powerFilter(users)', context))
 
   // Add helper function for range mapping
   jexl.addFunction('rangeSquares', (numbers: number[]) => {
-    const range = Array.from({length: numbers.length}, (_, i) => i + 1)
-    return range.map(i => i * i)
+    const range = Array.from({ length: numbers.length }, (_, i) => i + 1)
+    return range.map((i) => i * i)
   })
   console.log('Range with length:', await jexl.eval('rangeSquares(numbers)', context))
 
@@ -173,19 +174,21 @@ async function customOperatorsExamples() {
   console.log('Mathematical operations:', await jexl.eval('√(users[0].age ** 2 + users[1].age ** 2)', context))
 
   // Add helper function for item extraction and uniqueness
-  jexl.addFunction('uniqueItems', (inventory: Record<string, unknown>[]) => 
-    [...new Set(inventory.map(item => item.item))])
+  jexl.addFunction('uniqueItems', (inventory: Record<string, unknown>[]) => [
+    ...new Set(inventory.map((item) => item.item)),
+  ])
   console.log('Array operations:', await jexl.eval('uniqueItems(inventory)', context))
 
   // Add helper function for type filtering
-  jexl.addFunction('numberScoreUsers', (users: Record<string, unknown>[]) => 
-    users.filter(user => typeof user.score === 'number').map(user => user.name))
+  jexl.addFunction('numberScoreUsers', (users: Record<string, unknown>[]) =>
+    users.filter((user) => typeof user.score === 'number').map((user) => user.name)
+  )
   console.log('Type checking in filter:', await jexl.eval('numberScoreUsers(users)', context))
 
   // Add helper function for inventory calculation
-  jexl.addFunction('totalInventoryValue', (inventory: Record<string, unknown>[]) => 
-    inventory.map(item => (item.quantity as number) * (item.price as number))
-             .reduce((a, b) => a + b, 0))
+  jexl.addFunction('totalInventoryValue', (inventory: Record<string, unknown>[]) =>
+    inventory.map((item) => (item.quantity as number) * (item.price as number)).reduce((a, b) => a + b, 0)
+  )
   console.log('Complex calculation:', await jexl.eval('totalInventoryValue(inventory)', context))
   console.log()
 
@@ -214,13 +217,15 @@ async function customOperatorsExamples() {
   })
 
   // Add helper function for user grades
-  jexl.addFunction('userGrades', (users: Record<string, unknown>[]) => 
-    users.map(user => `${user.name}: ${jexl.grammar.functions.grade(user.score as number)}`))
+  jexl.addFunction('userGrades', (users: Record<string, unknown>[]) =>
+    users.map((user) => `${user.name}: ${jexl.grammar.functions.grade(user.score as number)}`)
+  )
   console.log('User grades:', await jexl.eval('userGrades(users)', context))
 
   // Add helper function for age group categorization
-  jexl.addFunction('ageGroupNames', (users: Record<string, unknown>[]) => 
-    users.map(user => `${user.name} (Group ${Math.floor((user.age as number) / 10)}0s)`))
+  jexl.addFunction('ageGroupNames', (users: Record<string, unknown>[]) =>
+    users.map((user) => `${user.name} (Group ${Math.floor((user.age as number) / 10)}0s)`)
+  )
   console.log('Age groups (by decade):', await jexl.eval('ageGroupNames(users)', context))
 
   // Text analysis

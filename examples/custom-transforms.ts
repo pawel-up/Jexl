@@ -14,10 +14,8 @@ async function customTransformsExamples() {
   console.log('=== Custom Transforms Examples ===\n')
 
   // Add common array transforms that will be used in examples
-  jexl.addTransform('map', (arr: Record<string, unknown>[], property: string) => 
-    arr.map(item => item[property]))
-  jexl.addTransform('slice', (arr: unknown[], start: number, end?: number) => 
-    arr.slice(start, end))
+  jexl.addTransform('map', (arr: Record<string, unknown>[], property: string) => arr.map((item) => item[property]))
+  jexl.addTransform('slice', (arr: unknown[], start: number, end?: number) => arr.slice(start, end))
 
   // Sample data
   const context = {

@@ -30,9 +30,9 @@ async function quickStart() {
   // Basic evaluation
   console.log('Simple math:', await jexl.eval('2 + 3 * 4'))
   console.log('User name:', await jexl.eval('user.name', context))
-  
+
   // Add join transform for arrays
-  jexl.addTransform('join', (arr: unknown[], separator: string = ',') => arr.join(separator))
+  jexl.addTransform('join', (arr: unknown[], separator = ',') => arr.join(separator))
   console.log('User skills:', await jexl.eval('user.skills | join(", ")', context))
   console.log('Completed orders:', await jexl.eval('orders[.status == "completed"]', context))
 
