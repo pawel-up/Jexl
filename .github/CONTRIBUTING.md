@@ -10,14 +10,14 @@ Before you start working on any code or architecture, please, report an issue in
 
 ### Code and PR
 
-After you have created an issue report and picked the right repository you now are enabled to code the change. After you finish **introduce relevant tests**. We can't accept PRs that contains an untested code. After that create a PR to the relevant repository. We will get back to you as soon as possible. Heel free to mention us directly in the PR so we will get a notification from GitHub.
+After you have created an issue report and picked the right repository you now are enabled to code the change. After you finish **introduce relevant tests**. We can't accept PRs that contains an untested code. After that create a PR to the relevant repository. We will get back to you as soon as possible. Feel free to mention us directly in the PR so we will get a notification from GitHub.
 
 ### Things to consider
 
 - Introduce changes that other users will benefit from
 - Significant architecture changes make take longer to be accepted giving the complexity of the dependencies. API Client has a shared code with MuleSoft's API Console. We need to ensure the stability of both projects.
 - Understand the reasons for the distributed architecture and honor the structure of the project. Most likely you want to introduce changes to the `core` repository. Less likely others.
-- We are here to help. Ask us questions about the architecture or how stuff work.
+- We are here to help. Ask us questions about the architecture or how stuff works.
 
 ---
 

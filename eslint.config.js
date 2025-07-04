@@ -11,7 +11,6 @@ export const GLOBAL_IGNORE_LIST = [
   '.husky/',
   '.vscode/',
   '.wireit/',
-  'coverage/',
   'node_modules',
   '*.min.*',
   '*.d.ts',

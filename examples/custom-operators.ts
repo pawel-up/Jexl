@@ -68,10 +68,10 @@ async function customOperatorsExamples() {
   console.log('Case-insensitive comparison:', await jexl.eval('"HELLO" ~= "hello"'))
   console.log('Name search:', await jexl.eval('users[.name ~= "ALICE"]', context))
 
-  // String contains operator (??)
-  jexl.addBinaryOp('??', 20, (left: string, right: string) => left.toLowerCase().includes(right.toLowerCase()))
-  console.log('String contains:', await jexl.eval('"JavaScript" ?? "script"'))
-  console.log('Text search:', await jexl.eval('text ?? "world"', context))
+  // String contains operator (~?)
+  jexl.addBinaryOp('~?', 20, (left: string, right: string) => left.toLowerCase().includes(right.toLowerCase()))
+  console.log('String contains:', await jexl.eval('"JavaScript" ~? "script"'))
+  console.log('Text search:', await jexl.eval('text ~? "world"', context))
 
   // Array intersection (&)
   jexl.addBinaryOp('&', 25, (left: number[], right: number[]) => left.filter((item) => right.includes(item)))

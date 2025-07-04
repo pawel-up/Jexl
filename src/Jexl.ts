@@ -601,7 +601,7 @@ export class Jexl {
    */
   removeOp(operator: string): void {
     if (
-      this.grammar.elements[operator] &&
+      Object.prototype.hasOwnProperty.call(this.grammar.elements, operator) &&
       (this.grammar.elements[operator].type === 'binaryOp' || this.grammar.elements[operator].type === 'unaryOp')
     ) {
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete

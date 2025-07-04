@@ -163,7 +163,7 @@ jexl.addTransform('multiply', (val: number, factor: number): number => val * fac
 
 ### Backwards Compatibility
 
-- ✅ **100% API compatible** - existing code works without changes
+- ✅ **99% API compatible** - existing code mostly works without changes. We removed the `evalSync()` methods.
 - ✅ **Same expression syntax** - no need to update your expressions
 - ✅ **Same behavior** - results are identical to the original library
 - ✅ **Same performance** - optimized for modern JavaScript engines
@@ -333,8 +333,8 @@ jexl.addTransform('lower', (val) => val.toLowerCase())
 
 | Expression                                 | Result                |
 | ------------------------------------------ | --------------------- |
-| "Pam Poovey"&#124;lower&#124;split[' '](1) | poovey                |
-| "password==guest"&#124;split('=' + '=')    | ['password', 'guest'] |
+| `"Pam Poovey" \| lower \| split[' '](1)` | poovey                |
+| `"password==guest" \| split('=' + '=')`  | ['password', 'guest'] |
 
 #### Advanced Transforms
 
@@ -563,7 +563,7 @@ interface ValidationResult {
 }
 
 interface ValidationIssue {
-  type: 'error' | 'warning' | 'info'
+  severity: 'error' | 'warning' | 'info'
   message: string
   position?: number // Character position in expression
   line?: number // Line number (for multi-line expressions)

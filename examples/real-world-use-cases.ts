@@ -4,7 +4,7 @@
  *
  * This file demonstrates practical, real-world applications of Jexl
  * including data validation, report generation, dynamic filtering,
- * business rules, and API data processing.
+ * business process automation.
  */
 
 import { Jexl } from '../src/Jexl.js'
@@ -14,27 +14,11 @@ async function realWorldUseCases() {
 
   // Add custom transforms and functions
   jexl.addTransform('sum', (val: number[]) => val.reduce((a, b) => a + b, 0))
+  jexl.addFunction('sum', (val: number[]) => val.reduce((a, b) => a + b, 0))
   jexl.addTransform('flat', (val: any[][]) => val.flat())
   jexl.addTransform('unique', (val: any[]) => [...new Set(val)])
   jexl.addFunction('len', (val: any[]) => val.length)
   jexl.addFunction('last', (val: any[]) => (val && val.length ? val[val.length - 1] : undefined))
-  jexl.addTransform('map', async (val: any[], expr: any) => {
-    const subJexl = new Jexl()
-    // Manually add functions/transforms needed in the sub-expression context if they are not global
-    Object.assign(subJexl.grammar.functions, jexl.grammar.functions)
-    Object.assign(subJexl.grammar.transforms, jexl.grammar.transforms)
-    const results = await Promise.all(val.map((item) => subJexl.eval(expr, item)))
-    return results
-  })
-  jexl.addTransform('filter', async (val: any[], expr: any) => {
-    const subJexl = new Jexl()
-    Object.assign(subJexl.grammar.functions, jexl.grammar.functions)
-    Object.assign(subJexl.grammar.transforms, jexl.grammar.transforms)
-    const results = await Promise.all(val.map((item) => subJexl.eval(expr, item)))
-    return val.filter((_, i) => results[i])
-  })
-
-  console.log('=== Real-world Use Cases Examples ===\n')
 
   // E-commerce Product Catalog
   const ecommerceData = {
@@ -116,37 +100,42 @@ async function realWorldUseCases() {
 
   // Price calculation with discounts
   jexl.addTransform('finalPrice', (price: number, discount: number) => Math.round(price * (1 - discount) * 100) / 100)
+
+  // Function to format all products - using a simple function instead of map
   jexl.addFunction('formatProducts', (products: any[]) => {
-    return products.map((p: any) => {
-      const finalPrice = Math.round(p.price * (1 - p.discount) * 100) / 100
-      return {
-        id: p.id,
-        name: p.name,
-        originalPrice: p.price,
-        finalPrice,
-        savings: p.price - finalPrice,
-      }
-    })
+    return products.map((product: any) => ({
+      id: product.id,
+      name: product.name,
+      originalPrice: product.price,
+      finalPrice: Math.round(product.price * (1 - product.discount) * 100) / 100,
+      savings: product.price - Math.round(product.price * (1 - product.discount) * 100) / 100,
+    }))
   })
 
   console.log('Products with final prices:', await jexl.eval('formatProducts(products)', ecommerceData))
 
-  // Personalized recommendations
+  // Personalized recommendations using idiomatic Jexl
+  jexl.addFunction('hasMatchingTag', (tags: string[], preferences: string[]) =>
+    preferences.some((pref: string) => tags.includes(pref))
+  )
+  jexl.addFunction('getMatchedTags', (tags: string[], preferences: string[]) =>
+    tags.filter((tag: string) => preferences.includes(tag))
+  )
+
+  // Function to format recommendations - demonstrating efficient filtering + mapping
   jexl.addFunction('getRecommendations', (products: any[], user: any) => {
     return products
       .filter(
         (p: any) =>
           p.price <= user.budget && user.preferences.some((pref: string) => p.tags.includes(pref)) && p.rating >= 4.0
       )
-      .map((p: any) => {
-        const finalPrice = Math.round(p.price * (1 - p.discount) * 100) / 100
-        return {
-          name: p.name,
-          price: finalPrice,
-          matchedTags: p.tags.filter((tag: string) => user.preferences.includes(tag)),
-        }
-      })
+      .map((product: any) => ({
+        name: product.name,
+        price: Math.round(product.price * (1 - product.discount) * 100) / 100,
+        matchedTags: product.tags.filter((tag: string) => user.preferences.includes(tag)),
+      }))
   })
+
   console.log('Personalized recommendations:', await jexl.eval('getRecommendations(products, user)', ecommerceData))
   console.log()
 
@@ -212,23 +201,26 @@ async function realWorldUseCases() {
   })
 
   jexl.addFunction('summarizePerformance', (employees: any[], company: any) => {
-    return employees.map((e: any) => {
-      const lastPerf = e.performance[e.performance.length - 1]
-      const years = company.currentYear - new Date(e.startDate).getFullYear()
+    return employees.map((employee: any) => {
+      const lastPerf = employee.performance[employee.performance.length - 1]
+      const years = company.currentYear - new Date(employee.startDate).getFullYear()
       return {
-        name: e.name,
-        department: e.department,
+        name: employee.name,
+        department: employee.department,
         yearsOfService: years,
         currentRating: lastPerf.rating,
         goalCompletion: (lastPerf.achieved / lastPerf.goals) * 100,
-        recommendedRaise: (jexl as any).grammar.functions.calculateRaise(e.salary, lastPerf.rating, years),
+        recommendedRaise: Math.round(
+          employee.salary *
+            ((lastPerf.rating >= 4.8 ? 0.08 : lastPerf.rating >= 4.5 ? 0.05 : 0.03) + (years >= 5 ? 0.01 : 0))
+        ),
       }
     })
   })
 
   console.log('Employee performance summary:', await jexl.eval('summarizePerformance(employees, company)', hrData))
 
-  // Skills gap analysis
+  // Skills gap analysis using idiomatic Jexl
   jexl.addFunction('createSkillsInventory', (employees: any[]) => {
     const allSkills = employees.flatMap((e) => e.skills)
     const uniqueSkills = [...new Set(allSkills)]
@@ -241,6 +233,7 @@ async function realWorldUseCases() {
       }
     })
   })
+
   console.log('Skills inventory:', await jexl.eval('createSkillsInventory(employees)', hrData))
   console.log()
 
@@ -281,27 +274,37 @@ async function realWorldUseCases() {
 
   console.log('--- Financial Reporting ---')
 
-  // Revenue and expense analysis
+  // Revenue and expense analysis using idiomatic Jexl
   jexl.addFunction('formatCurrency', (amount: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
   )
 
-  jexl.addFunction('getFinancialSummary', (transactions: any[]) => {
-    const totalRevenue = transactions.filter((t) => t.type === 'revenue').reduce((sum, t) => sum + t.amount, 0)
-    const totalExpenses = transactions.filter((t) => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0)
-    const netIncome = totalRevenue + totalExpenses
-    return {
-      totalRevenue,
-      totalExpenses: totalExpenses * -1,
-      netIncome,
-      transactionCount: transactions.length,
-      avgTransactionSize: netIncome / transactions.length,
-    }
-  })
+  // Helper functions for financial calculations
+  jexl.addFunction('sumRevenue', (transactions: any[]) =>
+    transactions.filter((t) => t.type === 'revenue').reduce((sum, t) => sum + t.amount, 0)
+  )
 
-  console.log('Financial summary:', await jexl.eval('getFinancialSummary(transactions)', financialData))
+  jexl.addFunction('sumExpenses', (transactions: any[]) =>
+    transactions.filter((t) => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0)
+  )
 
-  // Department spending analysis
+  jexl.addFunction('getAllAmounts', (transactions: any[]) => transactions.map((t) => t.amount))
+
+  console.log(
+    'Financial summary:',
+    await jexl.eval(
+      `{
+        totalRevenue: sumRevenue(transactions),
+        totalExpenses: sumExpenses(transactions) * -1,
+        netIncome: sum(getAllAmounts(transactions)),
+        transactionCount: len(transactions),
+        avgTransactionSize: sum(getAllAmounts(transactions)) / len(transactions)
+      }`,
+      financialData
+    )
+  )
+
+  // Department spending analysis using idiomatic Jexl
   jexl.addFunction('analyzeSpending', (transactions: any[]) => {
     const spending = transactions.filter((t) => t.type === 'expense')
     const depts = [...new Set(spending.map((t) => t.department))]
@@ -316,6 +319,7 @@ async function realWorldUseCases() {
       }
     })
   })
+
   console.log('Department spending analysis:', await jexl.eval('analyzeSpending(transactions)', financialData))
   console.log()
 
@@ -375,7 +379,28 @@ async function realWorldUseCases() {
   jexl.addFunction('validateUser', (user: Record<string, unknown>) => {
     const errors: string[] = []
 
-    if (!jexl.grammar.functions.isValidEmail(user.email as string)) {
+    // Inline validation functions to avoid circular references
+    const isValidEmail = (email: string) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      return emailRegex.test(email)
+    }
+
+    const isStrongPassword = (password: string) => {
+      return (
+        password.length >= 8 &&
+        /[A-Z]/.test(password) &&
+        /[a-z]/.test(password) &&
+        /[0-9]/.test(password) &&
+        /[!@#$%^&*]/.test(password)
+      )
+    }
+
+    const isValidPhone = (phone: string) => {
+      const phoneRegex = /^[\\+]?[1-9][\d]{0,15}$/
+      return phoneRegex.test(phone.replace(/[-\s\\(\\)]/g, ''))
+    }
+
+    if (!isValidEmail(user.email as string)) {
       errors.push('Invalid email format')
     }
 
@@ -383,11 +408,11 @@ async function realWorldUseCases() {
       errors.push('User must be at least 18 years old')
     }
 
-    if (!jexl.grammar.functions.isStrongPassword(user.password as string)) {
+    if (!isStrongPassword(user.password as string)) {
       errors.push('Password does not meet security requirements')
     }
 
-    if (!jexl.grammar.functions.isValidPhone(user.phone as string)) {
+    if (!isValidPhone(user.phone as string)) {
       errors.push('Invalid phone number format')
     }
 
@@ -404,15 +429,15 @@ async function realWorldUseCases() {
   jexl.addFunction('getValidationResults', (users: any[]) => {
     return users.map((user: any) => ({
       email: user.email,
-      validation: (jexl as any).grammar.functions.validateUser(user),
+      validation: jexl.grammar.functions.validateUser(user),
     }))
   })
 
   console.log('User validation results:', await jexl.eval('getValidationResults(userRegistrations)', validationData))
 
-  // Bulk validation summary
+  // Bulk validation summary using idiomatic Jexl
   jexl.addFunction('getValidationSummary', (users: any[]) => {
-    const validationResults = users.map((u: any) => (jexl as any).grammar.functions.validateUser(u))
+    const validationResults = users.map((u: any) => jexl.grammar.functions.validateUser(u))
     const commonErrors = validationResults
       .flatMap((v: any) => v.errors)
       .reduce((acc: any, error: any) => {
@@ -427,6 +452,7 @@ async function realWorldUseCases() {
       commonErrors,
     }
   })
+
   console.log('Validation summary:', await jexl.eval('getValidationSummary(userRegistrations)', validationData))
   console.log()
 
