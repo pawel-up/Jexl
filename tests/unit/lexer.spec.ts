@@ -158,14 +158,25 @@ test.group('Lexer Tokens', (group) => {
     ])
   })
 
-  test('recognizes binary operators', ({ assert }) => {
-    const tokens = inst.getTokens(['+'])
+  test('tokenizes a decimal-only number', ({ assert }) => {
+    const tokens = inst.tokenize('.5')
     assert.deepEqual(tokens, [
       {
-        type: 'binaryOp',
-        value: '+',
-        raw: '+',
+        type: 'literal',
+        value: 0.5,
+        raw: '.5',
       },
+    ])
+  })
+
+  test('recognizes binary operators in context', ({ assert }) => {
+    // To test a binary operator, it must be in a binary context (e.g., 1 + 2).
+    // The lexer identifies '+' as a binaryOp because it follows an operand.
+    const tokens = inst.tokenize('1+2')
+    assert.deepEqual(tokens, [
+      { type: 'literal', value: 1, raw: '1' },
+      { type: 'binaryOp', value: '+', raw: '+' },
+      { type: 'literal', value: 2, raw: '2' },
     ])
   })
 

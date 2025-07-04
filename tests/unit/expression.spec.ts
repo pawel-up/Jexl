@@ -39,7 +39,7 @@ test.group('Expression', (group) => {
     const expr = inst.createExpression('2++2')
     await assert.rejects(async () => {
       await expr.eval()
-    }, /unexpected/)
+    }, /unexpected/i)
   })
 
   test('eval passes context', async ({ assert }) => {

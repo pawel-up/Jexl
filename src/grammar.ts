@@ -148,7 +148,12 @@ export const getGrammar = (): Grammar => ({
     '+': {
       type: 'binaryOp',
       precedence: 30,
-      eval: (left, right) => (left as number) + (right as number),
+      eval: (left, right) => {
+        if (right === undefined) {
+          return +(left as any)
+        }
+        return (left as number) + (right as number)
+      },
     } as BinaryElement,
     '-': {
       type: 'binaryOp',

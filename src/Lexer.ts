@@ -36,22 +36,22 @@ const preOpRegexElements = [
   '\\bnull\\b',
   // Undefined
   '\\bundefined\\b',
+  // Numerics (without negative symbol)
+  '(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)',
 ]
 /**
  * Regex elements that are processed after operator elements.
- * Includes identifiers and numeric literals (without negative symbol).
+ * Includes identifiers.
  */
 const postOpRegexElements = [
   // Identifiers
   '[a-zA-Zа-яА-Я_\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF\\$][a-zA-Z0-9а-яА-Я_\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF\\$]*',
-  // Numerics (without negative symbol)
-  '(?:(?:[0-9]*\\.[0-9]+)|[0-9]+)',
 ]
 /**
  * Token types after which a minus sign should be treated as a negation operator
  * rather than a binary subtraction operator.
  */
-const minusNegatesAfter = ['binaryOp', 'unaryOp', 'openParen', 'openBracket', 'question', 'colon', 'comma']
+const unaryOpsAfter = ['binaryOp', 'unaryOp', 'openParen', 'openBracket', 'question', 'colon', 'comma']
 
 /**
  * Represents a lexical token in a Jexl expression.
@@ -171,7 +171,16 @@ export default class Lexer {
         if (tokens.length > 0) {
           tokens[tokens.length - 1].raw += element
         }
-      } else if (element === '-' && this._isNegative(tokens)) {
+      } else if ((element === '+' || element === '-') && this._isUnary(tokens)) {
+        const lastToken = tokens.length > 0 ? tokens[tokens.length - 1] : null
+        if (
+          lastToken &&
+          lastToken.type === 'binaryOp' &&
+          (lastToken.value === '+' || lastToken.value === '-') &&
+          !lastToken.raw.match(/\s$/)
+        ) {
+          throw new Error(`Unexpected token '${element}' after operator '${lastToken.value}'`)
+        }
         let nextElement = ''
         for (let j = i + 1; j < elements.length; j++) {
           if (!this._isWhitespace(elements[j])) {
@@ -179,14 +188,22 @@ export default class Lexer {
             break
           }
         }
-        if (nextElement.match(numericRegex)) {
-          negate = true
+        if (element === '-') {
+          if (nextElement.match(numericRegex)) {
+            negate = true
+          } else {
+            const token = this._createToken(element)
+            token.type = 'unaryOp'
+            tokens.push(token)
+          }
         } else {
-          // It's a unary minus on a non-numeric token (identifier, sub-expression)
-          // so we'll emit a unaryOp token and let the parser handle it.
-          const token = this._createToken(element)
-          token.type = 'unaryOp'
-          tokens.push(token)
+          // Unary plus. If it's not before a number, it's a unary op.
+          // Otherwise, it's optional and we can just ignore it.
+          if (!nextElement.match(numericRegex)) {
+            const token = this._createToken(element)
+            token.type = 'unaryOp'
+            tokens.push(token)
+          }
         }
       } else {
         if (negate) {
@@ -332,14 +349,14 @@ export default class Lexer {
    * processed.
    * @param {Array<Object>} tokens An array of tokens already processed
    * @returns {boolean} true if adding a '-' should be considered a negative
-   *      symbol; false otherwise
+   *      symbol or a '+' should be considered a positive symbol; false otherwise
    * @private
    */
-  _isNegative(tokens: Token[]): boolean {
+  _isUnary(tokens: Token[]): boolean {
     if (!tokens.length) return true
     const lastToken = tokens[tokens.length - 1]
     if (!lastToken) return true
-    return minusNegatesAfter.some((type) => type === lastToken.type)
+    return unaryOpsAfter.some((type) => type === lastToken.type)
   }
 
   /**

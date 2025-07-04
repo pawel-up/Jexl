@@ -53,7 +53,7 @@ test.group('Jexl eval', (group) => {
   test('rejects Promise on error', async ({ assert }) => {
     await assert.rejects(async () => {
       await inst.eval('2++2')
-    }, /unexpected/)
+    }, /unexpected/i)
   })
 
   test('passes context', async ({ assert }) => {
@@ -72,6 +72,30 @@ test.group('Jexl eval', (group) => {
   test('handles logical operator precedence correctly', async ({ assert }) => {
     const result = await inst.eval('true && true || false && false')
     assert.isTrue(result)
+  })
+
+  test('handles decimal-only numbers', async ({ assert }) => {
+    const result = await inst.eval('2 + .5')
+    assert.equal(result, 2.5)
+  })
+
+  test('handles unary plus', async ({ assert }) => {
+    const result = await inst.eval('1 * +2')
+    assert.equal(result, 2)
+  })
+
+  test('rejects ambiguous operators', async ({ assert }) => {
+    await assert.rejects(async () => inst.eval('2++2'), /Unexpected token/)
+    await assert.rejects(async () => inst.eval('2--2'), /Unexpected token/)
+    await assert.rejects(async () => inst.eval('2+-2'), /Unexpected token/)
+    await assert.rejects(async () => inst.eval('2-+2'), /Unexpected token/)
+  })
+
+  test('allows unary operators with space', async ({ assert }) => {
+    assert.equal(await inst.eval('2+ +2'), 4)
+    assert.equal(await inst.eval('2- -2'), 4)
+    assert.equal(await inst.eval('2 + -2'), 0)
+    assert.equal(await inst.eval('2 - +2'), 0)
   })
 })
 
@@ -202,6 +226,11 @@ test.group('Jexl eval with unary minus on expressions', (group) => {
     const result = await inst.eval('-(2+3)')
     assert.equal(result, -5)
   })
+
+  test('handles unary plus on an identifier', async ({ assert }) => {
+    const result = await inst.eval('+foo', { foo: '10' })
+    assert.equal(result, 10)
+  })
 })
 
 test.group('Jexl eval with functions in ternary', (group) => {
@@ -270,9 +299,9 @@ test.group('Jexl addBinaryOp', (group) => {
   })
 
   test('observes weight on binaryOps', async ({ assert }) => {
-    inst.addBinaryOp('**', 0, (left, right) => (left as number) * 2 + (right as number) * 2)
+    inst.addBinaryOp('**', 0, (left: number, right: number) => left * 2 + right * 2)
     inst.addBinaryOp('***', 1000, (left, right) => (left as number) * 2 + (right as number) * 2)
-    const results = await Promise.all([inst.eval('1 + 2 ** 3 + 4'), inst.eval('1 + 2 *** 3 + 4')])
+    const results = await Promise.all([inst.eval<number>('1 + 2 ** 3 + 4'), inst.eval<number>('1 + 2 *** 3 + 4')])
     assert.deepEqual(results, [20, 15])
   })
 
