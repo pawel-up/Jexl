@@ -246,4 +246,16 @@ test.group('Lexer Full Expression', (group) => {
       { type: 'literal', value: -3, raw: '-3' },
     ])
   })
+
+  test('considers minus to be negative in function args', ({ assert }) => {
+    const result = inst.tokenize('add(5, -3)')
+    assert.deepEqual(result, [
+      { type: 'identifier', value: 'add', raw: 'add' },
+      { type: 'openParen', value: '(', raw: '(' },
+      { type: 'literal', value: 5, raw: '5' },
+      { type: 'comma', value: ',', raw: ', ' },
+      { type: 'literal', value: -3, raw: '-3' },
+      { type: 'closeParen', value: ')', raw: ')' },
+    ])
+  })
 })

@@ -61,14 +61,14 @@ test.group('Math - Basic Functions', () => {
   test('max returns maximum value', async ({ assert }) => {
     assert.equal(await evalJexl('max(1, 2, 3)'), 3)
     assert.equal(await evalJexl('max(3, 1, 2)'), 3)
-    assert.equal(await evalJexl('max((-1), (-2), (-3))'), -1)
+    assert.equal(await evalJexl('max(-1, -2, -3)'), -1)
     assert.equal(await evalJexl('max(0)'), 0)
   })
 
   test('min returns minimum value', async ({ assert }) => {
     assert.equal(await evalJexl('min(1, 2, 3)'), 1)
     assert.equal(await evalJexl('min(3, 1, 2)'), 1)
-    assert.equal(await evalJexl('min((-1), (-2), (-3))'), -3)
+    assert.equal(await evalJexl('min(-1, -2, -3)'), -3)
     assert.equal(await evalJexl('min(0)'), 0)
   })
 
@@ -205,7 +205,7 @@ test.group('Math - Statistical Functions', () => {
   test('sum calculates sum of numbers', async ({ assert }) => {
     assert.equal(await evalJexl('sum(1, 2, 3)'), 6)
     assert.equal(await evalJexl('sum(0)'), 0)
-    assert.equal(await evalJexl('sum((-1), (-2), (-3))'), -6)
+    assert.equal(await evalJexl('sum(-1, -2, -3)'), -6)
     assert.equal(await evalJexl('sum(1.5, 2.5)'), 4)
   })
 
@@ -220,7 +220,7 @@ test.group('Math - Statistical Functions', () => {
   test('avg calculates average of numbers', async ({ assert }) => {
     assert.equal(await evalJexl('avg(1, 2, 3)'), 2)
     assert.equal(await evalJexl('avg(0)'), 0)
-    assert.equal(await evalJexl('avg((-1), (-2), (-3))'), -2)
+    assert.equal(await evalJexl('avg(-1, -2, -3)'), -2)
     assert.equal(await evalJexl('avg(1, 3)'), 2)
   })
 

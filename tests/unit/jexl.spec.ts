@@ -163,6 +163,16 @@ test.group('Jexl addFunction', (group) => {
     const result = await inst.eval('add1(add2(2))')
     assert.equal(result, 5)
   })
+
+  test('handles negative numbers in arguments', async ({ assert }) => {
+    inst.addFunction('add', (a: number, b: number) => a + b)
+    const result = await inst.eval('add(5, -3)')
+    assert.equal(result, 2)
+    const result2 = await inst.eval('add(-5, 3)')
+    assert.equal(result2, -2)
+    const result3 = await inst.eval('add(-5, -3)')
+    assert.equal(result3, -8)
+  })
 })
 
 test.group('Jexl addTransform', (group) => {

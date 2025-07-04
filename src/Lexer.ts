@@ -51,7 +51,7 @@ const postOpRegexElements = [
  * Token types after which a minus sign should be treated as a negation operator
  * rather than a binary subtraction operator.
  */
-const minusNegatesAfter = ['binaryOp', 'unaryOp', 'openParen', 'openBracket', 'question', 'colon']
+const minusNegatesAfter = ['binaryOp', 'unaryOp', 'openParen', 'openBracket', 'question', 'colon', 'comma']
 
 /**
  * Represents a lexical token in a Jexl expression.
