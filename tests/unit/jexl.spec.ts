@@ -177,6 +177,39 @@ test.group('Jexl addFunction', (group) => {
     assert.equal(result, 'Hello')
   })
 
+  test('allows namespace functions to be defined', async ({ assert }) => {
+    inst.addFunction('My.sayHi', () => 'Hello')
+    const result = await inst.eval('My.sayHi()')
+    assert.equal(result, 'Hello')
+  })
+
+  test('allows deeply nested namespace functions', async ({ assert }) => {
+    inst.addFunction('Utils.String.upper', (str: string) => str.toUpperCase())
+    const result = await inst.eval('Utils.String.upper("hello")')
+    assert.equal(result, 'HELLO')
+  })
+
+  test('allows namespace functions with arguments', async ({ assert }) => {
+    inst.addFunction('Math.add', (a: number, b: number) => a + b)
+    const result = await inst.eval('Math.add(5, 3)')
+    assert.equal(result, 8)
+  })
+
+  test('allows namespace functions in complex expressions', async ({ assert }) => {
+    inst.addFunction('Config.getValue', (key: string) => {
+      const config: Record<string, unknown> = { timeout: 5000, enabled: true }
+      return config[key]
+    })
+    const result = await inst.eval('Config.getValue("timeout") > 1000 && Config.getValue("enabled")')
+    assert.isTrue(result)
+  })
+
+  test('throws error for undefined namespace function', async ({ assert }) => {
+    await assert.rejects(async () => {
+      await inst.eval('Undefined.func()')
+    }, /Jexl Function Undefined\.func is not defined/)
+  })
+
   test('allows functions to be retrieved', ({ assert }) => {
     inst.addFunction('ret2', () => 2)
     const f = inst.getFunction('ret2')
@@ -528,5 +561,85 @@ test.group('evalWithDefault', (group) => {
     assert.equal(await jexl.evalWithDefault('0', {}, 10), 0)
     assert.equal(await jexl.evalWithDefault('""', {}, 'default'), '')
     assert.isFalse(await jexl.evalWithDefault('false', {}, true))
+  })
+})
+
+test.group('Jexl namespace transforms', (group) => {
+  let inst: Jexl
+
+  group.each.setup(() => {
+    inst = new Jexl()
+  })
+
+  test('should support simple namespace transforms', async ({ assert }) => {
+    inst.addTransform('String.upper', (str) => str.toUpperCase())
+    const result = await inst.eval('"hello"|String.upper')
+    assert.equal(result, 'HELLO')
+  })
+
+  test('should support nested namespace transforms', async ({ assert }) => {
+    inst.addTransform('Utils.Text.capitalize', (str) => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase())
+    const result = await inst.eval('"hELLO"|Utils.Text.capitalize')
+    assert.equal(result, 'Hello')
+  })
+
+  test('should support namespace transforms with arguments', async ({ assert }) => {
+    inst.addTransform('String.repeat', (str, count) => str.repeat(count))
+    const result = await inst.eval('"Hi "|String.repeat(3)')
+    assert.equal(result, 'Hi Hi Hi ')
+  })
+
+  test('should support chained namespace transforms', async ({ assert }) => {
+    inst.addTransform('String.lower', (str) => str.toLowerCase())
+    inst.addTransform('String.trim', (str) => str.trim())
+    const result = await inst.eval('"  HELLO WORLD  "|String.lower|String.trim')
+    assert.equal(result, 'hello world')
+  })
+
+  test('should support mix of regular and namespace transforms', async ({ assert }) => {
+    inst.addTransform('String.upper', (str) => str.toUpperCase())
+    inst.addTransform('reverse', (str) => str.split('').reverse().join(''))
+    const result = await inst.eval('"hello"|String.upper|reverse')
+    assert.equal(result, 'OLLEH')
+  })
+
+  test('should still support regular transforms', async ({ assert }) => {
+    inst.addTransform('double', (val) => val * 2)
+    const result = await inst.eval('5|double')
+    assert.equal(result, 10)
+  })
+
+  test('should throw error for undefined namespace transforms', async ({ assert }) => {
+    await assert.rejects(
+      async () => inst.eval('"test"|Undefined.transform'),
+      'Transform Undefined.transform is not defined.'
+    )
+  })
+
+  test('should support complex expressions with namespace transforms', async ({ assert }) => {
+    inst.addTransform('Math.multiply', (val, factor) => val * factor)
+    const result = await inst.eval('((5 + 3)|Math.multiply(2)) + " times"')
+    assert.equal(result, '16 times')
+  })
+
+  test('should support deeply nested namespace transforms', async ({ assert }) => {
+    inst.addTransform('Utils.String.Format.title', (str) =>
+      str.replace(/\w\S*/g, (txt: string) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
+    )
+    const result = await inst.eval('"hello world"|Utils.String.Format.title')
+    assert.equal(result, 'Hello World')
+  })
+
+  test('should support namespace transforms with multiple arguments', async ({ assert }) => {
+    inst.addTransform('String.replace', (str, search, replacement) => str.replace(new RegExp(search, 'g'), replacement))
+    const result = await inst.eval('"hello world"|String.replace("l", "x")')
+    assert.equal(result, 'hexxo worxd')
+  })
+
+  test('should support namespace functions alongside namespace transforms', async ({ assert }) => {
+    inst.addFunction('Utils.format', (template, value) => template.replace('{value}', value))
+    inst.addTransform('String.upper', (str) => str.toUpperCase())
+    const result = await inst.eval('("hello"|String.upper) + " " + Utils.format("Result: {value}", "world")')
+    assert.equal(result, 'HELLO Result: world')
   })
 })

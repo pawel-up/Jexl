@@ -50,9 +50,10 @@
     "example:transforms": "node --import ts-node-maintained/register/esm --enable-source-maps examples/custom-transforms.ts",
     "example:functions": "node --import ts-node-maintained/register/esm --enable-source-maps examples/custom-functions.ts",
     "example:operators": "node --import ts-node-maintained/register/esm --enable-source-maps examples/custom-operators.ts",
+    "example:namespace": "node --import ts-node-maintained/register/esm --enable-source-maps examples/namespace-functions-transforms.ts",
     "example:advanced": "node --import ts-node-maintained/register/esm --enable-source-maps examples/advanced-features.ts",
     "example:real-world": "node --import ts-node-maintained/register/esm --enable-source-maps examples/real-world-use-cases.ts",
-    "example:all": "npm run example:basic && npm run example:transforms && npm run example:functions && npm run example:operators && npm run example:advanced && npm run example:real-world"
+    "example:all": "npm run example:basic && npm run example:transforms && npm run example:functions && npm run example:operators && npm run example:namespace && npm run example:advanced && npm run example:real-world"
   },
   "repository": {
     "type": "git",

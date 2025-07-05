@@ -195,6 +195,7 @@ export const states: Record<string, StateConfig> = {
   traverse: {
     tokenTypes: {
       identifier: { toState: 'identifier' },
+      pipe: { toState: 'expectTransform' },
     },
   },
   filter: {

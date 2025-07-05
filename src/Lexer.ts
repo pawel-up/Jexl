@@ -37,7 +37,7 @@ const preOpRegexElements = [
   // Undefined
   '\\bundefined\\b',
   // Numerics (without negative symbol)
-  '(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)',
+  '(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)',
 ]
 /**
  * Regex elements that are processed after operator elements.

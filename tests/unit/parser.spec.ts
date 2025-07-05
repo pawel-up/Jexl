@@ -688,26 +688,22 @@ test.group('Parser Functions and Transforms', (group) => {
       pool: 'transforms',
       args: [
         {
-          type: 'Identifier',
-          value: 'baz',
-          from: {
-            type: 'FunctionCall',
-            name: 'tr2',
-            pool: 'transforms',
-            args: [
-              {
-                type: 'FunctionCall',
-                name: 'tr1',
-                pool: 'transforms',
-                args: [
-                  {
-                    type: 'Identifier',
-                    value: 'foo',
-                  },
-                ],
-              },
-            ],
-          },
+          type: 'FunctionCall',
+          name: 'tr2.baz',
+          pool: 'transforms',
+          args: [
+            {
+              type: 'FunctionCall',
+              name: 'tr1',
+              pool: 'transforms',
+              args: [
+                {
+                  type: 'Identifier',
+                  value: 'foo',
+                },
+              ],
+            },
+          ],
         },
         {
           type: 'ObjectLiteral',

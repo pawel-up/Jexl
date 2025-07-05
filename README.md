@@ -29,6 +29,7 @@ This modernized version of Jexl brings several key improvements over the origina
 ### 📦 **Developer-Friendly**
 
 - **Flexible function signatures** - define transforms with specific parameter types
+- **Namespace support** - organize functions and transforms with dot notation (e.g., `Utils.String.upper`, `Api.User.getName()`)
 - **Better error handling** and debugging experience
 - **Consistent API** that works seamlessly in both Node.js and modern browsers
 - **Tree-shakeable** for optimal bundle sizes
@@ -92,6 +93,12 @@ jexl.addTransform('upper', (val) => val.toUpperCase())
 await jexl.eval('"duchess"|upper + " " + name.last|upper', context)
 // "DUCHESS ARCHER"
 
+// Namespace transforms (NEW!)
+jexl.addTransform('String.upper', (val) => val.toUpperCase())
+jexl.addTransform('String.repeat', (val, times) => val.repeat(times))
+await jexl.eval('"hi"|String.repeat(3)|String.upper', context)
+// "HIHIHI"
+
 // Transform asynchronously, with arguments
 jexl.addTransform('getStat', async (val, stat) => dbSelectByLastName(val, stat))
 try {
@@ -105,6 +112,13 @@ try {
 jexl.addFunction('getOldestAgent', () => db.getOldestAgent())
 await jexl.eval('age == getOldestAgent().age', context)
 // false
+
+// Namespace functions (NEW!)
+jexl.addFunction('Math.max', (a, b) => Math.max(a, b))
+jexl.addFunction('Utils.String.slugify', (text) =>
+  text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))
+await jexl.eval('Math.max(age, 25)', context)
+// 36
 
 // Add your own (a)synchronous operators
 // Here's a case-insensitive string equality
@@ -149,9 +163,9 @@ import jexl from 'jexl'
 import { Jexl } from '@pawel-up/jexl'
 ```
 
-### Enhanced Transform Definitions
+### Enhanced Transform and Function Definitions
 
-The API remains the same, but you can now use proper TypeScript types:
+The API remains the same, but you can now use proper TypeScript types and namespace organization:
 
 ```typescript
 // Before: No type safety
@@ -159,6 +173,16 @@ jexl.addTransform('multiply', (val, factor) => val * factor)
 
 // Now: Full type safety (optional but recommended)
 jexl.addTransform('multiply', (val: number, factor: number): number => val * factor)
+
+// NEW: Namespace support for better organization
+jexl.addTransform('Math.multiply', (val: number, factor: number): number => val * factor)
+jexl.addTransform('String.upper', (val: string): string => val.toUpperCase())
+jexl.addFunction('Utils.String.slugify', (text: string): string =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+)
 ```
 
 ### Backwards Compatibility
@@ -367,6 +391,159 @@ var expr = 'xmlDoc|xml.Employees.Employee[.LastName == "Figgis"].FirstName'
 jexl.eval(expr, context).then(console.log) // Output: Cyril
 ```
 
+### Namespace Functions and Transforms
+
+Jexl supports organizing functions and transforms into namespaces using dot notation. This allows you to create hierarchical structures and avoid naming conflicts in large applications.
+
+#### Namespace Functions
+
+Functions can be organized into namespaces by using dot-separated names when registering them:
+
+```javascript
+// Register namespace functions
+jexl.addFunction('Math.max', (a, b) => Math.max(a, b))
+jexl.addFunction('Utils.String.slugify', (text) =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+)
+jexl.addFunction('Api.User.getName', async (userId) => {
+  const user = await fetchUser(userId)
+  return user.name
+})
+
+// Use namespace functions in expressions
+await jexl.eval('Math.max(10, 25)') // 35
+await jexl.eval('Utils.String.slugify("Hello World!")') // "hello-world"
+await jexl.eval('Api.User.getName(123)') // "John Doe"
+```
+
+#### Namespace Transforms
+
+Transforms can also be organized into namespaces and used with the pipe operator:
+
+```javascript
+// Register namespace transforms
+jexl.addTransform('String.upper', (val) => val.toUpperCase())
+jexl.addTransform('String.lower', (val) => val.toLowerCase())
+jexl.addTransform('String.repeat', (val, times) => val.repeat(times))
+jexl.addTransform('Utils.Text.capitalize', (text) => text.charAt(0).toUpperCase() + text.slice(1).toLowerCase())
+jexl.addTransform('Format.Date.iso', (date) => new Date(date).toISOString())
+
+// Use namespace transforms in expressions
+await jexl.eval('"hello world"|String.upper') // "HELLO WORLD"
+await jexl.eval('"HELLO WORLD"|String.lower') // "hello world"
+await jexl.eval('"hi"|String.repeat(3)') // "hihihi"
+await jexl.eval('"hello world"|Utils.Text.capitalize') // "Hello world"
+await jexl.eval('"2024-01-01"|Format.Date.iso') // "2024-01-01T00:00:00.000Z"
+```
+
+#### Deeply Nested Namespaces
+
+Namespaces can be nested to any depth:
+
+```javascript
+// Deep namespace registration
+jexl.addFunction('Company.Departments.HR.getEmployeeCount', () => 150)
+jexl.addTransform('Data.Validation.Email.isValid', (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+
+// Usage in expressions
+await jexl.eval('Company.Departments.HR.getEmployeeCount()') // 150
+await jexl.eval('"user@example.com"|Data.Validation.Email.isValid') // true
+```
+
+#### Chaining Namespace Transforms
+
+Namespace transforms can be chained just like regular transforms:
+
+```javascript
+// Register multiple namespace transforms
+jexl.addTransform('String.trim', (val) => val.trim())
+jexl.addTransform('String.upper', (val) => val.toUpperCase())
+jexl.addTransform('String.split', (val, separator) => val.split(separator))
+
+// Chain namespace transforms
+await jexl.eval('"  hello world  "|String.trim|String.upper|String.split(" ")')
+// Result: ["HELLO", "WORLD"]
+```
+
+#### Namespace Transforms with Arguments
+
+Namespace transforms support arguments just like regular transforms:
+
+```javascript
+// Transforms with multiple arguments
+jexl.addTransform('String.padStart', (val, length, padString) => val.padStart(length, padString))
+jexl.addTransform('Array.slice', (arr, start, end) => arr.slice(start, end))
+
+// Usage with arguments
+await jexl.eval('"5"|String.padStart(3, "0")') // "005"
+await jexl.eval('[1,2,3,4,5]|Array.slice(1, 4)') // [2,3,4]
+```
+
+#### Mixed Namespace and Regular Functions/Transforms
+
+You can mix namespace and regular functions/transforms in the same expression:
+
+```javascript
+// Register both types
+jexl.addFunction('min', Math.min)
+jexl.addFunction('Utils.Math.average', (arr) => arr.reduce((a, b) => a + b) / arr.length)
+jexl.addTransform('sort', (arr) => [...arr].sort())
+jexl.addTransform('Array.reverse', (arr) => [...arr].reverse())
+
+// Mix in expressions
+await jexl.eval('min(Utils.Math.average([1,2,3]), 5)') // 2
+await jexl.eval('[3,1,4,2]|sort|Array.reverse') // [4,3,2,1]
+```
+
+#### Namespace Organization Best Practices
+
+Consider organizing your functions and transforms by domain or functionality:
+
+```javascript
+// By domain
+jexl.addFunction('User.authenticate', authenticateUser)
+jexl.addFunction('User.authorize', authorizeUser)
+jexl.addFunction('Product.getPrice', getProductPrice)
+jexl.addFunction('Order.calculate', calculateOrder)
+
+// By data type
+jexl.addTransform('String.capitalize', capitalizeString)
+jexl.addTransform('String.truncate', truncateString)
+jexl.addTransform('Array.unique', uniqueArray)
+jexl.addTransform('Array.flatten', flattenArray)
+jexl.addTransform('Date.format', formatDate)
+jexl.addTransform('Date.addDays', addDaysToDate)
+
+// By utility category
+jexl.addFunction('Validation.isEmail', isValidEmail)
+jexl.addFunction('Validation.isPhoneNumber', isValidPhoneNumber)
+jexl.addTransform('Format.currency', formatCurrency)
+jexl.addTransform('Format.percentage', formatPercentage)
+```
+
+#### Migration from Non-Namespaced Functions/Transforms
+
+Existing non-namespaced functions and transforms continue to work unchanged:
+
+```javascript
+// Existing code continues to work
+jexl.addFunction('myFunc', () => 'old way')
+jexl.addTransform('myTransform', (val) => val + ' transformed')
+
+await jexl.eval('myFunc()') // "old way"
+await jexl.eval('"test"|myTransform') // "test transformed"
+
+// New namespace versions can coexist
+jexl.addFunction('Utils.myFunc', () => 'new way')
+jexl.addTransform('Utils.myTransform', (val) => val + ' namespace transformed')
+
+await jexl.eval('Utils.myFunc()') // "new way"
+await jexl.eval('"test"|Utils.myTransform') // "test namespace transformed"
+```
+
 ### Functions
 
 While Transforms are the preferred way to change one value into another value,
@@ -428,8 +605,7 @@ that resolves to the resulting value.
 
 #### jexl.addFunction(_{string} name_, \_{function} func)
 
-Adds an expression function to this Jexl instance. See the **Functions**
-section above for information on the structure of an expression function.
+Adds an expression function to this Jexl instance. The `name` can be a simple identifier (e.g., `'myFunction'`) or a namespace path using dot notation (e.g., `'Utils.String.slugify'`). See the **Functions** and **Namespace Functions and Transforms** sections above for information on the structure of an expression function.
 
 #### jexl.addFunctions(_{{}} map_)
 
@@ -438,8 +614,7 @@ function.
 
 #### jexl.addTransform(_{string} name_, _{function} transform_)
 
-Adds a transform function to this Jexl instance. See the **Transforms**
-section above for information on the structure of a transform function.
+Adds a transform function to this Jexl instance. The `name` can be a simple identifier (e.g., `'myTransform'`) or a namespace path using dot notation (e.g., `'String.upper'`). See the **Transforms** and **Namespace Functions and Transforms** sections above for information on the structure of a transform function.
 
 #### jexl.addTransforms(_{{}} map_)
 

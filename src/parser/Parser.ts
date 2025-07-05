@@ -610,6 +610,12 @@ export default class Parser {
    * // Creates: { type: 'Identifier', value: 'age', relative: true }
    * ```
    *
+   * @example Standalone relative identifier for transforms
+   * ```typescript
+   * // For ".|transform" - the dot is standalone and becomes a relative identifier
+   * // Creates: { type: 'Identifier', value: '.', relative: true }
+   * ```
+   *
    * @example Mixed access patterns
    * ```typescript
    * // For "data.items[.value > threshold].name"
@@ -676,12 +682,52 @@ export default class Parser {
    * be called.
    */
   private functionCall(): void {
+    // Check if the current cursor is already a FunctionCall with pool 'transforms'
+    // This happens when we have namespace transforms with arguments like String.repeat(3)
+    if (this._cursor && this._cursor.type === 'FunctionCall' && this._cursor.pool === 'transforms') {
+      // Don't create a new FunctionCall, just continue with the existing transform
+      return
+    }
+
+    const functionName = this._buildFullIdentifierPath(this._cursor || null)
     this._placeBeforeCursor({
       type: 'FunctionCall',
-      name: this._cursor?.value as string,
+      name: functionName,
       args: [],
       pool: 'functions',
     })
+  }
+
+  /**
+   * Builds the full namespace path for an identifier by traversing the 'from' chain.
+   * This supports namespace functions like 'My.sayHi' by building the complete name.
+   *
+   * @param node - The identifier node to build the path for
+   * @returns The full namespace path as a string
+   *
+   * @example
+   * // For identifier chain: My.sayHi
+   * // Returns: "My.sayHi"
+   *
+   * @example
+   * // For simple identifier: sayHi
+   * // Returns: "sayHi"
+   */
+  private _buildFullIdentifierPath(node: Token | null): string {
+    if (!node || node.type !== 'Identifier') {
+      return (node?.value as string) || ''
+    }
+
+    const parts: string[] = []
+    let current: Token | null = node
+
+    // Walk up the 'from' chain to collect all parts
+    while (current && current.type === 'Identifier') {
+      parts.unshift(current.value as string)
+      current = current.from || null
+    }
+
+    return parts.join('.')
   }
 
   /**
@@ -722,6 +768,29 @@ export default class Parser {
       type: 'Identifier',
       value: token.value,
     }
+
+    // Special handling for namespace transforms
+    // If we're creating an identifier that has 'from' pointing to a FunctionCall with pool 'transforms',
+    // this indicates a namespace transform like 'String.upper'
+    if (
+      this._nextIdentEncapsulate &&
+      this._cursor &&
+      this._cursor.type === 'FunctionCall' &&
+      this._cursor.pool === 'transforms'
+    ) {
+      // Rebuild the transform with the full namespace path
+      const namespaceParts: string[] = []
+      namespaceParts.push(this._cursor.name as string) // e.g., "String"
+      namespaceParts.push(token.value as string) // e.g., "upper"
+
+      const namespacedTransformName = namespaceParts.join('.')
+
+      // Update the existing transform's name instead of creating a new identifier
+      this._cursor.name = namespacedTransformName
+      this._nextIdentEncapsulate = false
+      return
+    }
+
     if (this._nextIdentEncapsulate) {
       node.from = this._cursor
       this._placeBeforeCursor(node)
@@ -871,6 +940,7 @@ export default class Parser {
    *
    * Transform functions are applied using the pipe operator (|). This method converts
    * the identifier following a pipe into a FunctionCall node in the transforms pool.
+   * Supports namespace transforms like 'String.upper' or 'Utils.format'.
    *
    * @param token - Identifier token with the transform function name
    *
@@ -886,13 +956,25 @@ export default class Parser {
    * // }
    * ```
    *
+   * @example Namespace transform
+   * ```typescript
+   * // For "name|String.upper"
+   * // When processing 'String.upper' after pipe:
+   * // Creates: {
+   * //   type: 'FunctionCall',
+   * //   name: 'String.upper',
+   * //   args: [nameIdentifier],
+   * //   pool: 'transforms'
+   * // }
+   * ```
+   *
    * @example Transform with arguments
    * ```typescript
-   * // For "value|multiply(2, 3)"
+   * // For "value|Utils.multiply(2, 3)"
    * // Creates FunctionCall node, args will be populated by argVal handler:
    * // {
    * //   type: 'FunctionCall',
-   * //   name: 'multiply',
+   * //   name: 'Utils.multiply',
    * //   args: [valueIdentifier, 2, 3],
    * //   pool: 'transforms'
    * // }
@@ -900,14 +982,18 @@ export default class Parser {
    *
    * @example Chained transforms
    * ```typescript
-   * // For "name|lower|trim"
+   * // For "name|String.lower|String.trim"
    * // Each transform becomes a FunctionCall wrapping the previous result
    * ```
    */
   private transform(token: Token): void {
+    // For transforms, the token contains the transform name
+    // We need to build the full namespace path if this is part of a namespace transform
+    const transformName = token.value as string
+
     this._placeBeforeCursor({
       type: 'FunctionCall',
-      name: token.value as string,
+      name: transformName,
       args: this._cursor ? [this._cursor] : [],
       pool: 'transforms',
     })
@@ -943,8 +1029,30 @@ export default class Parser {
         return this.literal.bind(this)
       case 'unaryOp':
         return this.unaryOp.bind(this)
+      case 'pipe':
+        return () => this.pipe()
       default:
         return undefined
+    }
+  }
+
+  /**
+   * Handles pipe (|) tokens for transform operations.
+   *
+   * Special handling for cases where a pipe follows a dot in traverse state,
+   * indicating a standalone relative identifier for transforms like .|transform.
+   */
+  private pipe(): void {
+    // If we're in traverse state and encounter a pipe, it means we have a standalone dot
+    // that should become a relative identifier for the transform
+    if (this._state === 'traverse') {
+      // Create a standalone relative identifier
+      this._placeAtCursor({
+        type: 'Identifier',
+        value: '.',
+        relative: true,
+      })
+      this._relative = true
     }
   }
 

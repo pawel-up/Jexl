@@ -8,9 +8,10 @@ This directory contains comprehensive examples demonstrating various features an
 2. [Custom Transforms](#custom-transforms) - `custom-transforms.ts`
 3. [Custom Functions](#custom-functions) - `custom-functions.ts`
 4. [Custom Operators](#custom-operators) - `custom-operators.ts`
-5. [Advanced Features](#advanced-features) - `advanced-features.ts`
-6. [Real-world Use Cases](#real-world-use-cases) - `real-world-use-cases.ts`
-7. [API Integration](#api-integration) - `api-integration.ts`
+5. [Namespace Functions & Transforms](#namespace-functions--transforms) - `namespace-functions-transforms.ts`
+6. [Advanced Features](#advanced-features) - `advanced-features.ts`
+7. [Real-world Use Cases](#real-world-use-cases) - `real-world-use-cases.ts`
+8. [API Integration](#api-integration) - `api-integration.ts`
 
 ## Running the Examples
 
@@ -134,6 +135,41 @@ jexl.addUnaryOp('#', (val) => (Array.isArray(val) ? val.length : Object.keys(val
 await jexl.eval('2 ** 8') // Power operation
 await jexl.eval('"HELLO" ~= "hello"') // Case-insensitive comparison
 await jexl.eval('||-15') // Absolute value
+```
+
+## Namespace Functions & Transforms
+
+Understand and implement namespaced functions and transforms for better organization:
+
+- **Function Namespaces**: Organize functions using dot notation (e.g., `Math.max`, `Utils.String.slugify`)
+- **Transform Namespaces**: Organize transforms using dot notation (e.g., `String.upper`, `Array.unique`)
+- **Deeply Nested Namespaces**: Create hierarchical structures for complex applications
+- **Chaining Namespace Transforms**: Combine multiple namespace transforms
+- **Mixed Usage**: Use namespace and regular functions/transforms together
+- **Best Practices**: Organize by domain, data type, or utility category
+
+### Key Examples in Namespace Functions & Transforms
+
+```javascript
+// Add namespace functions
+jexl.addFunction('Math.max', (a, b) => Math.max(a, b))
+jexl.addFunction('Utils.String.slugify', (text) => 
+  text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))
+
+// Add namespace transforms
+jexl.addTransform('String.upper', (val) => val.toUpperCase())
+jexl.addTransform('Array.unique', (arr) => [...new Set(arr)])
+
+// Use namespace functions
+await jexl.eval('Math.max(10, 25)')
+await jexl.eval('Utils.String.slugify("Hello World!")')
+
+// Use namespace transforms
+await jexl.eval('"hello"|String.upper')
+await jexl.eval('[1,2,2,3,3,3]|Array.unique')
+
+// Chain namespace transforms
+await jexl.eval('"  hello world  "|String.upper|String.reverse')
 ```
 
 ## Advanced Features
