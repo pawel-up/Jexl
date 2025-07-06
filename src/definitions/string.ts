@@ -3,14 +3,14 @@
  * @param val - The string to convert.
  * @returns The uppercase string.
  */
-export const toUpper = (val: string) => val.toUpperCase()
+export const upper = (val: string) => val.toUpperCase()
 
 /**
  * Converts a string to lowercase.
  * @param val - The string to convert.
  * @returns The lowercase string.
  */
-export const toLower = (val: string) => val.toLowerCase()
+export const lower = (val: string) => val.toLowerCase()
 
 /**
  * Extracts a substring from a string.

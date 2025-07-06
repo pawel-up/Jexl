@@ -20,18 +20,18 @@ const evalJexl = async <R = unknown>(expression: string, context: any = {}) => {
 }
 
 test.group('String - Basic Functions', () => {
-  test('toUpper converts string to uppercase', async ({ assert }) => {
-    assert.equal(await evalJexl('toUpper("hello world")'), 'HELLO WORLD')
-    assert.equal(await evalJexl('toUpper("MiXeD cAsE")'), 'MIXED CASE')
-    assert.equal(await evalJexl('toUpper("")'), '')
-    assert.equal(await evalJexl('toUpper(text)', { text: 'test' }), 'TEST')
+  test('upper converts string to uppercase', async ({ assert }) => {
+    assert.equal(await evalJexl('upper("hello world")'), 'HELLO WORLD')
+    assert.equal(await evalJexl('upper("MiXeD cAsE")'), 'MIXED CASE')
+    assert.equal(await evalJexl('upper("")'), '')
+    assert.equal(await evalJexl('upper(text)', { text: 'test' }), 'TEST')
   })
 
-  test('toLower converts string to lowercase', async ({ assert }) => {
-    assert.equal(await evalJexl('toLower("HELLO WORLD")'), 'hello world')
-    assert.equal(await evalJexl('toLower("MiXeD cAsE")'), 'mixed case')
-    assert.equal(await evalJexl('toLower("")'), '')
-    assert.equal(await evalJexl('toLower(text)', { text: 'TEST' }), 'test')
+  test('lower converts string to lowercase', async ({ assert }) => {
+    assert.equal(await evalJexl('lower("HELLO WORLD")'), 'hello world')
+    assert.equal(await evalJexl('lower("MiXeD cAsE")'), 'mixed case')
+    assert.equal(await evalJexl('lower("")'), '')
+    assert.equal(await evalJexl('lower(text)', { text: 'TEST' }), 'test')
   })
 
   test('substr extracts substring', async ({ assert }) => {
@@ -382,7 +382,7 @@ test.group('String - Utility Functions', () => {
 
 test.group('String - Edge Cases', () => {
   test('handles empty strings correctly', async ({ assert }) => {
-    assert.equal(await evalJexl('toUpper("")'), '')
+    assert.equal(await evalJexl('upper("")'), '')
     assert.equal(await evalJexl('capitalize("")'), '')
     assert.equal(await evalJexl('slug("")'), '')
     assert.equal(await evalJexl('mask("")'), '')
@@ -391,13 +391,13 @@ test.group('String - Edge Cases', () => {
 
   test('handles null and undefined context values', async ({ assert }) => {
     // These should handle gracefully when context values are null/undefined
-    assert.equal(await evalJexl('toUpper(text || "default")', { text: null }), 'DEFAULT')
+    assert.equal(await evalJexl('upper(text || "default")', { text: null }), 'DEFAULT')
     assert.equal(await evalJexl('len(text || "")', { text: undefined }), 0)
     assert.equal(await evalJexl('isEmpty(text || "")', { text: null }), true)
   })
 
   test('handles special characters correctly', async ({ assert }) => {
-    assert.equal(await evalJexl('toUpper("émojis 🎉")'), 'ÉMOJIS 🎉')
+    assert.equal(await evalJexl('upper("émojis 🎉")'), 'ÉMOJIS 🎉')
     assert.equal(await evalJexl('len("🎉🎊🎈")'), 6) // Each emoji is 2 characters
     assert.equal(await evalJexl('reverse("abc🎉")'), '🎉cba')
     assert.deepEqual(await evalJexl('split("a🎉b🎉c", "🎉")'), ['a', 'b', 'c'])
@@ -427,7 +427,7 @@ test.group('String - Edge Cases', () => {
 test.group('String - Complex Operations', () => {
   test('chaining string operations', async ({ assert }) => {
     // Chain multiple operations
-    const result = await evalJexl('toUpper(trim(text))', { text: '  hello world  ' })
+    const result = await evalJexl('upper(trim(text))', { text: '  hello world  ' })
     assert.equal(result, 'HELLO WORLD')
 
     const result2 = await evalJexl('capitalize(camelCase(text))', { text: 'hello world test' })
@@ -439,7 +439,7 @@ test.group('String - Complex Operations', () => {
 
   test('working with arrays and strings', async ({ assert }) => {
     const words = ['hello', 'world', 'test']
-    const result = await evalJexl('toUpper(join(words, " "))', { words })
+    const result = await evalJexl('upper(join(words, " "))', { words })
     assert.equal(result, 'HELLO WORLD TEST')
 
     const text = 'apple,banana,cherry'

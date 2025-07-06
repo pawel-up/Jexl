@@ -153,8 +153,12 @@ Understand and implement namespaced functions and transforms for better organiza
 ```javascript
 // Add namespace functions
 jexl.addFunction('Math.max', (a, b) => Math.max(a, b))
-jexl.addFunction('Utils.String.slugify', (text) => 
-  text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))
+jexl.addFunction('Utils.String.slugify', (text) =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+)
 
 // Add namespace transforms
 jexl.addTransform('String.upper', (val) => val.toUpperCase())

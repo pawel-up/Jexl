@@ -109,8 +109,8 @@ await jexl.eval('isPrime(17)') // true
 **Basic String Operations:**
 
 ```typescript
-await jexl.eval('toUpper("hello")') // "HELLO"
-await jexl.eval('toLower("WORLD")') // "world"
+await jexl.eval('upper("hello")') // "HELLO"
+await jexl.eval('lower("WORLD")') // "world"
 await jexl.eval('capitalize("hello world")') // "Hello world"
 await jexl.eval('titleCase("hello world")') // "Hello World"
 ```
@@ -392,3 +392,225 @@ When adding new functions:
 4. Include TypeScript types
 5. Support both single array and spread arguments where applicable
 6. Write tests for new functionality
+
+## Function Reference Table
+
+The following table provides a comprehensive overview of all functions available in the Jexl extension libraries:
+
+### Math Functions Reference
+
+| Function    | Arguments                                   | Description                                                            |
+| ----------- | ------------------------------------------- | ---------------------------------------------------------------------- |
+| `abs`       | `(x: number)`                               | Returns the absolute value of a number                                 |
+| `acos`      | `(x: number)`                               | Returns the arccosine of a number (in radians)                         |
+| `asin`      | `(x: number)`                               | Returns the arcsine of a number (in radians)                           |
+| `atan`      | `(x: number)`                               | Returns the arctangent of a number (in radians)                        |
+| `atan2`     | `(y: number, x: number)`                    | Returns the arctangent of the quotient of its arguments                |
+| `avg`       | `(...args: number[])`                       | Calculates the average of all provided numbers                         |
+| `cbrt`      | `(x: number)`                               | Returns the cube root of a number                                      |
+| `ceil`      | `(x: number)`                               | Returns the smallest integer greater than or equal to a number         |
+| `clamp`     | `(value: number, min: number, max: number)` | Clamps a number between a minimum and maximum value                    |
+| `cos`       | `(x: number)`                               | Returns the cosine of a number (in radians)                            |
+| `exp`       | `(x: number)`                               | Returns e raised to the power of a number                              |
+| `factorial` | `(n: number)`                               | Calculates the factorial of a number                                   |
+| `floor`     | `(x: number)`                               | Returns the largest integer less than or equal to a number             |
+| `gcd`       | `(a: number, b: number)`                    | Calculates the greatest common divisor of two numbers                  |
+| `isPrime`   | `(n: number)`                               | Checks if a number is prime                                            |
+| `lcm`       | `(a: number, b: number)`                    | Calculates the least common multiple of two numbers                    |
+| `lerp`      | `(start: number, end: number, t: number)`   | Linear interpolation between two values                                |
+| `log`       | `(x: number)`                               | Returns the natural logarithm of a number                              |
+| `log10`     | `(x: number)`                               | Returns the base-10 logarithm of a number                              |
+| `log2`      | `(x: number)`                               | Returns the base-2 logarithm of a number                               |
+| `max`       | `(...values: number[])`                     | Returns the largest of the given numbers                               |
+| `median`    | `(...args: number[])`                       | Calculates the median of all provided numbers                          |
+| `min`       | `(...values: number[])`                     | Returns the smallest of the given numbers                              |
+| `mode`      | `(...args: number[])`                       | Finds the mode (most frequent value) of all provided numbers           |
+| `pow`       | `(base: number, exponent: number)`          | Returns the base raised to the exponent power                          |
+| `random`    | `()`                                        | Returns a random number between 0 (inclusive) and 1 (exclusive)        |
+| `round`     | `(x: number)`                               | Returns the value of a number rounded to the nearest integer           |
+| `roundTo`   | `(value: number, decimals: number)`         | Rounds a number to a specified number of decimal places                |
+| `sign`      | `(x: number)`                               | Returns the sign of a number                                           |
+| `sin`       | `(x: number)`                               | Returns the sine of a number (in radians)                              |
+| `sqrt`      | `(x: number)`                               | Returns the square root of a number                                    |
+| `stddev`    | `(...args: number[])`                       | Calculates the standard deviation of all provided numbers              |
+| `sum`       | `(...args: number[])`                       | Sums all provided numbers                                              |
+| `tan`       | `(x: number)`                               | Returns the tangent of a number (in radians)                           |
+| `toDegrees` | `(radians: number)`                         | Converts radians to degrees                                            |
+| `toRadians` | `(degrees: number)`                         | Converts degrees to radians                                            |
+| `trunc`     | `(x: number)`                               | Returns the integer part of a number by removing any fractional digits |
+| `variance`  | `(...args: number[])`                       | Calculates the variance of all provided numbers                        |
+
+### String Functions Reference
+
+| Function         | Arguments                                                                      | Description                                                            |
+| ---------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| `between`        | `(val: string, startDelim: string, endDelim: string)`                          | Extracts a substring between two delimiters                            |
+| `camelCase`      | `(val: string)`                                                                | Converts a string to camelCase                                         |
+| `capitalize`     | `(val: string)`                                                                | Capitalizes the first letter of a string                               |
+| `charCount`      | `(val: string)`                                                                | Counts the number of characters in a string                            |
+| `contains`       | `(val: string, searchString: string)`                                          | Checks if a string contains a specified substring                      |
+| `endsWith`       | `(val: string, searchString: string)`                                          | Checks if a string ends with a specified substring                     |
+| `escapeHtml`     | `(val: string)`                                                                | Escapes HTML special characters in a string                            |
+| `indexOf`        | `(val: string, searchString: string)`                                          | Finds the index of a substring in a string                             |
+| `initials`       | `(val: string)`                                                                | Extracts initials from a string (typically a name)                     |
+| `isEmpty`        | `(val: string)`                                                                | Checks if a string is empty or contains only whitespace                |
+| `isNotEmpty`     | `(val: string)`                                                                | Checks if a string is not empty and contains non-whitespace characters |
+| `join`           | `(val: unknown[], separator: string)`                                          | Joins an array of elements into a string                               |
+| `kebabCase`      | `(val: string)`                                                                | Converts a string to kebab-case                                        |
+| `lastIndexOf`    | `(val: string, searchString: string)`                                          | Finds the last index of a substring in a string                        |
+| `len`            | `(val: string \| unknown[])`                                                   | Gets the length of a string or array                                   |
+| `lines`          | `(val: string)`                                                                | Converts a string to an array of lines                                 |
+| `mask`           | `(val: string, maskChar?: string, visibleStart?: number, visibleEnd?: number)` | Masks a string by replacing characters with a mask character           |
+| `normalizeSpace` | `(val: string)`                                                                | Removes duplicate consecutive whitespace characters                    |
+| `pad`            | `(val: string, targetLength: number, padString?: string)`                      | Pads a string to a specified length with a pad string                  |
+| `padLeft`        | `(val: string, targetLength: number, padString?: string)`                      | Pads a string to the left                                              |
+| `padRight`       | `(val: string, targetLength: number, padString?: string)`                      | Pads a string to the right                                             |
+| `pascalCase`     | `(val: string)`                                                                | Converts a string to PascalCase                                        |
+| `repeat`         | `(val: string, count: number)`                                                 | Repeats a string a specified number of times                           |
+| `replace`        | `(val: string, oldStr: string, newStr: string)`                                | Replaces the first occurrence of a substring with another string       |
+| `replaceAll`     | `(val: string, searchValue: string, replaceValue: string)`                     | Replaces all occurrences of a substring with another string            |
+| `reverse`        | `(val: string)`                                                                | Reverses a string                                                      |
+| `slug`           | `(val: string)`                                                                | Converts a string to a slug (URL-friendly format)                      |
+| `snakeCase`      | `(val: string)`                                                                | Converts a string to snake_case                                        |
+| `split`          | `(val: string, separator: string)`                                             | Splits a string into an array of substrings                            |
+| `startsWith`     | `(val: string, searchString: string)`                                          | Checks if a string starts with a specified substring                   |
+| `substr`         | `(val: string, start: number, end?: number)`                                   | Extracts a substring from a string                                     |
+| `titleCase`      | `(val: string)`                                                                | Capitalizes the first letter of each word in a string                  |
+| `lower`        | `(val: string)`                                                                | Converts a string to lowercase                                         |
+| `upper`        | `(val: string)`                                                                | Converts a string to uppercase                                         |
+| `trim`           | `(val: string)`                                                                | Removes whitespace from both ends of a string                          |
+| `trimEnd`        | `(val: string)`                                                                | Removes whitespace from the end of a string                            |
+| `trimStart`      | `(val: string)`                                                                | Removes whitespace from the beginning of a string                      |
+| `truncate`       | `(val: string, maxLength: number, suffix?: string)`                            | Truncates a string to a specified length                               |
+| `unescapeHtml`   | `(val: string)`                                                                | Unescapes HTML entities in a string                                    |
+| `wordCount`      | `(val: string)`                                                                | Counts the number of words in a string                                 |
+
+### Date Functions Reference
+
+| Function           | Arguments                                                               | Description                                        |
+| ------------------ | ----------------------------------------------------------------------- | -------------------------------------------------- |
+| `addDays`          | `(date: Date, days: number)`                                            | Adds days to a date                                |
+| `addHours`         | `(date: Date, hours: number)`                                           | Adds hours to a date                               |
+| `addMinutes`       | `(date: Date, minutes: number)`                                         | Adds minutes to a date                             |
+| `addMonths`        | `(date: Date, months: number)`                                          | Adds months to a date                              |
+| `addYears`         | `(date: Date, years: number)`                                           | Adds years to a date                               |
+| `dayOfYear`        | `(date: Date)`                                                          | Gets the day of the year for a date                |
+| `daysInMonth`      | `(year: number, month: number)`                                         | Gets the number of days in a month                 |
+| `diffDays`         | `(date1: Date, date2: Date)`                                            | Gets the difference in days between two dates      |
+| `diffHours`        | `(date1: Date, date2: Date)`                                            | Gets the difference in hours between two dates     |
+| `diffMinutes`      | `(date1: Date, date2: Date)`                                            | Gets the difference in minutes between two dates   |
+| `endOfDay`         | `(date: Date)`                                                          | Gets the end of the day for a date                 |
+| `endOfMonth`       | `(date: Date)`                                                          | Gets the end of the month for a date               |
+| `endOfWeek`        | `(date: Date)`                                                          | Gets the end of the week for a date                |
+| `endOfYear`        | `(date: Date)`                                                          | Gets the end of the year for a date                |
+| `formatDateTime`   | `(date: Date, dateStyle?: string, timeStyle?: string, locale?: string)` | Formats a date and time together                   |
+| `formatFull`       | `(date: Date, locale?: string)`                                         | Formats a date as a full date string               |
+| `formatLocale`     | `(date: Date, locale?: string, options?: Intl.DateTimeFormatOptions)`   | Formats a date using locale-specific formatting    |
+| `formatLong`       | `(date: Date, locale?: string)`                                         | Formats a date as a long date string               |
+| `formatMedium`     | `(date: Date, locale?: string)`                                         | Formats a date as a medium date string             |
+| `formatShort`      | `(date: Date, locale?: string)`                                         | Formats a date as a short date string              |
+| `formatTimeLong`   | `(date: Date, locale?: string)`                                         | Formats time as a long time string                 |
+| `formatTimeMedium` | `(date: Date, locale?: string)`                                         | Formats time as a medium time string               |
+| `formatTimeShort`  | `(date: Date, locale?: string)`                                         | Formats time as a short time string                |
+| `getAge`           | `(birthDate: Date)`                                                     | Gets the age in years from a birth date            |
+| `isLeapYear`       | `(year: number)`                                                        | Checks if a year is a leap year                    |
+| `isSameDay`        | `(date1: Date, date2: Date)`                                            | Checks if two dates are the same day               |
+| `isToday`          | `(date: Date)`                                                          | Checks if a date is today                          |
+| `isTomorrow`       | `(date: Date)`                                                          | Checks if a date is tomorrow                       |
+| `isWeekday`        | `(date: Date)`                                                          | Checks if a date is a weekday (Monday to Friday)   |
+| `isWeekend`        | `(date: Date)`                                                          | Checks if a date is a weekend (Saturday or Sunday) |
+| `isYesterday`      | `(date: Date)`                                                          | Checks if a date is yesterday                      |
+| `now`              | `()`                                                                    | Returns the current date and time                  |
+| `parseISO`         | `(dateString: string)`                                                  | Parses a date string in ISO format                 |
+| `startOfDay`       | `(date: Date)`                                                          | Gets the start of the day for a date               |
+| `startOfMonth`     | `(date: Date)`                                                          | Gets the start of the month for a date             |
+| `startOfWeek`      | `(date: Date)`                                                          | Gets the start of the week for a date              |
+| `startOfYear`      | `(date: Date)`                                                          | Gets the start of the year for a date              |
+| `subtractDays`     | `(date: Date, days: number)`                                            | Subtracts days from a date                         |
+| `subtractMonths`   | `(date: Date, months: number)`                                          | Subtracts months from a date                       |
+| `subtractYears`    | `(date: Date, years: number)`                                           | Subtracts years from a date                        |
+| `toISO`            | `(date: Date)`                                                          | Converts a date to ISO string                      |
+| `weekOfYear`       | `(date: Date)`                                                          | Gets the week number of the year for a date        |
+
+### Array Functions Reference
+
+| Function       | Arguments                                                          | Description                                                              |
+| -------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| `at`           | `(arr: unknown[], index: number)`                                  | Gets the element at a specific index                                     |
+| `average`      | `(...args: unknown[])`                                             | Calculates the average of numeric values in an array or spread arguments |
+| `chunk`        | `(arr: unknown[], size: number)`                                   | Chunks an array into smaller arrays of specified size                    |
+| `compact`      | `(arr: unknown[])`                                                 | Compacts an array by removing falsy values                               |
+| `concat`       | `(...args: unknown[])`                                             | Concatenates arrays or values                                            |
+| `contains`     | `(arr: unknown[], value: unknown)`                                 | Checks if an array contains a specific value                             |
+| `countBy`      | `(arr: unknown[])`                                                 | Counts occurrences of each value in an array                             |
+| `difference`   | `(...args: unknown[])`                                             | Gets the difference between arrays or values                             |
+| `every`        | `(arr: unknown[])`                                                 | Checks if all elements in an array are truthy                            |
+| `first`        | `(arr: unknown[])`                                                 | Gets the first element of an array                                       |
+| `flatten`      | `(arr: unknown[])`                                                 | Flattens an array by one level                                           |
+| `flattenDeep`  | `(arr: unknown[])`                                                 | Flattens an array deeply                                                 |
+| `groupBy`      | `(arr: unknown[], keyFn: (item: unknown) => string)`               | Groups array elements by a property or function result                   |
+| `indexOf`      | `(arr: unknown[], value: unknown)`                                 | Finds the index of a value in an array                                   |
+| `intersection` | `(...args: unknown[])`                                             | Gets the intersection of arrays or values                                |
+| `isEmpty`      | `(arr: unknown[])`                                                 | Checks if an array is empty                                              |
+| `isNotEmpty`   | `(arr: unknown[])`                                                 | Checks if an array is not empty                                          |
+| `join`         | `(arr: unknown[], separator?: string)`                             | Joins array elements into a string                                       |
+| `last`         | `(arr: unknown[])`                                                 | Gets the last element of an array                                        |
+| `lastIndexOf`  | `(arr: unknown[], value: unknown)`                                 | Finds the last index of a value in an array                              |
+| `length`       | `(arr: unknown[])`                                                 | Gets the length of an array                                              |
+| `max`          | `(...args: unknown[])`                                             | Finds the maximum value in an array or spread arguments                  |
+| `min`          | `(...args: unknown[])`                                             | Finds the minimum value in an array or spread arguments                  |
+| `none`         | `(arr: unknown[])`                                                 | Checks if no elements in an array are truthy                             |
+| `partition`    | `(arr: unknown[], predicate: (item: unknown) => boolean)`          | Partitions an array into two arrays based on a predicate                 |
+| `range`        | `(start: number, end: number, step?: number)`                      | Creates a range of numbers                                               |
+| `repeat`       | `(value: unknown, count: number)`                                  | Repeats a value multiple times in an array                               |
+| `reverse`      | `(arr: unknown[])`                                                 | Reverses an array                                                        |
+| `sample`       | `(arr: unknown[])`                                                 | Gets a random element from an array                                      |
+| `sampleSize`   | `(arr: unknown[], count: number)`                                  | Gets multiple random elements from an array                              |
+| `shuffle`      | `(arr: unknown[])`                                                 | Shuffles an array randomly                                               |
+| `slice`        | `(arr: unknown[], start: number, end?: number)`                    | Extracts a slice of an array                                             |
+| `some`         | `(arr: unknown[])`                                                 | Checks if any element in an array is truthy                              |
+| `sort`         | `(arr: unknown[], compareFn?: (a: unknown, b: unknown) => number)` | Sorts an array                                                           |
+| `sortAsc`      | `(arr: (number \| string)[])`                                      | Sorts an array in ascending order                                        |
+| `sortDesc`     | `(arr: (number \| string)[])`                                      | Sorts an array in descending order                                       |
+| `sum`          | `(...args: unknown[])`                                             | Sums numeric values in an array or spread arguments                      |
+| `union`        | `(...args: unknown[])`                                             | Gets the union of arrays or values (removes duplicates)                  |
+| `unique`       | `(arr: unknown[])`                                                 | Removes duplicate values from an array                                   |
+| `zip`          | `(...args: unknown[][])`                                           | Zips multiple arrays together                                            |
+
+### Operator Functions Reference
+
+| Function       | Arguments                                                       | Description                                                  |
+| -------------- | --------------------------------------------------------------- | ------------------------------------------------------------ |
+| `and`          | `(a: unknown, b: unknown)`                                      | Logical AND operator                                         |
+| `between`      | `(value: number, min: number, max: number)`                     | Between operator (inclusive)                                 |
+| `coalesce`     | `(value: unknown, defaultValue: unknown)`                       | Null coalescing operator                                     |
+| `defaultTo`    | `(...args: unknown[])`                                          | Returns the first non-null, non-undefined value              |
+| `eq`           | `(a: unknown, b: unknown)`                                      | Equality operator (loose equality)                           |
+| `equalsAll`    | `(value: unknown, ...values: unknown[])`                        | Checks if value equals all of the provided values            |
+| `equalsAny`    | `(value: unknown, ...values: unknown[])`                        | Checks if value equals any of the provided values            |
+| `gt`           | `(a: number \| string, b: number \| string)`                    | Greater than operator                                        |
+| `gte`          | `(a: number \| string, b: number \| string)`                    | Greater than or equal operator                               |
+| `hasProperty`  | `(obj: unknown, property: string)`                              | Checks if an object has a specific property                  |
+| `ifElse`       | `(condition: unknown, trueValue: unknown, falseValue: unknown)` | Conditional operator (ternary)                               |
+| `inOp`         | `(value: unknown, collection: unknown[] \| string)`             | In operator - checks if a value exists in an array or string |
+| `inRange`      | `(value: number, ...ranges: [number, number][])`                | Range check operator                                         |
+| `instanceOf`   | `(obj: unknown, constructor: Function)`                         | Instance of operator                                         |
+| `isEmpty`      | `(value: unknown)`                                              | Checks if value is empty                                     |
+| `isNotEmpty`   | `(value: unknown)`                                              | Checks if value is not empty                                 |
+| `isNotNull`    | `(value: unknown)`                                              | Checks if value is not null or undefined                     |
+| `isNull`       | `(value: unknown)`                                              | Checks if value is null or undefined                         |
+| `isType`       | `(value: unknown, type: string)`                                | Type check operator                                          |
+| `like`         | `(str: string, pattern: string)`                                | Like operator - performs pattern matching                    |
+| `lt`           | `(a: number \| string, b: number \| string)`                    | Less than operator                                           |
+| `lte`          | `(a: number \| string, b: number \| string)`                    | Less than or equal operator                                  |
+| `ne`           | `(a: unknown, b: unknown)`                                      | Inequality operator (loose inequality)                       |
+| `not`          | `(a: unknown)`                                                  | Logical NOT operator                                         |
+| `notEqualsAny` | `(value: unknown, ...values: unknown[])`                        | Checks if value does not equal any of the provided values    |
+| `notIn`        | `(value: unknown, collection: unknown[] \| string)`             | Not in operator                                              |
+| `notLike`      | `(str: string, pattern: string)`                                | Not like operator - performs negative pattern matching       |
+| `or`           | `(a: unknown, b: unknown)`                                      | Logical OR operator                                          |
+| `regex`        | `(str: string, pattern: string, flags?: string)`                | Regex match operator                                         |
+| `safeGet`      | `(obj: unknown, path: string)`                                  | Safe navigation operator - safely accesses nested properties |
+| `strictEq`     | `(a: unknown, b: unknown)`                                      | Strict equality operator                                     |
+| `strictNe`     | `(a: unknown, b: unknown)`                                      | Strict inequality operator                                   |
+| `xor`          | `(a: unknown, b: unknown)`                                      | Logical XOR operator                                         |
