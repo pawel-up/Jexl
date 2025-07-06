@@ -3,7 +3,7 @@
  * These helpers can be used across all function libraries
  */
 
-import type { JSONSchema7 } from 'json-schema'
+import type { JSONSchema7, JSONSchema7Definition } from 'json-schema'
 import {
   type FunctionSchema,
   type FunctionParameter,
@@ -173,7 +173,10 @@ export function validateFunctionSchema(schema: FunctionSchema): string[] {
 /**
  * Extracts a readable type string from a JSON Schema
  */
-function getTypeStringFromSchema(schema: JSONSchema7): string {
+export function getTypeStringFromSchema(schema: JSONSchema7Definition): string {
+  if (typeof schema === 'boolean') {
+    return schema ? 'any' : 'never'
+  }
   if (schema.type) {
     if (Array.isArray(schema.type)) {
       return schema.type.join(' | ')
