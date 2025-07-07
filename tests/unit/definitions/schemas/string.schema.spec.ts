@@ -65,8 +65,8 @@ test.group('String Schema', () => {
     assert.equal(schema.category, 'string')
     assert.equal(schema.parameters.length, 1)
     assert.equal(schema.parameters[0].name, 'str')
-    assert.equal(schema.parameters[0].description, 'The string to convert')
-    assert.deepEqual(schema.parameters[0].schema, { type: 'string' })
+    assert.equal(schema.parameters[0].schema.description, 'The string to convert')
+    assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to convert' })
     assert.equal(schema.parameters[0].required, true)
     assert.deepEqual(schema.returns, { type: 'string', description: 'The uppercase string' })
     assert.isArray(schema.examples)
@@ -81,8 +81,8 @@ test.group('String Schema', () => {
     assert.equal(schema.category, 'string')
     assert.equal(schema.parameters.length, 1)
     assert.equal(schema.parameters[0].name, 'str')
-    assert.equal(schema.parameters[0].description, 'The string to convert')
-    assert.deepEqual(schema.parameters[0].schema, { type: 'string' })
+    assert.equal(schema.parameters[0].schema.description, 'The string to convert')
+    assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to convert' })
     assert.equal(schema.parameters[0].required, true)
     assert.deepEqual(schema.returns, { type: 'string', description: 'The lowercase string' })
   })
@@ -96,20 +96,19 @@ test.group('String Schema', () => {
 
     // First parameter
     assert.equal(schema.parameters[0].name, 'str')
-    assert.equal(schema.parameters[0].description, 'The string to extract from')
-    assert.deepEqual(schema.parameters[0].schema, { type: 'string' })
+    assert.equal(schema.parameters[0].schema.description, 'The string to extract from')
+    assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to extract from' })
     assert.equal(schema.parameters[0].required, true)
 
     // Second parameter
     assert.equal(schema.parameters[1].name, 'start')
-    assert.equal(schema.parameters[1].description, 'The starting index')
-    assert.deepEqual(schema.parameters[1].schema, { type: 'number' })
+    assert.equal(schema.parameters[1].schema.description, 'The starting index')
+    assert.deepEqual(schema.parameters[1].schema, { type: 'number', description: 'The starting index' })
     assert.equal(schema.parameters[1].required, true)
 
     // Third parameter (optional)
     assert.equal(schema.parameters[2].name, 'end')
-    assert.equal(schema.parameters[2].description, 'The ending index (optional)')
-    assert.deepEqual(schema.parameters[2].schema, { type: 'number' })
+    assert.deepEqual(schema.parameters[2].schema, { type: 'number', description: 'The ending index (optional)' })
     assert.equal(schema.parameters[2].required, false)
 
     assert.deepEqual(schema.returns, { type: 'string', description: 'The extracted substring' })
@@ -133,13 +132,13 @@ test.group('String Schema', () => {
 
     // First parameter should be array
     assert.equal(schema.parameters[0].name, 'arr')
-    assert.equal(schema.parameters[0].description, 'The array to join')
-    assert.deepEqual(schema.parameters[0].schema, { type: 'array' })
+    assert.equal(schema.parameters[0].schema.description, 'The array to join')
+    assert.deepEqual(schema.parameters[0].schema, { type: 'array', description: 'The array to join' })
 
     // Second parameter should be string
     assert.equal(schema.parameters[1].name, 'separator')
-    assert.equal(schema.parameters[1].description, 'The separator to use for joining')
-    assert.deepEqual(schema.parameters[1].schema, { type: 'string' })
+    assert.equal(schema.parameters[1].schema.description, 'The separator to use for joining')
+    assert.deepEqual(schema.parameters[1].schema, { type: 'string', description: 'The separator to use for joining' })
 
     assert.deepEqual(schema.returns, { type: 'string', description: 'The joined string' })
   })
@@ -151,11 +150,15 @@ test.group('String Schema', () => {
     assert.equal(schema.description, 'Replaces the first occurrence of a substring with another string')
     assert.equal(schema.parameters.length, 3)
 
-    // All parameters should be strings
-    schema.parameters.forEach((param) => {
-      assert.deepEqual(param.schema, { type: 'string' })
-      assert.equal(param.required, true)
-    })
+    assert.equal(schema.parameters[0].schema.description, 'The string to search in')
+    assert.equal(schema.parameters[0].schema.type, 'string')
+    assert.isTrue(schema.parameters[0].required)
+    assert.equal(schema.parameters[1].schema.description, 'The substring to replace')
+    assert.equal(schema.parameters[1].schema.type, 'string')
+    assert.isTrue(schema.parameters[1].required)
+    assert.equal(schema.parameters[2].schema.description, 'The replacement string')
+    assert.equal(schema.parameters[2].schema.type, 'string')
+    assert.isTrue(schema.parameters[2].required)
 
     assert.deepEqual(schema.returns, { type: 'string', description: 'The string with the first occurrence replaced' })
   })
@@ -177,7 +180,7 @@ test.group('String Schema', () => {
       assert.equal(schema.name, funcName)
       assert.equal(schema.parameters.length, 1)
       assert.equal(schema.parameters[0].name, 'str')
-      assert.deepEqual(schema.parameters[0].schema, { type: 'string' })
+      assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to trim' })
       assert.equal(schema.parameters[0].required, true)
       assert.deepEqual(schema.returns, { type: 'string', description: 'The trimmed string' })
     })
@@ -193,17 +196,20 @@ test.group('String Schema', () => {
 
       // First parameter: string to pad
       assert.equal(schema.parameters[0].name, 'str')
-      assert.deepEqual(schema.parameters[0].schema, { type: 'string' })
+      assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to pad' })
       assert.equal(schema.parameters[0].required, true)
 
       // Second parameter: target length
       assert.equal(schema.parameters[1].name, 'targetLength')
-      assert.deepEqual(schema.parameters[1].schema, { type: 'number' })
+      assert.deepEqual(schema.parameters[1].schema, { type: 'number', description: 'The target length' })
       assert.equal(schema.parameters[1].required, true)
 
       // Third parameter: pad string (optional)
       assert.equal(schema.parameters[2].name, 'padString')
-      assert.deepEqual(schema.parameters[2].schema, { type: 'string' })
+      assert.deepEqual(schema.parameters[2].schema, {
+        type: 'string',
+        description: 'The string to pad with (optional)',
+      })
       assert.equal(schema.parameters[2].required, false)
 
       assert.deepEqual(schema.returns, { type: 'string', description: 'The padded string' })
@@ -219,11 +225,11 @@ test.group('String Schema', () => {
 
     // First parameter: string
     assert.equal(schema.parameters[0].name, 'str')
-    assert.deepEqual(schema.parameters[0].schema, { type: 'string' })
+    assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to get character from' })
 
     // Second parameter: index
     assert.equal(schema.parameters[1].name, 'index')
-    assert.deepEqual(schema.parameters[1].schema, { type: 'number' })
+    assert.deepEqual(schema.parameters[1].schema, { type: 'number', description: 'The index of the character' })
 
     assert.deepEqual(schema.returns, { type: 'string', description: 'The character at the specified index' })
   })
@@ -248,7 +254,7 @@ test.group('String Schema', () => {
 
     // Should have variadic parameter
     assert.equal(schema.parameters[0].name, 'codes')
-    assert.deepEqual(schema.parameters[0].schema, { type: 'number' })
+    assert.deepEqual(schema.parameters[0].schema, { type: 'number', description: 'Unicode code points' })
     assert.equal(schema.parameters[0].required, true)
     assert.equal(schema.parameters[0].variadic, true)
 
@@ -265,17 +271,20 @@ test.group('String Schema', () => {
 
       // First parameter: string to search in
       assert.equal(schema.parameters[0].name, 'str')
-      assert.deepEqual(schema.parameters[0].schema, { type: 'string' })
+      assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to search in' })
       assert.equal(schema.parameters[0].required, true)
 
       // Second parameter: search string
       assert.equal(schema.parameters[1].name, 'searchStr')
-      assert.deepEqual(schema.parameters[1].schema, { type: 'string' })
+      assert.deepEqual(schema.parameters[1].schema, { type: 'string', description: 'The substring to search for' })
       assert.equal(schema.parameters[1].required, true)
 
       // Third parameter: from index (optional)
       assert.equal(schema.parameters[2].name, 'fromIndex')
-      assert.deepEqual(schema.parameters[2].schema, { type: 'number' })
+      assert.deepEqual(schema.parameters[2].schema, {
+        type: 'number',
+        description: 'The index to start searching from (optional)',
+      })
       assert.equal(schema.parameters[2].required, false)
 
       // Should return number (index)
@@ -312,12 +321,12 @@ test.group('String Schema', () => {
 
     // First parameter: string to match
     assert.equal(schema.parameters[0].name, 'str')
-    assert.deepEqual(schema.parameters[0].schema, { type: 'string' })
+    assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to match' })
     assert.equal(schema.parameters[0].required, true)
 
     // Second parameter: regex pattern
     assert.equal(schema.parameters[1].name, 'regexp')
-    assert.deepEqual(schema.parameters[1].schema, { type: 'string' })
+    assert.deepEqual(schema.parameters[1].schema, { type: 'string', description: 'The regular expression' })
     assert.equal(schema.parameters[1].required, true)
 
     // Should return array of strings
@@ -346,12 +355,12 @@ test.group('String Schema', () => {
 
     // First parameter: string to repeat
     assert.equal(schema.parameters[0].name, 'str')
-    assert.deepEqual(schema.parameters[0].schema, { type: 'string' })
+    assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to repeat' })
     assert.equal(schema.parameters[0].required, true)
 
     // Second parameter: count
     assert.equal(schema.parameters[1].name, 'count')
-    assert.deepEqual(schema.parameters[1].schema, { type: 'number' })
+    assert.deepEqual(schema.parameters[1].schema, { type: 'number', description: 'The number of times to repeat' })
     assert.equal(schema.parameters[1].required, true)
 
     assert.deepEqual(schema.returns, { type: 'string', description: 'The repeated string' })
@@ -366,17 +375,17 @@ test.group('String Schema', () => {
 
     // First parameter: string to slice
     assert.equal(schema.parameters[0].name, 'str')
-    assert.deepEqual(schema.parameters[0].schema, { type: 'string' })
+    assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to slice' })
     assert.equal(schema.parameters[0].required, true)
 
     // Second parameter: start index
     assert.equal(schema.parameters[1].name, 'start')
-    assert.deepEqual(schema.parameters[1].schema, { type: 'number' })
+    assert.deepEqual(schema.parameters[1].schema, { type: 'number', description: 'The start index' })
     assert.equal(schema.parameters[1].required, true)
 
     // Third parameter: end index (optional)
     assert.equal(schema.parameters[2].name, 'end')
-    assert.deepEqual(schema.parameters[2].schema, { type: 'number' })
+    assert.deepEqual(schema.parameters[2].schema, { type: 'number', description: 'The end index (optional)' })
     assert.equal(schema.parameters[2].required, false)
 
     assert.deepEqual(schema.returns, { type: 'string', description: 'The extracted section' })
@@ -413,8 +422,8 @@ test.group('String Schema', () => {
     Object.values(stringFunctionSchemas).forEach((schema) => {
       schema.parameters.forEach((param, index) => {
         assert.isString(param.name, `Function ${schema.name} parameter ${index} missing name`)
-        assert.isString(param.description, `Function ${schema.name} parameter ${index} missing description`)
         assert.isObject(param.schema, `Function ${schema.name} parameter ${index} missing schema`)
+        assert.isString(param.schema.description, `Function ${schema.name} parameter ${index} missing description`)
         assert.isBoolean(param.required, `Function ${schema.name} parameter ${index} missing required flag`)
 
         // Schema should have type

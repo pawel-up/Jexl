@@ -220,7 +220,6 @@ export function createFunctionCallSchema(func: FunctionSchema): Record<string, u
         type: 'array',
         items: func.parameters.map((param) => ({
           ...param.schema,
-          description: param.description,
         })),
         minItems: func.parameters.filter((p) => p.required).length,
         maxItems: func.parameters.some((p) => p.variadic) ? undefined : func.parameters.length,

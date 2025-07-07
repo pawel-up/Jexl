@@ -11,8 +11,6 @@ import type { JSONSchema7 } from 'json-schema'
 export interface FunctionParameter {
   /** The parameter name. */
   name: string
-  /** Description of what the parameter does. This can be overridden by the description in the schema. */
-  description: string
   /**
    * A JSON Schema object that defines the type and constraints of the parameter.
    * @example

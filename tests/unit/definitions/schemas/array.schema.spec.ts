@@ -131,8 +131,11 @@ test.group('Array Schema', () => {
     Object.values(arrayFunctionSchemas).forEach((schema) => {
       schema.parameters.forEach((param, index) => {
         assert.isString(param.name, `Function ${schema.name} parameter ${index} should have a name`)
-        assert.isString(param.description, `Function ${schema.name} parameter ${index} should have a description`)
         assert.isObject(param.schema, `Function ${schema.name} parameter ${index} should have a schema`)
+        assert.isString(
+          param.schema.description,
+          `Function ${schema.name} parameter ${index} should have a description`
+        )
         assert.isBoolean(param.required, `Function ${schema.name} parameter ${index} should have required field`)
       })
     })

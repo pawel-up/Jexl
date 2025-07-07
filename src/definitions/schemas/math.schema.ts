@@ -10,7 +10,7 @@ export const mathFunctionSchemas = {
     'abs',
     'Returns the absolute value of a number',
     'math',
-    [createParameter('x', 'The number to get the absolute value of', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number to get the absolute value of' })],
     { type: 'number', description: 'The absolute value' },
     {
       examples: ['abs(-5) // 5', 'abs(3.14) // 3.14', 'abs(0) // 0'],
@@ -21,7 +21,7 @@ export const mathFunctionSchemas = {
     'ceil',
     'Returns the smallest integer greater than or equal to a number',
     'math',
-    [createParameter('x', 'The number to ceil', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number to ceil' })],
     { type: 'number', description: 'The ceiling value' },
     {
       examples: ['ceil(4.2) // 5', 'ceil(-4.7) // -4', 'ceil(0) // 0'],
@@ -32,7 +32,7 @@ export const mathFunctionSchemas = {
     'floor',
     'Returns the largest integer less than or equal to a number',
     'math',
-    [createParameter('x', 'The number to floor', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number to floor' })],
     { type: 'number', description: 'The floor value' },
     {
       examples: ['floor(4.7) // 4', 'floor(-4.2) // -5', 'floor(0) // 0'],
@@ -43,7 +43,7 @@ export const mathFunctionSchemas = {
     'round',
     'Returns the value of a number rounded to the nearest integer',
     'math',
-    [createParameter('x', 'The number to round', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number to round' })],
     { type: 'number', description: 'The rounded value' },
     {
       examples: ['round(4.7) // 5', 'round(4.2) // 4', 'round(-4.5) // -4'],
@@ -65,7 +65,7 @@ export const mathFunctionSchemas = {
     'max',
     'Returns the largest of the given numbers',
     'math',
-    [createParameter('values', 'The numbers to compare', { type: 'number' }, true, { variadic: true })],
+    [createParameter('values', { type: 'number', description: 'The numbers to compare' }, true, { variadic: true })],
     { type: 'number', description: 'The maximum value' },
     {
       examples: ['max(1, 2, 3) // 3', 'max(-1, -2, -3) // -1', 'max(5) // 5'],
@@ -76,7 +76,7 @@ export const mathFunctionSchemas = {
     'min',
     'Returns the smallest of the given numbers',
     'math',
-    [createParameter('values', 'The numbers to compare', { type: 'number' }, true, { variadic: true })],
+    [createParameter('values', { type: 'number', description: 'The numbers to compare' }, true, { variadic: true })],
     { type: 'number', description: 'The minimum value' },
     {
       examples: ['min(1, 2, 3) // 1', 'min(-1, -2, -3) // -3', 'min(5) // 5'],
@@ -87,7 +87,7 @@ export const mathFunctionSchemas = {
     'sin',
     'Returns the sine of a number (in radians)',
     'math',
-    [createParameter('x', 'The angle in radians', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The angle in radians' })],
     { type: 'number', description: 'The sine value' },
     {
       examples: ['sin(0) // 0', 'sin(Math.PI / 2) // 1', 'sin(Math.PI) // 0'],
@@ -98,7 +98,7 @@ export const mathFunctionSchemas = {
     'cos',
     'Returns the cosine of a number (in radians)',
     'math',
-    [createParameter('x', 'The angle in radians', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The angle in radians' })],
     { type: 'number', description: 'The cosine value' },
     {
       examples: ['cos(0) // 1', 'cos(Math.PI / 2) // 0', 'cos(Math.PI) // -1'],
@@ -109,7 +109,7 @@ export const mathFunctionSchemas = {
     'tan',
     'Returns the tangent of a number (in radians)',
     'math',
-    [createParameter('x', 'The angle in radians', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The angle in radians' })],
     { type: 'number', description: 'The tangent value' },
     {
       examples: ['tan(0) // 0', 'tan(Math.PI / 4) // 1'],
@@ -120,7 +120,7 @@ export const mathFunctionSchemas = {
     'asin',
     'Returns the arcsine of a number',
     'math',
-    [createParameter('x', 'The number (-1 to 1)', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number (-1 to 1)' })],
     { type: 'number', description: 'The arcsine in radians' },
     {
       examples: ['asin(0) // 0', 'asin(1) // Math.PI / 2', 'asin(-1) // -Math.PI / 2'],
@@ -131,7 +131,7 @@ export const mathFunctionSchemas = {
     'acos',
     'Returns the arccosine of a number',
     'math',
-    [createParameter('x', 'The number (-1 to 1)', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number (-1 to 1)' })],
     { type: 'number', description: 'The arccosine in radians' },
     {
       examples: ['acos(1) // 0', 'acos(0) // Math.PI / 2', 'acos(-1) // Math.PI'],
@@ -142,7 +142,7 @@ export const mathFunctionSchemas = {
     'atan',
     'Returns the arctangent of a number',
     'math',
-    [createParameter('x', 'The number', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number' })],
     { type: 'number', description: 'The arctangent in radians' },
     {
       examples: ['atan(0) // 0', 'atan(1) // Math.PI / 4', 'atan(-1) // -Math.PI / 4'],
@@ -154,8 +154,8 @@ export const mathFunctionSchemas = {
     'Returns the arctangent of the quotient of its arguments',
     'math',
     [
-      createParameter('y', 'The y coordinate', { type: 'number' }),
-      createParameter('x', 'The x coordinate', { type: 'number' }),
+      createParameter('y', { type: 'number', description: 'The y coordinate' }),
+      createParameter('x', { type: 'number', description: 'The x coordinate' }),
     ],
     { type: 'number', description: 'The arctangent in radians' },
     {
@@ -167,7 +167,7 @@ export const mathFunctionSchemas = {
     'sqrt',
     'Returns the square root of a number',
     'math',
-    [createParameter('x', 'The number to get the square root of', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number to get the square root of' })],
     { type: 'number', description: 'The square root' },
     {
       examples: ['sqrt(9) // 3', 'sqrt(16) // 4', 'sqrt(2) // 1.4142135623730951'],
@@ -179,8 +179,8 @@ export const mathFunctionSchemas = {
     'Returns the base raised to the power of the exponent',
     'math',
     [
-      createParameter('base', 'The base number', { type: 'number' }),
-      createParameter('exponent', 'The exponent', { type: 'number' }),
+      createParameter('base', { type: 'number', description: 'The base number' }),
+      createParameter('exponent', { type: 'number', description: 'The exponent' }),
     ],
     { type: 'number', description: 'The result of base raised to the power of exponent' },
     {
@@ -192,7 +192,7 @@ export const mathFunctionSchemas = {
     'exp',
     'Returns e raised to the power of x',
     'math',
-    [createParameter('x', 'The exponent', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The exponent' })],
     { type: 'number', description: 'e raised to the power of x' },
     {
       examples: ['exp(0) // 1', 'exp(1) // 2.718281828459045', 'exp(2) // 7.38905609893065'],
@@ -203,7 +203,7 @@ export const mathFunctionSchemas = {
     'log',
     'Returns the natural logarithm of a number',
     'math',
-    [createParameter('x', 'The number', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number' })],
     { type: 'number', description: 'The natural logarithm' },
     {
       examples: ['log(1) // 0', 'log(Math.E) // 1', 'log(10) // 2.302585092994046'],
@@ -214,7 +214,7 @@ export const mathFunctionSchemas = {
     'log10',
     'Returns the base-10 logarithm of a number',
     'math',
-    [createParameter('x', 'The number', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number' })],
     { type: 'number', description: 'The base-10 logarithm' },
     {
       examples: ['log10(10) // 1', 'log10(100) // 2', 'log10(1000) // 3'],
@@ -225,7 +225,7 @@ export const mathFunctionSchemas = {
     'log2',
     'Returns the base-2 logarithm of a number',
     'math',
-    [createParameter('x', 'The number', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number' })],
     { type: 'number', description: 'The base-2 logarithm' },
     {
       examples: ['log2(2) // 1', 'log2(8) // 3', 'log2(1024) // 10'],
@@ -236,7 +236,7 @@ export const mathFunctionSchemas = {
     'sign',
     'Returns the sign of a number',
     'math',
-    [createParameter('x', 'The number', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number' })],
     { type: 'number', description: '1 if positive, -1 if negative, 0 if zero' },
     {
       examples: ['sign(5) // 1', 'sign(-5) // -1', 'sign(0) // 0'],
@@ -247,7 +247,7 @@ export const mathFunctionSchemas = {
     'trunc',
     'Returns the integer part of a number by removing fractional digits',
     'math',
-    [createParameter('x', 'The number to truncate', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number to truncate' })],
     { type: 'number', description: 'The integer part of the number' },
     {
       examples: ['trunc(4.9) // 4', 'trunc(-4.9) // -4', 'trunc(0.123) // 0'],
@@ -258,7 +258,7 @@ export const mathFunctionSchemas = {
     'cbrt',
     'Returns the cube root of a number',
     'math',
-    [createParameter('x', 'The number to get the cube root of', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number to get the cube root of' })],
     { type: 'number', description: 'The cube root' },
     {
       examples: ['cbrt(8) // 2', 'cbrt(27) // 3', 'cbrt(-8) // -2'],
@@ -270,7 +270,7 @@ export const mathFunctionSchemas = {
     'Returns the square root of the sum of squares of its arguments',
     'math',
     [
-      createParameter('values', 'The numbers to calculate the hypotenuse for', { type: 'number' }, true, {
+      createParameter('values', { type: 'number', description: 'The numbers to calculate the hypotenuse for' }, true, {
         variadic: true,
       }),
     ],
@@ -284,7 +284,7 @@ export const mathFunctionSchemas = {
     'clz32',
     'Returns the number of leading zero bits in the 32-bit binary representation',
     'math',
-    [createParameter('x', 'The number', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number' })],
     { type: 'number', description: 'The number of leading zero bits' },
     {
       examples: ['clz32(1) // 31', 'clz32(1000) // 22', 'clz32(0) // 32'],
@@ -295,7 +295,7 @@ export const mathFunctionSchemas = {
     'fround',
     'Returns the nearest 32-bit single precision float representation of a number',
     'math',
-    [createParameter('x', 'The number', { type: 'number' })],
+    [createParameter('x', { type: 'number', description: 'The number' })],
     { type: 'number', description: 'The nearest 32-bit float' },
     {
       examples: ['fround(1.5) // 1.5', 'fround(1.337) // 1.3370000123977661'],
@@ -307,8 +307,8 @@ export const mathFunctionSchemas = {
     'Returns the result of the 32-bit multiplication of the two parameters',
     'math',
     [
-      createParameter('a', 'The first number', { type: 'number' }),
-      createParameter('b', 'The second number', { type: 'number' }),
+      createParameter('a', { type: 'number', description: 'The first number' }),
+      createParameter('b', { type: 'number', description: 'The second number' }),
     ],
     { type: 'number', description: 'The result of the 32-bit multiplication' },
     {
@@ -320,7 +320,7 @@ export const mathFunctionSchemas = {
     'sum',
     'Returns the sum of all arguments',
     'math',
-    [createParameter('values', 'The numbers to sum', { type: 'number' }, true, { variadic: true })],
+    [createParameter('values', { type: 'number', description: 'The numbers to sum' }, true, { variadic: true })],
     { type: 'number', description: 'The sum of all values' },
     {
       examples: ['sum(1, 2, 3) // 6', 'sum(10, 20) // 30', 'sum(1.5, 2.5, 3) // 7'],
@@ -331,7 +331,7 @@ export const mathFunctionSchemas = {
     'avg',
     'Returns the average of all arguments',
     'math',
-    [createParameter('values', 'The numbers to average', { type: 'number' }, true, { variadic: true })],
+    [createParameter('values', { type: 'number', description: 'The numbers to average' }, true, { variadic: true })],
     { type: 'number', description: 'The average of all values' },
     {
       examples: ['avg(1, 2, 3) // 2', 'avg(10, 20) // 15', 'avg(1, 2, 3, 4, 5) // 3'],
@@ -342,7 +342,11 @@ export const mathFunctionSchemas = {
     'median',
     'Returns the median of all arguments',
     'math',
-    [createParameter('values', 'The numbers to find the median of', { type: 'number' }, true, { variadic: true })],
+    [
+      createParameter('values', { type: 'number', description: 'The numbers to find the median of' }, true, {
+        variadic: true,
+      }),
+    ],
     { type: 'number', description: 'The median value' },
     {
       examples: ['median(1, 2, 3) // 2', 'median(1, 2, 3, 4) // 2.5', 'median(5, 1, 3) // 3'],
@@ -354,9 +358,9 @@ export const mathFunctionSchemas = {
     'Clamps a number between a minimum and maximum value',
     'math',
     [
-      createParameter('value', 'The value to clamp', { type: 'number' }),
-      createParameter('min', 'The minimum value', { type: 'number' }),
-      createParameter('max', 'The maximum value', { type: 'number' }),
+      createParameter('value', { type: 'number', description: 'The value to clamp' }),
+      createParameter('min', { type: 'number', description: 'The minimum value' }),
+      createParameter('max', { type: 'number', description: 'The maximum value' }),
     ],
     { type: 'number', description: 'The clamped value' },
     {
@@ -369,9 +373,9 @@ export const mathFunctionSchemas = {
     'Linear interpolation between two values',
     'math',
     [
-      createParameter('start', 'The start value', { type: 'number' }),
-      createParameter('end', 'The end value', { type: 'number' }),
-      createParameter('t', 'The interpolation factor (0-1)', { type: 'number' }),
+      createParameter('start', { type: 'number', description: 'The start value' }),
+      createParameter('end', { type: 'number', description: 'The end value' }),
+      createParameter('t', { type: 'number', description: 'The interpolation factor (0-1)' }),
     ],
     { type: 'number', description: 'The interpolated value' },
     {
@@ -383,7 +387,7 @@ export const mathFunctionSchemas = {
     'degrees',
     'Converts radians to degrees',
     'math',
-    [createParameter('radians', 'The angle in radians', { type: 'number' })],
+    [createParameter('radians', { type: 'number', description: 'The angle in radians' })],
     { type: 'number', description: 'The angle in degrees' },
     {
       examples: ['degrees(Math.PI) // 180', 'degrees(Math.PI / 2) // 90', 'degrees(0) // 0'],
@@ -394,7 +398,7 @@ export const mathFunctionSchemas = {
     'radians',
     'Converts degrees to radians',
     'math',
-    [createParameter('degrees', 'The angle in degrees', { type: 'number' })],
+    [createParameter('degrees', { type: 'number', description: 'The angle in degrees' })],
     { type: 'number', description: 'The angle in radians' },
     {
       examples: ['radians(180) // Math.PI', 'radians(90) // Math.PI / 2', 'radians(0) // 0'],

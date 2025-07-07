@@ -37,7 +37,6 @@ export function createLibrarySchema(
  */
 export function createParameter(
   name: string,
-  description: string,
   schema: JSONSchema7,
   required = true,
   options: {
@@ -46,7 +45,6 @@ export function createParameter(
 ): FunctionParameter {
   return {
     name,
-    description,
     schema,
     required,
     ...options,
@@ -151,13 +149,17 @@ export function validateFunctionSchema(schema: FunctionSchema): string[] {
   // Validate parameters
   schema.parameters?.forEach((param, index) => {
     if (!param.name) errors.push(`Parameter ${index}: name is required`)
-    if (!param.description) errors.push(`Parameter ${index}: description is required`)
     if (!param.schema) {
       errors.push(`Parameter ${index} (${param.name}): schema is required`)
-    } else if (getTypeStringFromSchema(param.schema) === 'unknown') {
-      errors.push(
-        `Parameter ${index} (${param.name}): schema is missing a valid type definition (e.g., type, enum, anyOf)`
-      )
+    } else {
+      if (getTypeStringFromSchema(param.schema) === 'unknown') {
+        errors.push(
+          `Parameter ${index} (${param.name}): schema is missing a valid type definition (e.g., type, enum, anyOf)`
+        )
+      }
+      if (!param.schema.description) {
+        errors.push(`Parameter ${index}: schema.description is required`)
+      }
     }
     if (param.required === undefined) errors.push(`Parameter ${index}: required field is required`)
   })
@@ -247,7 +249,9 @@ export function generateFunctionMarkdown(schema: FunctionSchema): string {
       const required = param.required ? '' : ' (optional)'
       const variadic = param.variadic ? ' (variadic)' : ''
       const typeStr = getTypeStringFromSchema(param.schema)
-      lines.push(`- \`${param.name}\` (${typeStr}${required}${variadic}) - ${param.description}`)
+      lines.push(
+        `- \`${param.name}\` (${typeStr}${required}${variadic}) - ${param.schema?.description || 'No description provided'}`
+      )
     })
     lines.push('')
   }

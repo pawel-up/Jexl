@@ -10,7 +10,7 @@ export const stringFunctionSchemas = {
     'upper',
     'Converts a string to uppercase',
     'string',
-    [createParameter('str', 'The string to convert', { type: 'string' })],
+    [createParameter('str', { type: 'string', description: 'The string to convert' })],
     { type: 'string', description: 'The uppercase string' },
     {
       examples: ['upper("hello") // "HELLO"', 'upper("World") // "WORLD"'],
@@ -21,7 +21,7 @@ export const stringFunctionSchemas = {
     'lower',
     'Converts a string to lowercase',
     'string',
-    [createParameter('str', 'The string to convert', { type: 'string' })],
+    [createParameter('str', { type: 'string', description: 'The string to convert' })],
     { type: 'string', description: 'The lowercase string' },
     {
       examples: ['lower("HELLO") // "hello"', 'lower("World") // "world"'],
@@ -33,9 +33,9 @@ export const stringFunctionSchemas = {
     'Extracts a substring from a string',
     'string',
     [
-      createParameter('str', 'The string to extract from', { type: 'string' }),
-      createParameter('start', 'The starting index', { type: 'number' }),
-      createParameter('end', 'The ending index (optional)', { type: 'number' }, false),
+      createParameter('str', { type: 'string', description: 'The string to extract from' }),
+      createParameter('start', { type: 'number', description: 'The starting index' }),
+      createParameter('end', { type: 'number', description: 'The ending index (optional)' }, false),
     ],
     { type: 'string', description: 'The extracted substring' },
     {
@@ -48,8 +48,8 @@ export const stringFunctionSchemas = {
     'Splits a string into an array of substrings',
     'string',
     [
-      createParameter('str', 'The string to split', { type: 'string' }),
-      createParameter('separator', 'The separator to use for splitting', { type: 'string' }),
+      createParameter('str', { type: 'string', description: 'The string to split' }),
+      createParameter('separator', { type: 'string', description: 'The separator to use for splitting' }),
     ],
     { type: 'array', description: 'An array of substrings' },
     {
@@ -62,8 +62,8 @@ export const stringFunctionSchemas = {
     'Joins an array of elements into a string',
     'string',
     [
-      createParameter('arr', 'The array to join', { type: 'array' }),
-      createParameter('separator', 'The separator to use for joining', { type: 'string' }),
+      createParameter('arr', { type: 'array', description: 'The array to join' }),
+      createParameter('separator', { type: 'string', description: 'The separator to use for joining' }),
     ],
     { type: 'string', description: 'The joined string' },
     {
@@ -76,9 +76,9 @@ export const stringFunctionSchemas = {
     'Replaces the first occurrence of a substring with another string',
     'string',
     [
-      createParameter('str', 'The string to search in', { type: 'string' }),
-      createParameter('oldStr', 'The substring to replace', { type: 'string' }),
-      createParameter('newStr', 'The replacement string', { type: 'string' }),
+      createParameter('str', { type: 'string', description: 'The string to search in' }),
+      createParameter('oldStr', { type: 'string', description: 'The substring to replace' }),
+      createParameter('newStr', { type: 'string', description: 'The replacement string' }),
     ],
     { type: 'string', description: 'The string with the first occurrence replaced' },
     {
@@ -94,9 +94,9 @@ export const stringFunctionSchemas = {
     'Replaces all occurrences of a substring with another string',
     'string',
     [
-      createParameter('str', 'The string to search in', { type: 'string' }),
-      createParameter('oldStr', 'The substring to replace', { type: 'string' }),
-      createParameter('newStr', 'The replacement string', { type: 'string' }),
+      createParameter('str', { type: 'string', description: 'The string to search in' }),
+      createParameter('oldStr', { type: 'string', description: 'The substring to replace' }),
+      createParameter('newStr', { type: 'string', description: 'The replacement string' }),
     ],
     { type: 'string', description: 'The string with all occurrences replaced' },
     {
@@ -111,7 +111,7 @@ export const stringFunctionSchemas = {
     'trim',
     'Removes whitespace from both ends of a string',
     'string',
-    [createParameter('str', 'The string to trim', { type: 'string' })],
+    [createParameter('str', { type: 'string', description: 'The string to trim' })],
     { type: 'string', description: 'The trimmed string' },
     {
       examples: ['trim("  hello  ") // "hello"', 'trim("\\n\\tworld\\n") // "world"'],
@@ -122,7 +122,7 @@ export const stringFunctionSchemas = {
     'trimStart',
     'Removes whitespace from the start of a string',
     'string',
-    [createParameter('str', 'The string to trim', { type: 'string' })],
+    [createParameter('str', { type: 'string', description: 'The string to trim' })],
     { type: 'string', description: 'The trimmed string' },
     {
       examples: ['trimStart("  hello  ") // "hello  "', 'trimStart("\\n\\tworld") // "world"'],
@@ -133,7 +133,7 @@ export const stringFunctionSchemas = {
     'trimEnd',
     'Removes whitespace from the end of a string',
     'string',
-    [createParameter('str', 'The string to trim', { type: 'string' })],
+    [createParameter('str', { type: 'string', description: 'The string to trim' })],
     { type: 'string', description: 'The trimmed string' },
     {
       examples: ['trimEnd("  hello  ") // "  hello"', 'trimEnd("world\\n\\t") // "world"'],
@@ -145,9 +145,9 @@ export const stringFunctionSchemas = {
     'Pads a string from the start with another string',
     'string',
     [
-      createParameter('str', 'The string to pad', { type: 'string' }),
-      createParameter('targetLength', 'The target length', { type: 'number' }),
-      createParameter('padString', 'The string to pad with (optional)', { type: 'string' }, false),
+      createParameter('str', { type: 'string', description: 'The string to pad' }),
+      createParameter('targetLength', { type: 'number', description: 'The target length' }),
+      createParameter('padString', { type: 'string', description: 'The string to pad with (optional)' }, false),
     ],
     { type: 'string', description: 'The padded string' },
     {
@@ -160,9 +160,9 @@ export const stringFunctionSchemas = {
     'Pads a string from the end with another string',
     'string',
     [
-      createParameter('str', 'The string to pad', { type: 'string' }),
-      createParameter('targetLength', 'The target length', { type: 'number' }),
-      createParameter('padString', 'The string to pad with (optional)', { type: 'string' }, false),
+      createParameter('str', { type: 'string', description: 'The string to pad' }),
+      createParameter('targetLength', { type: 'number', description: 'The target length' }),
+      createParameter('padString', { type: 'string', description: 'The string to pad with (optional)' }, false),
     ],
     { type: 'string', description: 'The padded string' },
     {
@@ -175,8 +175,8 @@ export const stringFunctionSchemas = {
     'Returns the character at a specified index',
     'string',
     [
-      createParameter('str', 'The string to get character from', { type: 'string' }),
-      createParameter('index', 'The index of the character', { type: 'number' }),
+      createParameter('str', { type: 'string', description: 'The string to get character from' }),
+      createParameter('index', { type: 'number', description: 'The index of the character' }),
     ],
     { type: 'string', description: 'The character at the specified index' },
     {
@@ -189,8 +189,8 @@ export const stringFunctionSchemas = {
     'Returns the Unicode code point of the character at a specified index',
     'string',
     [
-      createParameter('str', 'The string to get character code from', { type: 'string' }),
-      createParameter('index', 'The index of the character', { type: 'number' }),
+      createParameter('str', { type: 'string', description: 'The string to get character code from' }),
+      createParameter('index', { type: 'number', description: 'The index of the character' }),
     ],
     { type: 'number', description: 'The Unicode code point of the character' },
     {
@@ -202,7 +202,7 @@ export const stringFunctionSchemas = {
     'fromCharCode',
     'Creates a string from Unicode code points',
     'string',
-    [createParameter('codes', 'Unicode code points', { type: 'number' }, true, { variadic: true })],
+    [createParameter('codes', { type: 'number', description: 'Unicode code points' }, true, { variadic: true })],
     { type: 'string', description: 'The string created from the code points' },
     {
       examples: ['fromCharCode(72, 101, 108, 108, 111) // "Hello"', 'fromCharCode(65, 66, 67) // "ABC"'],
@@ -214,9 +214,13 @@ export const stringFunctionSchemas = {
     'Returns the index of the first occurrence of a substring',
     'string',
     [
-      createParameter('str', 'The string to search in', { type: 'string' }, true),
-      createParameter('searchStr', 'The substring to search for', { type: 'string' }, true),
-      createParameter('fromIndex', 'The index to start searching from (optional)', { type: 'number' }, false),
+      createParameter('str', { type: 'string', description: 'The string to search in' }, true),
+      createParameter('searchStr', { type: 'string', description: 'The substring to search for' }, true),
+      createParameter(
+        'fromIndex',
+        { type: 'number', description: 'The index to start searching from (optional)' },
+        false
+      ),
     ],
     { type: 'number', description: 'The index of the first occurrence, or -1 if not found' },
     {
@@ -233,9 +237,13 @@ export const stringFunctionSchemas = {
     'Returns the index of the last occurrence of a substring',
     'string',
     [
-      createParameter('str', 'The string to search in', { type: 'string' }, true),
-      createParameter('searchStr', 'The substring to search for', { type: 'string' }, true),
-      createParameter('fromIndex', 'The index to start searching from (optional)', { type: 'number' }, false),
+      createParameter('str', { type: 'string', description: 'The string to search in' }, true),
+      createParameter('searchStr', { type: 'string', description: 'The substring to search for' }, true),
+      createParameter(
+        'fromIndex',
+        { type: 'number', description: 'The index to start searching from (optional)' },
+        false
+      ),
     ],
     { type: 'number', description: 'The index of the last occurrence, or -1 if not found' },
     {
@@ -248,9 +256,13 @@ export const stringFunctionSchemas = {
     'Determines whether a string contains a substring',
     'string',
     [
-      createParameter('str', 'The string to search in', { type: 'string' }, true),
-      createParameter('searchStr', 'The substring to search for', { type: 'string' }, true),
-      createParameter('fromIndex', 'The index to start searching from (optional)', { type: 'number' }, false),
+      createParameter('str', { type: 'string', description: 'The string to search in' }, true),
+      createParameter('searchStr', { type: 'string', description: 'The substring to search for' }, true),
+      createParameter(
+        'fromIndex',
+        { type: 'number', description: 'The index to start searching from (optional)' },
+        false
+      ),
     ],
     { type: 'boolean', description: 'True if the substring is found, false otherwise' },
     {
@@ -263,9 +275,13 @@ export const stringFunctionSchemas = {
     'Determines whether a string starts with a substring',
     'string',
     [
-      createParameter('str', 'The string to check', { type: 'string' }, true),
-      createParameter('searchStr', 'The substring to search for', { type: 'string' }, true),
-      createParameter('position', 'The position to start checking from (optional)', { type: 'number' }, false),
+      createParameter('str', { type: 'string', description: 'The string to check' }, true),
+      createParameter('searchStr', { type: 'string', description: 'The substring to search for' }, true),
+      createParameter(
+        'position',
+        { type: 'number', description: 'The position to start checking from (optional)' },
+        false
+      ),
     ],
     { type: 'boolean', description: 'True if the string starts with the substring, false otherwise' },
     {
@@ -278,9 +294,13 @@ export const stringFunctionSchemas = {
     'Determines whether a string ends with a substring',
     'string',
     [
-      createParameter('str', 'The string to check', { type: 'string' }, true),
-      createParameter('searchStr', 'The substring to search for', { type: 'string' }, true),
-      createParameter('length', 'The length of the string to consider (optional)', { type: 'number' }, false),
+      createParameter('str', { type: 'string', description: 'The string to check' }, true),
+      createParameter('searchStr', { type: 'string', description: 'The substring to search for' }, true),
+      createParameter(
+        'length',
+        { type: 'number', description: 'The length of the string to consider (optional)' },
+        false
+      ),
     ],
     { type: 'boolean', description: 'True if the string ends with the substring, false otherwise' },
     {
@@ -293,8 +313,8 @@ export const stringFunctionSchemas = {
     'Matches a string against a regular expression',
     'string',
     [
-      createParameter('str', 'The string to match', { type: 'string' }, true),
-      createParameter('regexp', 'The regular expression', { type: 'string' }, true),
+      createParameter('str', { type: 'string', description: 'The string to match' }, true),
+      createParameter('regexp', { type: 'string', description: 'The regular expression' }, true),
     ],
     {
       type: 'array',
@@ -311,8 +331,8 @@ export const stringFunctionSchemas = {
     'Searches for a match against a regular expression',
     'string',
     [
-      createParameter('str', 'The string to search', { type: 'string' }, true),
-      createParameter('regexp', 'The regular expression', { type: 'string' }, true),
+      createParameter('str', { type: 'string', description: 'The string to search' }, true),
+      createParameter('regexp', { type: 'string', description: 'The regular expression' }, true),
     ],
     { type: 'number', description: 'The index of the first match, or -1 if no match' },
     {
@@ -325,8 +345,8 @@ export const stringFunctionSchemas = {
     'Repeats a string a specified number of times',
     'string',
     [
-      createParameter('str', 'The string to repeat', { type: 'string' }, true),
-      createParameter('count', 'The number of times to repeat', { type: 'number' }, true),
+      createParameter('str', { type: 'string', description: 'The string to repeat' }, true),
+      createParameter('count', { type: 'number', description: 'The number of times to repeat' }, true),
     ],
     { type: 'string', description: 'The repeated string' },
     {
@@ -339,9 +359,9 @@ export const stringFunctionSchemas = {
     'Extracts a section of a string',
     'string',
     [
-      createParameter('str', 'The string to slice', { type: 'string' }, true),
-      createParameter('start', 'The start index', { type: 'number' }, true),
-      createParameter('end', 'The end index (optional)', { type: 'number' }, false),
+      createParameter('str', { type: 'string', description: 'The string to slice' }, true),
+      createParameter('start', { type: 'number', description: 'The start index' }, true),
+      createParameter('end', { type: 'number', description: 'The end index (optional)' }, false),
     ],
     { type: 'string', description: 'The extracted section' },
     {

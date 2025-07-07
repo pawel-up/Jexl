@@ -22,8 +22,8 @@ test.group('Schema Integrations', () => {
     'A test function for validation',
     'test',
     [
-      createParameter('param1', 'First parameter', { type: 'string' }),
-      createParameter('param2', 'Second parameter', { type: 'number' }, false),
+      createParameter('param1', { type: 'string', description: 'First parameter' }),
+      createParameter('param2', { type: 'number', description: 'Second parameter' }, false),
     ],
     { type: 'boolean', description: 'Test result' },
     {
@@ -202,7 +202,7 @@ test.group('Schema Integrations', () => {
       'anotherFunction',
       'Another test function',
       'test',
-      [createParameter('input', 'Input value', {})],
+      [createParameter('input', { description: 'Input value' })],
       { type: 'string', description: 'Output value' }
     )
 
@@ -271,7 +271,7 @@ test.group('Schema Integrations', () => {
       'variadicFunction',
       'A function with variadic parameters',
       'test',
-      [createParameter('args', 'Multiple arguments', {}, true, { variadic: true })],
+      [createParameter('args', { description: 'Multiple arguments' }, true, { variadic: true })],
       { description: 'Result' }
     )
 

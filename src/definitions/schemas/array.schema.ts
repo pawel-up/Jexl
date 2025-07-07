@@ -12,7 +12,7 @@ const arrayFunctions = {
     'length',
     'Gets the length of an array',
     'array',
-    [createParameter('arr', 'The array to get the length of', { type: 'array' })],
+    [createParameter('arr', { type: 'array', description: 'The array to get the length of' })],
     { type: 'number', description: 'The length of the array' },
     { examples: ['length([1, 2, 3]) // 3', "length(['a', 'b']) // 2"] }
   ),
@@ -21,7 +21,7 @@ const arrayFunctions = {
     'isEmpty',
     'Checks if an array is empty',
     'array',
-    [createParameter('arr', 'The array to check', { type: 'array' })],
+    [createParameter('arr', { type: 'array', description: 'The array to check' })],
     { type: 'boolean', description: 'True if the array is empty, false otherwise' },
     { examples: ['isEmpty([]) // true', 'isEmpty([1, 2, 3]) // false'] }
   ),
@@ -30,7 +30,7 @@ const arrayFunctions = {
     'isNotEmpty',
     'Checks if an array is not empty',
     'array',
-    [createParameter('arr', 'The array to check', { type: 'array' })],
+    [createParameter('arr', { type: 'array', description: 'The array to check' })],
     { type: 'boolean', description: 'True if the array is not empty, false otherwise' },
     { examples: ['isNotEmpty([1, 2, 3]) // true', 'isNotEmpty([]) // false'] }
   ),
@@ -39,7 +39,7 @@ const arrayFunctions = {
     'first',
     'Gets the first element of an array',
     'array',
-    [createParameter('arr', 'The array to get the first element from', { type: 'array' })],
+    [createParameter('arr', { type: 'array', description: 'The array to get the first element from' })],
     {
       type: ['string', 'number', 'boolean', 'object', 'array'],
       description: 'The first element, or undefined if empty',
@@ -51,7 +51,7 @@ const arrayFunctions = {
     'last',
     'Gets the last element of an array',
     'array',
-    [createParameter('arr', 'The array to get the last element from', { type: 'array' })],
+    [createParameter('arr', { type: 'array', description: 'The array to get the last element from' })],
     {
       type: ['string', 'number', 'boolean', 'object', 'array'],
       description: 'The last element, or undefined if empty',
@@ -64,8 +64,8 @@ const arrayFunctions = {
     'Gets the element at a specific index',
     'array',
     [
-      createParameter('arr', 'The array to get the element from', { type: 'array' }),
-      createParameter('index', 'The index to get', { type: 'number' }),
+      createParameter('arr', { type: 'array', description: 'The array to get the element from' }),
+      createParameter('index', { type: 'number', description: 'The index to get' }),
     ],
     {
       type: ['string', 'number', 'boolean', 'object', 'array'],
@@ -79,8 +79,8 @@ const arrayFunctions = {
     'Checks if an array contains a specific value',
     'array',
     [
-      createParameter('arr', 'The array to search in', { type: 'array' }),
-      createParameter('value', 'The value to search for', {}),
+      createParameter('arr', { type: 'array', description: 'The array to search in' }),
+      createParameter('value', { description: 'The value to search for' }),
     ],
     { type: 'boolean', description: 'True if the array contains the value, false otherwise' },
     { examples: ['contains([1, 2, 3], 2) // true', "contains(['a', 'b', 'c'], 'd') // false"] }
@@ -91,9 +91,14 @@ const arrayFunctions = {
     'Sums numeric values in an array or spread arguments',
     'array',
     [
-      createParameter('args', 'Array of numbers or individual numbers to sum', { type: ['array', 'number'] }, true, {
-        variadic: true,
-      }),
+      createParameter(
+        'args',
+        { type: ['array', 'number'], description: 'Array of numbers or individual numbers to sum' },
+        true,
+        {
+          variadic: true,
+        }
+      ),
     ],
     { type: 'number', description: 'The sum of all numbers' },
     { examples: ['sum([1, 2, 3, 4]) // 10', 'sum(1, 2, 3, 4) // 10'] }
@@ -104,8 +109,8 @@ const arrayFunctions = {
     'Chunks an array into smaller arrays of specified size',
     'array',
     [
-      createParameter('arr', 'The array to chunk', { type: 'array' }),
-      createParameter('size', 'The size of each chunk', { type: 'number' }),
+      createParameter('arr', { type: 'array', description: 'The array to chunk' }),
+      createParameter('size', { type: 'number', description: 'The size of each chunk' }),
     ],
     { type: 'array', description: 'An array of chunks' },
     {
@@ -120,7 +125,7 @@ const arrayFunctions = {
     'unique',
     'Removes duplicate values from an array',
     'array',
-    [createParameter('arr', 'The array to deduplicate', { type: 'array' })],
+    [createParameter('arr', { type: 'array', description: 'The array to deduplicate' })],
     { type: 'array', description: 'A new array with unique values' },
     { examples: ['unique([1, 2, 2, 3, 3, 3]) // [1, 2, 3]', "unique(['a', 'b', 'a', 'c']) // ['a', 'b', 'c']"] }
   ),
@@ -129,7 +134,7 @@ const arrayFunctions = {
     'flatten',
     'Flattens an array by one level',
     'array',
-    [createParameter('arr', 'The array to flatten', { type: 'array' })],
+    [createParameter('arr', { type: 'array', description: 'The array to flatten' })],
     { type: 'array', description: 'A new flattened array' },
     {
       examples: [
@@ -143,7 +148,7 @@ const arrayFunctions = {
     'reverse',
     'Reverses an array',
     'array',
-    [createParameter('arr', 'The array to reverse', { type: 'array' })],
+    [createParameter('arr', { type: 'array', description: 'The array to reverse' })],
     { type: 'array', description: 'A new reversed array' },
     { examples: ['reverse([1, 2, 3]) // [3, 2, 1]', "reverse(['a', 'b', 'c']) // ['c', 'b', 'a']"] }
   ),
@@ -153,13 +158,8 @@ const arrayFunctions = {
     'Sorts an array',
     'array',
     [
-      createParameter('arr', 'The array to sort', { type: 'array' }),
-      createParameter(
-        'compareFn',
-        'Optional comparison function',
-        { type: 'object', description: 'A comparison function' },
-        false
-      ),
+      createParameter('arr', { type: 'array', description: 'The array to sort' }),
+      createParameter('compareFn', { type: 'object', description: 'Optional comparison function' }, false),
     ],
     { type: 'array', description: 'A new sorted array' },
     { examples: ['sort([3, 1, 4, 1, 5]) // [1, 1, 3, 4, 5]', "sort(['c', 'a', 'b']) // ['a', 'b', 'c']"] }
