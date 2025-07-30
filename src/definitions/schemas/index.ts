@@ -17,6 +17,7 @@ export { arrayLibrarySchema, arrayFunctionSchemas } from './array.schema.js'
 export { stringLibrarySchema, stringFunctionSchemas } from './string.schema.js'
 export { mathLibrarySchema, mathFunctionSchemas } from './math.schema.js'
 export { dateLibrarySchema, dateFunctionSchemas } from './date.schema.js'
+export { commonLibrarySchema, commonFunctionSchemas } from './common.schema.js'
 
 // Re-export commonly used types
 export type { FunctionSchema, LibrarySchema, FunctionParameter, LibraryConfig } from './types.js'

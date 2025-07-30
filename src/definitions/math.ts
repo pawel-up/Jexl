@@ -3,90 +3,90 @@
  * @param x - The number to get the absolute value of.
  * @returns The absolute value.
  */
-export const abs = Math.abs
+export const ABS = Math.abs
 
 /**
  * Returns the smallest integer greater than or equal to a number.
  * @param x - The number to ceil.
  * @returns The ceiling value.
  */
-export const ceil = Math.ceil
+export const CEIL = Math.ceil
 
 /**
  * Returns the largest integer less than or equal to a number.
  * @param x - The number to floor.
  * @returns The floor value.
  */
-export const floor = Math.floor
+export const FLOOR = Math.floor
 
 /**
  * Returns the value of a number rounded to the nearest integer.
  * @param x - The number to round.
  * @returns The rounded value.
  */
-export const round = Math.round
+export const ROUND = Math.round
 
 /**
  * Returns a random number between 0 (inclusive) and 1 (exclusive).
  * @returns A random number.
  */
-export const random = Math.random
+export const RANDOM = Math.random
 
 /**
  * Returns the largest of the given numbers.
  * @param values - The numbers to compare.
  * @returns The maximum value.
  */
-export const max = Math.max
+export const MAX = Math.max
 
 /**
  * Returns the smallest of the given numbers.
  * @param values - The numbers to compare.
  * @returns The minimum value.
  */
-export const min = Math.min
+export const MIN = Math.min
 
 /**
  * Returns the sine of a number (in radians).
  * @param x - The angle in radians.
  * @returns The sine value.
  */
-export const sin = Math.sin
+export const SIN = Math.sin
 
 /**
  * Returns the cosine of a number (in radians).
  * @param x - The angle in radians.
  * @returns The cosine value.
  */
-export const cos = Math.cos
+export const COS = Math.cos
 
 /**
  * Returns the tangent of a number (in radians).
  * @param x - The angle in radians.
  * @returns The tangent value.
  */
-export const tan = Math.tan
+export const TAN = Math.tan
 
 /**
  * Returns the arcsine of a number (in radians).
  * @param x - The number between -1 and 1.
  * @returns The arcsine value in radians.
  */
-export const asin = Math.asin
+export const ASIN = Math.asin
 
 /**
  * Returns the arccosine of a number (in radians).
  * @param x - The number between -1 and 1.
  * @returns The arccosine value in radians.
  */
-export const acos = Math.acos
+export const ACOS = Math.acos
 
 /**
  * Returns the arctangent of a number (in radians).
  * @param x - The number.
  * @returns The arctangent value in radians.
  */
-export const atan = Math.atan
+export const ATAN = Math.atan
 
 /**
  * Returns the arctangent of the quotient of its arguments.
@@ -94,49 +94,49 @@ export const atan = Math.atan
  * @param x - The x coordinate.
  * @returns The arctangent of y/x in radians.
  */
-export const atan2 = Math.atan2
+export const ATAN2 = Math.atan2
 
 /**
  * Returns the square root of a number.
  * @param x - The number.
  * @returns The square root.
  */
-export const sqrt = Math.sqrt
+export const SQRT = Math.sqrt
 
 /**
  * Returns the cube root of a number.
  * @param x - The number.
  * @returns The cube root.
  */
-export const cbrt = Math.cbrt
+export const CBRT = Math.cbrt
 
 /**
  * Returns e raised to the power of a number.
  * @param x - The exponent.
  * @returns e^x.
  */
-export const exp = Math.exp
+export const EXP = Math.exp
 
 /**
  * Returns the natural logarithm of a number.
  * @param x - The number.
  * @returns The natural logarithm.
  */
-export const log = Math.log
+export const LOG = Math.log
 
 /**
  * Returns the base-10 logarithm of a number.
  * @param x - The number.
  * @returns The base-10 logarithm.
  */
-export const log10 = Math.log10
+export const LOG10 = Math.log10
 
 /**
  * Returns the base-2 logarithm of a number.
  * @param x - The number.
  * @returns The base-2 logarithm.
  */
-export const log2 = Math.log2
+export const LOG2 = Math.log2
 
 /**
  * Returns the base raised to the exponent power.
@@ -144,21 +144,21 @@ export const log2 = Math.log2
  * @param exponent - The exponent.
  * @returns base^exponent.
  */
-export const pow = Math.pow
+export const POW = Math.pow
 
 /**
  * Returns the sign of a number.
  * @param x - The number.
  * @returns 1 if positive, -1 if negative, 0 if zero.
  */
-export const sign = Math.sign
+export const SIGN = Math.sign
 
 /**
  * Returns the integer part of a number by removing any fractional digits.
  * @param x - The number.
  * @returns The integer part.
  */
-export const trunc = Math.trunc
+export const TRUNC = Math.trunc
 
 /**
  * Sums all provided numbers.
@@ -167,7 +167,7 @@ export const trunc = Math.trunc
  * @param args - Numbers to sum.
  * @returns The sum of the numbers.
  */
-export const sum = (...args: number[]) => {
+export const SUM = (...args: number[]) => {
   if (Array.isArray(args[0])) {
     return (args[0] as number[]).reduce((a, b) => a + b, 0)
   }
@@ -180,7 +180,7 @@ export const sum = (...args: number[]) => {
  * @param args - Numbers to average.
  * @returns The average of the numbers.
  */
-export const avg = (...args: number[]) => {
+export const AVG = (...args: number[]) => {
   if (Array.isArray(args[0])) {
     const arr = args[0] as number[]
     if (arr.length === 0) return 0
@@ -196,7 +196,7 @@ export const avg = (...args: number[]) => {
  * @param args - Numbers to find median of.
  * @returns The median of the numbers.
  */
-export const median = (...args: number[]) => {
+export const MEDIAN = (...args: number[]) => {
   const arr = Array.isArray(args[0]) ? (args[0] as number[]) : args
   if (arr.length === 0) return 0
   const sorted = [...arr].sort((a, b) => a - b)
@@ -210,7 +210,7 @@ export const median = (...args: number[]) => {
  * @param args - Numbers to find mode of.
  * @returns The mode of the numbers.
  */
-export const mode = (...args: number[]) => {
+export const MODE = (...args: number[]) => {
   const arr = Array.isArray(args[0]) ? (args[0] as number[]) : args
   if (arr.length === 0) return 0
 
@@ -235,7 +235,7 @@ export const mode = (...args: number[]) => {
  * @param args - Numbers to calculate variance of.
  * @returns The variance of the numbers.
  */
-export const variance = (...args: number[]) => {
+export const VARIANCE = (...args: number[]) => {
   const arr = Array.isArray(args[0]) ? (args[0] as number[]) : args
   if (arr.length === 0) return 0
   const mean = arr.reduce((a, b) => a + b, 0) / arr.length
@@ -248,9 +248,9 @@ export const variance = (...args: number[]) => {
  * @param args - Numbers to calculate standard deviation of.
  * @returns The standard deviation of the numbers.
  */
-export const stddev = (...args: number[]) => {
+export const STDDEV = (...args: number[]) => {
   const arr = Array.isArray(args[0]) ? (args[0] as number[]) : args
-  return Math.sqrt(variance(...arr))
+  return Math.sqrt(VARIANCE(...arr))
 }
 
 /**
@@ -260,7 +260,7 @@ export const stddev = (...args: number[]) => {
  * @param max - The maximum value.
  * @returns The clamped value.
  */
-export const clamp = (value: number, min: number, max: number) => {
+export const CLAMP = (value: number, min: number, max: number) => {
   return Math.min(Math.max(value, min), max)
 }
 
@@ -271,7 +271,7 @@ export const clamp = (value: number, min: number, max: number) => {
  * @param t - The interpolation factor (0-1).
  * @returns The interpolated value.
  */
-export const lerp = (start: number, end: number, t: number) => {
+export const LERP = (start: number, end: number, t: number) => {
   return start + (end - start) * t
 }
 
@@ -280,7 +280,7 @@ export const lerp = (start: number, end: number, t: number) => {
  * @param degrees - The angle in degrees.
  * @returns The angle in radians.
  */
-export const toRadians = (degrees: number) => {
+export const TO_RADIANS = (degrees: number) => {
   return degrees * (Math.PI / 180)
 }
 
@@ -289,7 +289,7 @@ export const toRadians = (degrees: number) => {
  * @param radians - The angle in radians.
  * @returns The angle in degrees.
  */
-export const toDegrees = (radians: number) => {
+export const TO_DEGREES = (radians: number) => {
   return radians * (180 / Math.PI)
 }
 
@@ -299,10 +299,10 @@ export const toDegrees = (radians: number) => {
  * @param b - Second number.
  * @returns The greatest common divisor.
  */
-export const gcd = (a: number, b: number): number => {
+export const GCD = (a: number, b: number): number => {
   a = Math.abs(Math.floor(a))
   b = Math.abs(Math.floor(b))
-  return b === 0 ? a : gcd(b, a % b)
+  return b === 0 ? a : GCD(b, a % b)
 }
 
 /**
@@ -311,9 +311,9 @@ export const gcd = (a: number, b: number): number => {
  * @param b - Second number.
  * @returns The least common multiple.
  */
-export const lcm = (a: number, b: number) => {
+export const LCM = (a: number, b: number) => {
   if (a === 0 || b === 0) return 0
-  return Math.abs(a * b) / gcd(a, b)
+  return Math.abs(a * b) / GCD(a, b)
 }
 
 /**
@@ -321,11 +321,11 @@ export const lcm = (a: number, b: number) => {
  * @param n - The number to calculate factorial of.
  * @returns The factorial of the number.
  */
-export const factorial = (n: number): number => {
+export const FACTORIAL = (n: number): number => {
   n = Math.floor(n)
   if (n < 0) return NaN
   if (n === 0 || n === 1) return 1
-  return n * factorial(n - 1)
+  return n * FACTORIAL(n - 1)
 }
 
 /**
@@ -333,7 +333,7 @@ export const factorial = (n: number): number => {
  * @param n - The number to check.
  * @returns True if the number is prime, false otherwise.
  */
-export const isPrime = (n: number): boolean => {
+export const IS_PRIME = (n: number): boolean => {
   n = Math.floor(n)
   if (n < 2) return false
   if (n === 2) return true
@@ -351,7 +351,7 @@ export const isPrime = (n: number): boolean => {
  * @param decimals - The number of decimal places.
  * @returns The rounded number.
  */
-export const roundTo = (value: number, decimals: number) => {
+export const ROUND_TO = (value: number, decimals: number) => {
   const factor = Math.pow(10, decimals)
   return Math.round(value * factor) / factor
 }

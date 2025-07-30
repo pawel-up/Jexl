@@ -2,24 +2,24 @@
  * Jexl date functions.
  */
 
-export const now = () => new Date()
+export const NOW = () => new Date()
 
-export const addDays = (date: Date, days: number) => {
+export const ADD_DAYS = (date: Date | string, days: number) => {
   const newDate = new Date(date)
   newDate.setDate(newDate.getDate() + days)
   return newDate
 }
 
-/**
- * Formats a date using locale-specific formatting.
- * @param date - The date to format.
- * @param locale - The locale to use for formatting (default: 'en-US').
- * @param options - Additional formatting options.
- * @returns The formatted date string.
- */
-export const formatLocale = (date: Date, locale = 'en-US', options: Intl.DateTimeFormatOptions = {}) => {
-  return new Intl.DateTimeFormat(locale, options).format(date)
-}
+// /**
+//  * Formats a date using locale-specific formatting.
+//  * @param date - The date to format.
+//  * @param locale - The locale to use for formatting (default: 'en-US').
+//  * @param options - Additional formatting options.
+//  * @returns The formatted date string.
+//  */
+// export const FORMAT_LOCALE = (date: Date | string, locale = 'en-US', options: Intl.DateTimeFormatOptions = {}) => {
+//   return new Intl.DateTimeFormat(locale, options).format(new Date(date))
+// }
 
 /**
  * Formats a date as a short date string.
@@ -27,8 +27,8 @@ export const formatLocale = (date: Date, locale = 'en-US', options: Intl.DateTim
  * @param locale - The locale to use for formatting (default to the current server locale).
  * @returns The formatted date string.
  */
-export const formatShort = (date: Date, locale?: string) => {
-  return date.toLocaleDateString(locale, { dateStyle: 'short' })
+export const FORMAT_SHORT = (date: Date | string, locale?: string) => {
+  return new Date(date).toLocaleDateString(locale, { dateStyle: 'short' })
 }
 
 /**
@@ -37,8 +37,8 @@ export const formatShort = (date: Date, locale?: string) => {
  * @param locale - The locale to use for formatting (default: 'en-US').
  * @returns The formatted date string.
  */
-export const formatMedium = (date: Date, locale?: string) => {
-  return date.toLocaleDateString(locale, { dateStyle: 'medium' })
+export const FORMAT_MEDIUM = (date: Date | string, locale?: string) => {
+  return new Date(date).toLocaleDateString(locale, { dateStyle: 'medium' })
 }
 
 /**
@@ -47,8 +47,8 @@ export const formatMedium = (date: Date, locale?: string) => {
  * @param locale - The locale to use for formatting (default: 'en-US').
  * @returns The formatted date string.
  */
-export const formatLong = (date: Date, locale?: string) => {
-  return date.toLocaleDateString(locale, { dateStyle: 'long' })
+export const FORMAT_LONG = (date: Date | string, locale?: string) => {
+  return new Date(date).toLocaleDateString(locale, { dateStyle: 'long' })
 }
 
 /**
@@ -57,8 +57,8 @@ export const formatLong = (date: Date, locale?: string) => {
  * @param locale - The locale to use for formatting (default: 'en-US').
  * @returns The formatted date string.
  */
-export const formatFull = (date: Date, locale?: string) => {
-  return date.toLocaleDateString(locale, { dateStyle: 'full' })
+export const FORMAT_FULL = (date: Date | string, locale?: string) => {
+  return new Date(date).toLocaleDateString(locale, { dateStyle: 'full' })
 }
 
 /**
@@ -67,8 +67,8 @@ export const formatFull = (date: Date, locale?: string) => {
  * @param locale - The locale to use for formatting (default: 'en-US').
  * @returns The formatted time string.
  */
-export const formatTimeShort = (date: Date, locale?: string) => {
-  return date.toLocaleTimeString(locale, { timeStyle: 'short' })
+export const FORMAT_TIME_SHORT = (date: Date | string, locale?: string) => {
+  return new Date(date).toLocaleTimeString(locale, { timeStyle: 'short' })
 }
 
 /**
@@ -77,8 +77,8 @@ export const formatTimeShort = (date: Date, locale?: string) => {
  * @param locale - The locale to use for formatting (default: 'en-US').
  * @returns The formatted time string.
  */
-export const formatTimeMedium = (date: Date, locale?: string) => {
-  return date.toLocaleTimeString(locale, { timeStyle: 'medium' })
+export const FORMAT_TIME_MEDIUM = (date: Date | string, locale?: string) => {
+  return new Date(date).toLocaleTimeString(locale, { timeStyle: 'medium' })
 }
 
 /**
@@ -87,8 +87,8 @@ export const formatTimeMedium = (date: Date, locale?: string) => {
  * @param locale - The locale to use for formatting (default: 'en-US').
  * @returns The formatted time string.
  */
-export const formatTimeLong = (date: Date, locale?: string) => {
-  return date.toLocaleTimeString(locale, { timeStyle: 'long' })
+export const FORMAT_TIME_LONG = (date: Date | string, locale?: string) => {
+  return new Date(date).toLocaleTimeString(locale, { timeStyle: 'long' })
 }
 
 /**
@@ -99,13 +99,13 @@ export const formatTimeLong = (date: Date, locale?: string) => {
  * @param timeStyle - The time style to use.
  * @returns The formatted date and time string.
  */
-export const formatDateTime = (
-  date: Date,
+export const FORMAT_DATE_TIME = (
+  date: Date | string,
   dateStyle: 'short' | 'medium' | 'long' | 'full' = 'medium',
   timeStyle: 'short' | 'medium' | 'long' | 'full' = 'short',
   locale?: string
 ) => {
-  return date.toLocaleString(locale, { dateStyle, timeStyle })
+  return new Date(date).toLocaleString(locale, { dateStyle, timeStyle })
 }
 
 /**
@@ -114,7 +114,7 @@ export const formatDateTime = (
  * @param months - The number of months to add.
  * @returns A new date with the months added.
  */
-export const addMonths = (date: Date, months: number) => {
+export const ADD_MONTHS = (date: Date | string, months: number) => {
   const newDate = new Date(date)
   newDate.setMonth(newDate.getMonth() + months)
   return newDate
@@ -126,7 +126,7 @@ export const addMonths = (date: Date, months: number) => {
  * @param years - The number of years to add.
  * @returns A new date with the years added.
  */
-export const addYears = (date: Date, years: number) => {
+export const ADD_YEARS = (date: Date | string, years: number) => {
   const newDate = new Date(date)
   newDate.setFullYear(newDate.getFullYear() + years)
   return newDate
@@ -138,7 +138,7 @@ export const addYears = (date: Date, years: number) => {
  * @param hours - The number of hours to add.
  * @returns A new date with the hours added.
  */
-export const addHours = (date: Date, hours: number) => {
+export const ADD_HOURS = (date: Date | string, hours: number) => {
   const newDate = new Date(date)
   newDate.setHours(newDate.getHours() + hours)
   return newDate
@@ -150,7 +150,7 @@ export const addHours = (date: Date, hours: number) => {
  * @param minutes - The number of minutes to add.
  * @returns A new date with the minutes added.
  */
-export const addMinutes = (date: Date, minutes: number) => {
+export const ADD_MINUTES = (date: Date | string, minutes: number) => {
   const newDate = new Date(date)
   newDate.setMinutes(newDate.getMinutes() + minutes)
   return newDate
@@ -162,8 +162,8 @@ export const addMinutes = (date: Date, minutes: number) => {
  * @param days - The number of days to subtract.
  * @returns A new date with the days subtracted.
  */
-export const subtractDays = (date: Date, days: number) => {
-  return addDays(date, -days)
+export const SUBTRACT_DAYS = (date: Date | string, days: number) => {
+  return ADD_DAYS(date, -days)
 }
 
 /**
@@ -172,8 +172,8 @@ export const subtractDays = (date: Date, days: number) => {
  * @param months - The number of months to subtract.
  * @returns A new date with the months subtracted.
  */
-export const subtractMonths = (date: Date, months: number) => {
-  return addMonths(date, -months)
+export const SUBTRACT_MONTHS = (date: Date | string, months: number) => {
+  return ADD_MONTHS(date, -months)
 }
 
 /**
@@ -182,8 +182,8 @@ export const subtractMonths = (date: Date, months: number) => {
  * @param years - The number of years to subtract.
  * @returns A new date with the years subtracted.
  */
-export const subtractYears = (date: Date, years: number) => {
-  return addYears(date, -years)
+export const SUBTRACT_YEARS = (date: Date | string, years: number) => {
+  return ADD_YEARS(date, -years)
 }
 
 /**
@@ -192,8 +192,8 @@ export const subtractYears = (date: Date, years: number) => {
  * @param date2 - The second date.
  * @returns The difference in days.
  */
-export const diffDays = (date1: Date, date2: Date) => {
-  const timeDiff = date2.getTime() - date1.getTime()
+export const DIFF_DAYS = (date1: Date | string, date2: Date | string) => {
+  const timeDiff = new Date(date2).getTime() - new Date(date1).getTime()
   return Math.ceil(timeDiff / (1000 * 3600 * 24))
 }
 
@@ -203,8 +203,8 @@ export const diffDays = (date1: Date, date2: Date) => {
  * @param date2 - The second date.
  * @returns The difference in hours.
  */
-export const diffHours = (date1: Date, date2: Date) => {
-  const timeDiff = date2.getTime() - date1.getTime()
+export const DIFF_HOURS = (date1: Date | string, date2: Date | string) => {
+  const timeDiff = new Date(date2).getTime() - new Date(date1).getTime()
   return Math.ceil(timeDiff / (1000 * 3600))
 }
 
@@ -214,8 +214,8 @@ export const diffHours = (date1: Date, date2: Date) => {
  * @param date2 - The second date.
  * @returns The difference in minutes.
  */
-export const diffMinutes = (date1: Date, date2: Date) => {
-  const timeDiff = date2.getTime() - date1.getTime()
+export const DIFF_MINUTES = (date1: Date | string, date2: Date | string) => {
+  const timeDiff = new Date(date2).getTime() - new Date(date1).getTime()
   return Math.ceil(timeDiff / (1000 * 60))
 }
 
@@ -224,7 +224,7 @@ export const diffMinutes = (date1: Date, date2: Date) => {
  * @param date - The date to get the start of day for.
  * @returns A new date set to the start of the day.
  */
-export const startOfDay = (date: Date) => {
+export const START_OF_DAY = (date: Date | string) => {
   const newDate = new Date(date)
   newDate.setHours(0, 0, 0, 0)
   return newDate
@@ -235,7 +235,7 @@ export const startOfDay = (date: Date) => {
  * @param date - The date to get the end of day for.
  * @returns A new date set to the end of the day.
  */
-export const endOfDay = (date: Date) => {
+export const END_OF_DAY = (date: Date | string) => {
   const newDate = new Date(date)
   newDate.setHours(23, 59, 59, 999)
   return newDate
@@ -246,12 +246,12 @@ export const endOfDay = (date: Date) => {
  * @param date - The date to get the start of week for.
  * @returns A new date set to the start of the week (Sunday).
  */
-export const startOfWeek = (date: Date) => {
+export const START_OF_WEEK = (date: Date | string) => {
   const newDate = new Date(date)
   const day = newDate.getDay()
   const diff = newDate.getDate() - day
   newDate.setDate(diff)
-  return startOfDay(newDate)
+  return START_OF_DAY(newDate)
 }
 
 /**
@@ -259,12 +259,12 @@ export const startOfWeek = (date: Date) => {
  * @param date - The date to get the end of week for.
  * @returns A new date set to the end of the week (Saturday).
  */
-export const endOfWeek = (date: Date) => {
+export const END_OF_WEEK = (date: Date | string) => {
   const newDate = new Date(date)
   const day = newDate.getDay()
   const diff = newDate.getDate() - day + 6
   newDate.setDate(diff)
-  return endOfDay(newDate)
+  return END_OF_DAY(newDate)
 }
 
 /**
@@ -272,10 +272,10 @@ export const endOfWeek = (date: Date) => {
  * @param date - The date to get the start of month for.
  * @returns A new date set to the start of the month.
  */
-export const startOfMonth = (date: Date) => {
+export const START_OF_MONTH = (date: Date | string) => {
   const newDate = new Date(date)
   newDate.setDate(1)
-  return startOfDay(newDate)
+  return START_OF_DAY(newDate)
 }
 
 /**
@@ -283,10 +283,10 @@ export const startOfMonth = (date: Date) => {
  * @param date - The date to get the end of month for.
  * @returns A new date set to the end of the month.
  */
-export const endOfMonth = (date: Date) => {
+export const END_OF_MONTH = (date: Date | string) => {
   const newDate = new Date(date)
   newDate.setMonth(newDate.getMonth() + 1, 0)
-  return endOfDay(newDate)
+  return END_OF_DAY(newDate)
 }
 
 /**
@@ -294,10 +294,10 @@ export const endOfMonth = (date: Date) => {
  * @param date - The date to get the start of year for.
  * @returns A new date set to the start of the year.
  */
-export const startOfYear = (date: Date) => {
+export const START_OF_YEAR = (date: Date | string) => {
   const newDate = new Date(date)
   newDate.setMonth(0, 1)
-  return startOfDay(newDate)
+  return START_OF_DAY(newDate)
 }
 
 /**
@@ -305,10 +305,10 @@ export const startOfYear = (date: Date) => {
  * @param date - The date to get the end of year for.
  * @returns A new date set to the end of the year.
  */
-export const endOfYear = (date: Date) => {
+export const END_OF_YEAR = (date: Date | string) => {
   const newDate = new Date(date)
   newDate.setMonth(11, 31)
-  return endOfDay(newDate)
+  return END_OF_DAY(newDate)
 }
 
 /**
@@ -316,8 +316,8 @@ export const endOfYear = (date: Date) => {
  * @param date - The date to check.
  * @returns True if the date is a weekend, false otherwise.
  */
-export const isWeekend = (date: Date) => {
-  const day = date.getDay()
+export const IS_WEEKEND = (date: Date | string) => {
+  const day = new Date(date).getDay()
   return day === 0 || day === 6
 }
 
@@ -326,8 +326,8 @@ export const isWeekend = (date: Date) => {
  * @param date - The date to check.
  * @returns True if the date is a weekday, false otherwise.
  */
-export const isWeekday = (date: Date) => {
-  return !isWeekend(date)
+export const IS_WEEKDAY = (date: Date | string) => {
+  return !IS_WEEKEND(date)
 }
 
 /**
@@ -335,7 +335,7 @@ export const isWeekday = (date: Date) => {
  * @param year - The year to check.
  * @returns True if the year is a leap year, false otherwise.
  */
-export const isLeapYear = (year: number) => {
+export const IS_LEAP_YEAR = (year: number) => {
   return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0
 }
 
@@ -345,7 +345,7 @@ export const isLeapYear = (year: number) => {
  * @param month - The month (0-11).
  * @returns The number of days in the month.
  */
-export const daysInMonth = (year: number, month: number) => {
+export const DAYS_IN_MONTH = (year: number, month: number) => {
   return new Date(year, month + 1, 0).getDate()
 }
 
@@ -354,9 +354,10 @@ export const daysInMonth = (year: number, month: number) => {
  * @param date - The date to get the day of year for.
  * @returns The day of the year (1-366).
  */
-export const dayOfYear = (date: Date) => {
-  const today = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
-  const start = Date.UTC(date.getUTCFullYear(), 0, 1)
+export const DAY_OF_YEAR = (date: Date | string) => {
+  const d = new Date(date)
+  const today = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+  const start = Date.UTC(d.getUTCFullYear(), 0, 1)
   const diff = today - start
   if (!diff) {
     return 1 // the first day
@@ -369,9 +370,9 @@ export const dayOfYear = (date: Date) => {
  * @param date - The date to get the week number for.
  * @returns The week number (1-53).
  */
-export const weekOfYear = (date: Date) => {
+export const WEEK_OF_YEAR = (date: Date | string) => {
   // Create a copy of the date to avoid modifying the original
-  const d = new Date(date.valueOf())
+  const d = new Date(date)
   // ISO week date weeks start on Monday, so correct the day number
   const dayNr = (d.getDay() + 6) % 7
   // Set the target to the Thursday of the current week
@@ -390,12 +391,10 @@ export const weekOfYear = (date: Date) => {
  * @param date2 - The second date.
  * @returns True if the dates are the same day, false otherwise.
  */
-export const isSameDay = (date1: Date, date2: Date) => {
-  return (
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate()
-  )
+export const IS_SAME_DAY = (date1: Date | string, date2: Date | string) => {
+  const d1 = new Date(date1)
+  const d2 = new Date(date2)
+  return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate()
 }
 
 /**
@@ -403,8 +402,8 @@ export const isSameDay = (date1: Date, date2: Date) => {
  * @param date - The date to check.
  * @returns True if the date is today, false otherwise.
  */
-export const isToday = (date: Date) => {
-  return isSameDay(date, new Date())
+export const IS_TODAY = (date: Date | string) => {
+  return IS_SAME_DAY(date, new Date())
 }
 
 /**
@@ -412,10 +411,10 @@ export const isToday = (date: Date) => {
  * @param date - The date to check.
  * @returns True if the date is tomorrow, false otherwise.
  */
-export const isTomorrow = (date: Date) => {
+export const IS_TOMORROW = (date: Date | string) => {
   const tomorrow = new Date()
   tomorrow.setDate(tomorrow.getDate() + 1)
-  return isSameDay(date, tomorrow)
+  return IS_SAME_DAY(date, tomorrow)
 }
 
 /**
@@ -423,10 +422,10 @@ export const isTomorrow = (date: Date) => {
  * @param date - The date to check.
  * @returns True if the date is yesterday, false otherwise.
  */
-export const isYesterday = (date: Date) => {
+export const IS_YESTERDAY = (date: Date | string) => {
   const yesterday = new Date()
   yesterday.setDate(yesterday.getDate() - 1)
-  return isSameDay(date, yesterday)
+  return IS_SAME_DAY(date, yesterday)
 }
 
 /**
@@ -434,7 +433,7 @@ export const isYesterday = (date: Date) => {
  * @param dateString - The date string to parse.
  * @returns The parsed date.
  */
-export const parseISO = (dateString: string) => {
+export const PARSE_ISO_DATE = (dateString: string) => {
   return new Date(dateString)
 }
 
@@ -443,8 +442,8 @@ export const parseISO = (dateString: string) => {
  * @param date - The date to convert.
  * @returns The ISO string representation.
  */
-export const toISO = (date: Date) => {
-  return date.toISOString()
+export const TO_ISO_DATE = (date: Date | string) => {
+  return new Date(date).toISOString()
 }
 
 /**
@@ -452,12 +451,13 @@ export const toISO = (date: Date) => {
  * @param birthDate - The birth date.
  * @returns The age in years.
  */
-export const getAge = (birthDate: Date) => {
+export const GET_AGE = (birthDate: Date | string) => {
   const today = new Date()
-  let age = today.getFullYear() - birthDate.getFullYear()
-  const monthDiff = today.getMonth() - birthDate.getMonth()
+  const bDate = new Date(birthDate)
+  let age = today.getFullYear() - bDate.getFullYear()
+  const monthDiff = today.getMonth() - bDate.getMonth()
 
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < bDate.getDate())) {
     age--
   }
 

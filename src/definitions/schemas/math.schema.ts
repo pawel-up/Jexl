@@ -6,19 +6,19 @@ import { createParameter, createFunctionSchema, createLibrarySchema } from './ut
 
 // Create math function schemas using the helper utilities
 export const mathFunctionSchemas = {
-  abs: createFunctionSchema(
-    'abs',
+  ABS: createFunctionSchema(
+    'ABS',
     'Returns the absolute value of a number',
     'math',
     [createParameter('x', { type: 'number', description: 'The number to get the absolute value of' })],
     { type: 'number', description: 'The absolute value' },
     {
-      examples: ['abs(-5) // 5', 'abs(3.14) // 3.14', 'abs(0) // 0'],
+      examples: ['ABS(-5) // 5', 'ABS(3.14) // 3.14', 'ABS(0) // 0'],
     }
   ),
 
-  ceil: createFunctionSchema(
-    'ceil',
+  CEIL: createFunctionSchema(
+    'CEIL',
     'Returns the smallest integer greater than or equal to a number',
     'math',
     [createParameter('x', { type: 'number', description: 'The number to ceil' })],
@@ -28,129 +28,129 @@ export const mathFunctionSchemas = {
     }
   ),
 
-  floor: createFunctionSchema(
-    'floor',
+  FLOOR: createFunctionSchema(
+    'FLOOR',
     'Returns the largest integer less than or equal to a number',
     'math',
     [createParameter('x', { type: 'number', description: 'The number to floor' })],
     { type: 'number', description: 'The floor value' },
     {
-      examples: ['floor(4.7) // 4', 'floor(-4.2) // -5', 'floor(0) // 0'],
+      examples: ['FLOOR(4.7) // 4', 'FLOOR(-4.2) // -5', 'FLOOR(0) // 0'],
     }
   ),
 
-  round: createFunctionSchema(
-    'round',
+  ROUND: createFunctionSchema(
+    'ROUND',
     'Returns the value of a number rounded to the nearest integer',
     'math',
     [createParameter('x', { type: 'number', description: 'The number to round' })],
     { type: 'number', description: 'The rounded value' },
     {
-      examples: ['round(4.7) // 5', 'round(4.2) // 4', 'round(-4.5) // -4'],
+      examples: ['ROUND(4.7) // 5', 'ROUND(4.2) // 4', 'ROUND(-4.5) // -4'],
     }
   ),
 
-  random: createFunctionSchema(
-    'random',
+  RANDOM: createFunctionSchema(
+    'RANDOM',
     'Returns a random number between 0 (inclusive) and 1 (exclusive)',
     'math',
     [],
     { type: 'number', description: 'A random number between 0 and 1' },
     {
-      examples: ['random() // 0.123456789', 'random() // 0.987654321'],
+      examples: ['RANDOM() // 0.123456789', 'RANDOM() // 0.987654321'],
     }
   ),
 
-  max: createFunctionSchema(
-    'max',
+  MAX: createFunctionSchema(
+    'MAX',
     'Returns the largest of the given numbers',
     'math',
     [createParameter('values', { type: 'number', description: 'The numbers to compare' }, true, { variadic: true })],
     { type: 'number', description: 'The maximum value' },
     {
-      examples: ['max(1, 2, 3) // 3', 'max(-1, -2, -3) // -1', 'max(5) // 5'],
+      examples: ['MAX(1, 2, 3) // 3', 'MAX(-1, -2, -3) // -1', 'MAX(5) // 5'],
     }
   ),
 
-  min: createFunctionSchema(
-    'min',
+  MIN: createFunctionSchema(
+    'MIN',
     'Returns the smallest of the given numbers',
     'math',
     [createParameter('values', { type: 'number', description: 'The numbers to compare' }, true, { variadic: true })],
     { type: 'number', description: 'The minimum value' },
     {
-      examples: ['min(1, 2, 3) // 1', 'min(-1, -2, -3) // -3', 'min(5) // 5'],
+      examples: ['MIN(1, 2, 3) // 1', 'MIN(-1, -2, -3) // -3', 'MIN(5) // 5'],
     }
   ),
 
-  sin: createFunctionSchema(
-    'sin',
+  SIN: createFunctionSchema(
+    'SIN',
     'Returns the sine of a number (in radians)',
     'math',
     [createParameter('x', { type: 'number', description: 'The angle in radians' })],
     { type: 'number', description: 'The sine value' },
     {
-      examples: ['sin(0) // 0', 'sin(Math.PI / 2) // 1', 'sin(Math.PI) // 0'],
+      examples: ['SIN(0) // 0', 'SIN(Math.PI / 2) // 1', 'SIN(Math.PI) // 0'],
     }
   ),
 
-  cos: createFunctionSchema(
-    'cos',
+  COS: createFunctionSchema(
+    'COS',
     'Returns the cosine of a number (in radians)',
     'math',
     [createParameter('x', { type: 'number', description: 'The angle in radians' })],
     { type: 'number', description: 'The cosine value' },
     {
-      examples: ['cos(0) // 1', 'cos(Math.PI / 2) // 0', 'cos(Math.PI) // -1'],
+      examples: ['COS(0) // 1', 'COS(Math.PI / 2) // 0', 'COS(Math.PI) // -1'],
     }
   ),
 
-  tan: createFunctionSchema(
-    'tan',
+  TAN: createFunctionSchema(
+    'TAN',
     'Returns the tangent of a number (in radians)',
     'math',
     [createParameter('x', { type: 'number', description: 'The angle in radians' })],
     { type: 'number', description: 'The tangent value' },
     {
-      examples: ['tan(0) // 0', 'tan(Math.PI / 4) // 1'],
+      examples: ['TAN(0) // 0', 'TAN(Math.PI / 4) // 1'],
     }
   ),
 
-  asin: createFunctionSchema(
-    'asin',
+  ASIN: createFunctionSchema(
+    'ASIN',
     'Returns the arcsine of a number',
     'math',
     [createParameter('x', { type: 'number', description: 'The number (-1 to 1)' })],
     { type: 'number', description: 'The arcsine in radians' },
     {
-      examples: ['asin(0) // 0', 'asin(1) // Math.PI / 2', 'asin(-1) // -Math.PI / 2'],
+      examples: ['ASIN(0) // 0', 'ASIN(1) // Math.PI / 2', 'ASIN(-1) // -Math.PI / 2'],
     }
   ),
 
-  acos: createFunctionSchema(
-    'acos',
+  ACOS: createFunctionSchema(
+    'ACOS',
     'Returns the arccosine of a number',
     'math',
     [createParameter('x', { type: 'number', description: 'The number (-1 to 1)' })],
     { type: 'number', description: 'The arccosine in radians' },
     {
-      examples: ['acos(1) // 0', 'acos(0) // Math.PI / 2', 'acos(-1) // Math.PI'],
+      examples: ['ACOS(1) // 0', 'ACOS(0) // Math.PI / 2', 'ACOS(-1) // Math.PI'],
     }
   ),
 
-  atan: createFunctionSchema(
-    'atan',
+  ATAN: createFunctionSchema(
+    'ATAN',
     'Returns the arctangent of a number',
     'math',
     [createParameter('x', { type: 'number', description: 'The number' })],
     { type: 'number', description: 'The arctangent in radians' },
     {
-      examples: ['atan(0) // 0', 'atan(1) // Math.PI / 4', 'atan(-1) // -Math.PI / 4'],
+      examples: ['ATAN(0) // 0', 'ATAN(1) // Math.PI / 4', 'ATAN(-1) // -Math.PI / 4'],
     }
   ),
 
-  atan2: createFunctionSchema(
-    'atan2',
+  ATAN2: createFunctionSchema(
+    'ATAN2',
     'Returns the arctangent of the quotient of its arguments',
     'math',
     [
@@ -159,23 +159,78 @@ export const mathFunctionSchemas = {
     ],
     { type: 'number', description: 'The arctangent in radians' },
     {
-      examples: ['atan2(1, 1) // Math.PI / 4', 'atan2(1, 0) // Math.PI / 2'],
+      examples: ['ATAN2(1, 1) // Math.PI / 4', 'ATAN2(1, 0) // Math.PI / 2'],
     }
   ),
 
-  sqrt: createFunctionSchema(
-    'sqrt',
+  SQRT: createFunctionSchema(
+    'SQRT',
     'Returns the square root of a number',
     'math',
     [createParameter('x', { type: 'number', description: 'The number to get the square root of' })],
     { type: 'number', description: 'The square root' },
     {
-      examples: ['sqrt(9) // 3', 'sqrt(16) // 4', 'sqrt(2) // 1.4142135623730951'],
+      examples: ['SQRT(9) // 3', 'SQRT(16) // 4', 'SQRT(2) // 1.4142135623730951'],
     }
   ),
 
-  pow: createFunctionSchema(
-    'pow',
+  CBRT: createFunctionSchema(
+    'CBRT',
+    'Returns the cube root of a number',
+    'math',
+    [createParameter('x', { type: 'number', description: 'The number to get the cube root of' })],
+    { type: 'number', description: 'The cube root' },
+    {
+      examples: ['CBRT(8) // 2', 'CBRT(27) // 3', 'CBRT(-8) // -2'],
+    }
+  ),
+
+  EXP: createFunctionSchema(
+    'EXP',
+    'Returns e raised to the power of x',
+    'math',
+    [createParameter('x', { type: 'number', description: 'The exponent' })],
+    { type: 'number', description: 'e raised to the power of x' },
+    {
+      examples: ['EXP(0) // 1', 'EXP(1) // 2.718281828459045', 'EXP(2) // 7.38905609893065'],
+    }
+  ),
+
+  LOG: createFunctionSchema(
+    'LOG',
+    'Returns the natural logarithm of a number',
+    'math',
+    [createParameter('x', { type: 'number', description: 'The number' })],
+    { type: 'number', description: 'The natural logarithm' },
+    {
+      examples: ['LOG(1) // 0', 'LOG(Math.E) // 1', 'LOG(10) // 2.302585092994046'],
+    }
+  ),
+
+  LOG10: createFunctionSchema(
+    'LOG10',
+    'Returns the base-10 logarithm of a number',
+    'math',
+    [createParameter('x', { type: 'number', description: 'The number' })],
+    { type: 'number', description: 'The base-10 logarithm' },
+    {
+      examples: ['LOG10(10) // 1', 'LOG10(100) // 2', 'LOG10(1000) // 3'],
+    }
+  ),
+
+  LOG2: createFunctionSchema(
+    'LOG2',
+    'Returns the base-2 logarithm of a number',
+    'math',
+    [createParameter('x', { type: 'number', description: 'The number' })],
+    { type: 'number', description: 'The base-2 logarithm' },
+    {
+      examples: ['LOG2(2) // 1', 'LOG2(8) // 3', 'LOG2(1024) // 10'],
+    }
+  ),
+
+  POW: createFunctionSchema(
+    'POW',
     'Returns the base raised to the power of the exponent',
     'math',
     [
@@ -184,162 +239,56 @@ export const mathFunctionSchemas = {
     ],
     { type: 'number', description: 'The result of base raised to the power of exponent' },
     {
-      examples: ['pow(2, 3) // 8', 'pow(4, 0.5) // 2', 'pow(10, 2) // 100'],
+      examples: ['POW(2, 3) // 8', 'POW(4, 0.5) // 2', 'POW(10, 2) // 100'],
     }
   ),
 
-  exp: createFunctionSchema(
-    'exp',
-    'Returns e raised to the power of x',
-    'math',
-    [createParameter('x', { type: 'number', description: 'The exponent' })],
-    { type: 'number', description: 'e raised to the power of x' },
-    {
-      examples: ['exp(0) // 1', 'exp(1) // 2.718281828459045', 'exp(2) // 7.38905609893065'],
-    }
-  ),
-
-  log: createFunctionSchema(
-    'log',
-    'Returns the natural logarithm of a number',
-    'math',
-    [createParameter('x', { type: 'number', description: 'The number' })],
-    { type: 'number', description: 'The natural logarithm' },
-    {
-      examples: ['log(1) // 0', 'log(Math.E) // 1', 'log(10) // 2.302585092994046'],
-    }
-  ),
-
-  log10: createFunctionSchema(
-    'log10',
-    'Returns the base-10 logarithm of a number',
-    'math',
-    [createParameter('x', { type: 'number', description: 'The number' })],
-    { type: 'number', description: 'The base-10 logarithm' },
-    {
-      examples: ['log10(10) // 1', 'log10(100) // 2', 'log10(1000) // 3'],
-    }
-  ),
-
-  log2: createFunctionSchema(
-    'log2',
-    'Returns the base-2 logarithm of a number',
-    'math',
-    [createParameter('x', { type: 'number', description: 'The number' })],
-    { type: 'number', description: 'The base-2 logarithm' },
-    {
-      examples: ['log2(2) // 1', 'log2(8) // 3', 'log2(1024) // 10'],
-    }
-  ),
-
-  sign: createFunctionSchema(
-    'sign',
+  SIGN: createFunctionSchema(
+    'SIGN',
     'Returns the sign of a number',
     'math',
     [createParameter('x', { type: 'number', description: 'The number' })],
     { type: 'number', description: '1 if positive, -1 if negative, 0 if zero' },
     {
-      examples: ['sign(5) // 1', 'sign(-5) // -1', 'sign(0) // 0'],
+      examples: ['SIGN(5) // 1', 'SIGN(-5) // -1', 'SIGN(0) // 0'],
     }
   ),
 
-  trunc: createFunctionSchema(
-    'trunc',
+  TRUNC: createFunctionSchema(
+    'TRUNC',
     'Returns the integer part of a number by removing fractional digits',
     'math',
     [createParameter('x', { type: 'number', description: 'The number to truncate' })],
     { type: 'number', description: 'The integer part of the number' },
     {
-      examples: ['trunc(4.9) // 4', 'trunc(-4.9) // -4', 'trunc(0.123) // 0'],
+      examples: ['TRUNC(4.9) // 4', 'TRUNC(-4.9) // -4', 'TRUNC(0.123) // 0'],
     }
   ),
 
-  cbrt: createFunctionSchema(
-    'cbrt',
-    'Returns the cube root of a number',
-    'math',
-    [createParameter('x', { type: 'number', description: 'The number to get the cube root of' })],
-    { type: 'number', description: 'The cube root' },
-    {
-      examples: ['cbrt(8) // 2', 'cbrt(27) // 3', 'cbrt(-8) // -2'],
-    }
-  ),
-
-  hypot: createFunctionSchema(
-    'hypot',
-    'Returns the square root of the sum of squares of its arguments',
-    'math',
-    [
-      createParameter('values', { type: 'number', description: 'The numbers to calculate the hypotenuse for' }, true, {
-        variadic: true,
-      }),
-    ],
-    { type: 'number', description: 'The hypotenuse value' },
-    {
-      examples: ['hypot(3, 4) // 5', 'hypot(1, 1) // 1.4142135623730951', 'hypot(3, 4, 5) // 7.0710678118654755'],
-    }
-  ),
-
-  clz32: createFunctionSchema(
-    'clz32',
-    'Returns the number of leading zero bits in the 32-bit binary representation',
-    'math',
-    [createParameter('x', { type: 'number', description: 'The number' })],
-    { type: 'number', description: 'The number of leading zero bits' },
-    {
-      examples: ['clz32(1) // 31', 'clz32(1000) // 22', 'clz32(0) // 32'],
-    }
-  ),
-
-  fround: createFunctionSchema(
-    'fround',
-    'Returns the nearest 32-bit single precision float representation of a number',
-    'math',
-    [createParameter('x', { type: 'number', description: 'The number' })],
-    { type: 'number', description: 'The nearest 32-bit float' },
-    {
-      examples: ['fround(1.5) // 1.5', 'fround(1.337) // 1.3370000123977661'],
-    }
-  ),
-
-  imul: createFunctionSchema(
-    'imul',
-    'Returns the result of the 32-bit multiplication of the two parameters',
-    'math',
-    [
-      createParameter('a', { type: 'number', description: 'The first number' }),
-      createParameter('b', { type: 'number', description: 'The second number' }),
-    ],
-    { type: 'number', description: 'The result of the 32-bit multiplication' },
-    {
-      examples: ['imul(3, 4) // 12', 'imul(-5, 12) // -60'],
-    }
-  ),
-
-  sum: createFunctionSchema(
-    'sum',
+  SUM: createFunctionSchema(
+    'SUM',
     'Returns the sum of all arguments',
     'math',
     [createParameter('values', { type: 'number', description: 'The numbers to sum' }, true, { variadic: true })],
     { type: 'number', description: 'The sum of all values' },
     {
-      examples: ['sum(1, 2, 3) // 6', 'sum(10, 20) // 30', 'sum(1.5, 2.5, 3) // 7'],
+      examples: ['SUM(1, 2, 3) // 6', 'SUM(10, 20) // 30', 'SUM(1.5, 2.5, 3) // 7'],
     }
   ),
 
-  avg: createFunctionSchema(
-    'avg',
+  AVG: createFunctionSchema(
+    'AVG',
     'Returns the average of all arguments',
     'math',
     [createParameter('values', { type: 'number', description: 'The numbers to average' }, true, { variadic: true })],
     { type: 'number', description: 'The average of all values' },
     {
-      examples: ['avg(1, 2, 3) // 2', 'avg(10, 20) // 15', 'avg(1, 2, 3, 4, 5) // 3'],
+      examples: ['AVG(1, 2, 3) // 2', 'AVG(10, 20) // 15', 'AVG(1, 2, 3, 4, 5) // 3'],
     }
   ),
 
-  median: createFunctionSchema(
-    'median',
+  MEDIAN: createFunctionSchema(
+    'MEDIAN',
     'Returns the median of all arguments',
     'math',
     [
@@ -349,12 +298,66 @@ export const mathFunctionSchemas = {
     ],
     { type: 'number', description: 'The median value' },
     {
-      examples: ['median(1, 2, 3) // 2', 'median(1, 2, 3, 4) // 2.5', 'median(5, 1, 3) // 3'],
+      examples: ['MEDIAN(1, 2, 3) // 2', 'MEDIAN(1, 2, 3, 4) // 2.5', 'MEDIAN(5, 1, 3) // 3'],
     }
   ),
 
-  clamp: createFunctionSchema(
-    'clamp',
+  MODE: createFunctionSchema(
+    'MODE',
+    'Returns the mode (most frequent value) of all arguments',
+    'math',
+    [
+      createParameter('values', { type: 'number', description: 'The numbers to find the mode of' }, true, {
+        variadic: true,
+      }),
+    ],
+    { type: 'number', description: 'The mode value' },
+    {
+      examples: ['MODE(1, 2, 2, 3) // 2', 'MODE(1, 1, 2, 3) // 1', 'MODE(1, 2, 3) // 1 (first occurrence)'],
+    }
+  ),
+
+  VARIANCE: createFunctionSchema(
+    'VARIANCE',
+    'Returns the variance of all arguments',
+    'math',
+    [
+      createParameter('values', { type: 'number', description: 'The numbers to calculate variance of' }, true, {
+        variadic: true,
+      }),
+    ],
+    { type: 'number', description: 'The variance of the numbers' },
+    {
+      examples: ['VARIANCE(1, 2, 3) // 0.6666666666666666', 'VARIANCE(1, 1, 1) // 0', 'VARIANCE(1, 2, 3, 4) // 1.25'],
+    }
+  ),
+
+  STDDEV: createFunctionSchema(
+    'STDDEV',
+    'Returns the standard deviation of all arguments',
+    'math',
+    [
+      createParameter(
+        'values',
+        { type: 'number', description: 'The numbers to calculate standard deviation of' },
+        true,
+        {
+          variadic: true,
+        }
+      ),
+    ],
+    { type: 'number', description: 'The standard deviation of the numbers' },
+    {
+      examples: [
+        'STDDEV(1, 2, 3) // 0.816496580927726',
+        'STDDEV(1, 1, 1) // 0',
+        'STDDEV(1, 2, 3, 4) // 1.118033988749895',
+      ],
+    }
+  ),
+
+  CLAMP: createFunctionSchema(
+    'CLAMP',
     'Clamps a number between a minimum and maximum value',
     'math',
     [
@@ -364,12 +367,12 @@ export const mathFunctionSchemas = {
     ],
     { type: 'number', description: 'The clamped value' },
     {
-      examples: ['clamp(5, 0, 10) // 5', 'clamp(-5, 0, 10) // 0', 'clamp(15, 0, 10) // 10'],
+      examples: ['CLAMP(5, 0, 10) // 5', 'CLAMP(-5, 0, 10) // 0', 'CLAMP(15, 0, 10) // 10'],
     }
   ),
 
-  lerp: createFunctionSchema(
-    'lerp',
+  LERP: createFunctionSchema(
+    'LERP',
     'Linear interpolation between two values',
     'math',
     [
@@ -379,29 +382,93 @@ export const mathFunctionSchemas = {
     ],
     { type: 'number', description: 'The interpolated value' },
     {
-      examples: ['lerp(0, 10, 0.5) // 5', 'lerp(10, 20, 0.25) // 12.5', 'lerp(-10, 10, 0.8) // 6'],
+      examples: ['LERP(0, 10, 0.5) // 5', 'LERP(10, 20, 0.25) // 12.5', 'LERP(-10, 10, 0.8) // 6'],
     }
   ),
 
-  degrees: createFunctionSchema(
-    'degrees',
+  TO_DEGREES: createFunctionSchema(
+    'TO_DEGREES',
     'Converts radians to degrees',
     'math',
     [createParameter('radians', { type: 'number', description: 'The angle in radians' })],
     { type: 'number', description: 'The angle in degrees' },
     {
-      examples: ['degrees(Math.PI) // 180', 'degrees(Math.PI / 2) // 90', 'degrees(0) // 0'],
+      examples: ['TO_DEGREES(Math.PI) // 180', 'TO_DEGREES(Math.PI / 2) // 90', 'TO_DEGREES(0) // 0'],
     }
   ),
 
-  radians: createFunctionSchema(
-    'radians',
+  TO_RADIANS: createFunctionSchema(
+    'TO_RADIANS',
     'Converts degrees to radians',
     'math',
     [createParameter('degrees', { type: 'number', description: 'The angle in degrees' })],
     { type: 'number', description: 'The angle in radians' },
     {
-      examples: ['radians(180) // Math.PI', 'radians(90) // Math.PI / 2', 'radians(0) // 0'],
+      examples: ['TO_RADIANS(180) // Math.PI', 'TO_RADIANS(90) // Math.PI / 2', 'TO_RADIANS(0) // 0'],
+    }
+  ),
+
+  GCD: createFunctionSchema(
+    'GCD',
+    'Calculates the greatest common divisor of two numbers',
+    'math',
+    [
+      createParameter('a', { type: 'number', description: 'First number' }),
+      createParameter('b', { type: 'number', description: 'Second number' }),
+    ],
+    { type: 'number', description: 'The greatest common divisor' },
+    {
+      examples: ['GCD(48, 18) // 6', 'GCD(56, 98) // 14', 'GCD(101, 10) // 1'],
+    }
+  ),
+
+  LCM: createFunctionSchema(
+    'LCM',
+    'Calculates the least common multiple of two numbers',
+    'math',
+    [
+      createParameter('a', { type: 'number', description: 'First number' }),
+      createParameter('b', { type: 'number', description: 'Second number' }),
+    ],
+    { type: 'number', description: 'The least common multiple' },
+    {
+      examples: ['LCM(4, 6) // 12', 'LCM(15, 20) // 60', 'LCM(7, 5) // 35'],
+    }
+  ),
+
+  FACTORIAL: createFunctionSchema(
+    'FACTORIAL',
+    'Calculates the factorial of a number',
+    'math',
+    [createParameter('n', { type: 'number', description: 'The number to calculate factorial of' })],
+    { type: 'number', description: 'The factorial of the number' },
+    {
+      examples: ['FACTORIAL(5) // 120', 'FACTORIAL(0) // 1', 'FACTORIAL(1) // 1', 'FACTORIAL(10) // 3628800'],
+    }
+  ),
+
+  IS_PRIME: createFunctionSchema(
+    'IS_PRIME',
+    'Checks if a number is prime',
+    'math',
+    [createParameter('n', { type: 'number', description: 'The number to check' })],
+    { type: 'boolean', description: 'True if the number is prime, false otherwise' },
+    {
+      examples: ['IS_PRIME(5) // true', 'IS_PRIME(4) // false', 'IS_PRIME(1) // false'],
+    }
+  ),
+
+  ROUND_TO: createFunctionSchema(
+    'ROUND_TO',
+    'Rounds a number to a specified number of decimal places',
+    'math',
+    [
+      createParameter('value', { type: 'number', description: 'The number to round' }),
+      createParameter('decimals', { type: 'number', description: 'The number of decimal places' }),
+    ],
+    { type: 'number', description: 'The rounded number' },
+    {
+      examples: ['ROUND_TO(3.14159, 2) // 3.14', 'ROUND_TO(2.71828, 3) // 2.718', 'ROUND_TO(1.23456, 0) // 1'],
     }
   ),
 }

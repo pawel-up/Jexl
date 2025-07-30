@@ -8,27 +8,45 @@ import {
 
 test.group('Array Schema', () => {
   test('should have correct metadata', ({ assert }) => {
-    assert.equal(arrayLibrarySchema.title, 'Jexl Array Functions')
-    assert.equal(arrayLibrarySchema.description, 'Comprehensive array utility functions for Jexl expressions')
+    assert.equal(arrayLibrarySchema.title, 'Array Functions')
+    assert.equal(arrayLibrarySchema.description, 'Array utility functions')
     assert.equal(arrayLibrarySchema.version, '1.0.0')
     assert.isTrue(arrayLibrarySchema.$id.includes('array.schema.json'))
   })
 
   test('should contain all expected functions', ({ assert }) => {
     const expectedFunctions = [
-      'length',
-      'isEmpty',
-      'isNotEmpty',
-      'first',
-      'last',
-      'at',
-      'contains',
-      'sum',
-      'chunk',
-      'unique',
-      'flatten',
-      'reverse',
-      'sort',
+      'FIRST',
+      'LAST',
+      'AT',
+      'SORT',
+      'SORT_ASC',
+      'SORT_DESC',
+      'SLICE',
+      'JOIN',
+      'CONCAT',
+      'UNIQUE',
+      'FLATTEN',
+      'FLATTEN_DEEP',
+      'CHUNK',
+      'COMPACT',
+      'DIFFERENCE',
+      'INTERSECTION',
+      'UNION',
+      'ZIP',
+      'SHUFFLE',
+      'SAMPLE',
+      'SAMPLE_SIZE',
+      'COUNT_BY',
+      'SUM',
+      'AVERAGE',
+      'MIN',
+      'MAX',
+      'RANGE',
+      'FILL',
+      'EVERY',
+      'SOME',
+      'NONE',
     ]
 
     const actualFunctions = Object.keys(arrayLibrarySchema.functions)
@@ -43,37 +61,37 @@ test.group('Array Schema', () => {
     })
   })
 
-  test('length function should have correct schema', ({ assert }) => {
-    const schema = arrayFunctionSchemas.length
+  test('FIRST function should have correct schema', ({ assert }) => {
+    const schema = arrayFunctionSchemas.FIRST
 
-    assert.equal(schema.name, 'length')
-    assert.equal(schema.description, 'Gets the length of an array')
+    assert.equal(schema.name, 'FIRST')
+    assert.equal(schema.description, 'Gets the first element of an array')
     assert.equal(schema.category, 'array')
     assert.equal(schema.parameters.length, 1)
     assert.equal(schema.parameters[0].name, 'arr')
     assert.equal(schema.parameters[0].schema.type, 'array')
     assert.equal(schema.parameters[0].required, true)
-    assert.equal(schema.returns.type, 'number')
+    assert.isTrue(Array.isArray(schema.returns.type))
     assert.isArray(schema.examples)
     assert.isTrue((schema.examples || []).length > 0)
   })
 
-  test('isEmpty function should have correct schema', ({ assert }) => {
-    const schema = arrayFunctionSchemas.isEmpty
+  test('LAST function should have correct schema', ({ assert }) => {
+    const schema = arrayFunctionSchemas.LAST
 
-    assert.equal(schema.name, 'isEmpty')
-    assert.equal(schema.description, 'Checks if an array is empty')
+    assert.equal(schema.name, 'LAST')
+    assert.equal(schema.description, 'Gets the last element of an array')
     assert.equal(schema.category, 'array')
     assert.equal(schema.parameters.length, 1)
     assert.equal(schema.parameters[0].name, 'arr')
     assert.equal(schema.parameters[0].schema.type, 'array')
-    assert.equal(schema.returns.type, 'boolean')
+    assert.equal(schema.returns.description, 'The last element, or undefined if empty')
   })
 
-  test('sum function should have variadic parameter', ({ assert }) => {
-    const schema = arrayFunctionSchemas.sum
+  test('SUM function should have variadic parameter', ({ assert }) => {
+    const schema = arrayFunctionSchemas.SUM
 
-    assert.equal(schema.name, 'sum')
+    assert.equal(schema.name, 'SUM')
     assert.equal(schema.parameters.length, 1)
     assert.equal(schema.parameters[0].name, 'args')
     assert.deepEqual(schema.parameters[0].schema.type, ['array', 'number'])
@@ -81,10 +99,10 @@ test.group('Array Schema', () => {
     assert.equal(schema.returns.type, 'number')
   })
 
-  test('sort function should have optional parameter', ({ assert }) => {
-    const schema = arrayFunctionSchemas.sort
+  test('SORT function should have optional parameter', ({ assert }) => {
+    const schema = arrayFunctionSchemas.SORT
 
-    assert.equal(schema.name, 'sort')
+    assert.equal(schema.name, 'SORT')
     assert.equal(schema.parameters.length, 2)
     assert.equal(schema.parameters[0].name, 'arr')
     assert.equal(schema.parameters[0].required, true)
@@ -93,10 +111,10 @@ test.group('Array Schema', () => {
     assert.equal(schema.parameters[1].schema.type, 'object')
   })
 
-  test('chunk function should have correct parameters', ({ assert }) => {
-    const schema = arrayFunctionSchemas.chunk
+  test('CHUNK function should have correct parameters', ({ assert }) => {
+    const schema = arrayFunctionSchemas.CHUNK
 
-    assert.equal(schema.name, 'chunk')
+    assert.equal(schema.name, 'CHUNK')
     assert.equal(schema.parameters.length, 2)
     assert.equal(schema.parameters[0].name, 'arr')
     assert.equal(schema.parameters[0].schema.type, 'array')
@@ -142,9 +160,9 @@ test.group('Array Schema', () => {
   })
 
   test('getArrayFunctionSchema should return correct schema', ({ assert }) => {
-    const schema = getArrayFunctionSchema('length')
+    const schema = getArrayFunctionSchema('FIRST')
     assert.isObject(schema)
-    assert.equal(schema?.name, 'length')
+    assert.equal(schema?.name, 'FIRST')
 
     const nonExistent = getArrayFunctionSchema('nonexistent')
     assert.isUndefined(nonExistent)
@@ -154,9 +172,9 @@ test.group('Array Schema', () => {
     const names = getAllArrayFunctionNames()
     assert.isArray(names)
     assert.isTrue(names.length > 0)
-    assert.isTrue(names.includes('length'))
-    assert.isTrue(names.includes('isEmpty'))
-    assert.isTrue(names.includes('sum'))
+    assert.isTrue(names.includes('FIRST'))
+    assert.isTrue(names.includes('LAST'))
+    assert.isTrue(names.includes('SUM'))
   })
 
   test('should have valid JSON schema structure', ({ assert }) => {
@@ -193,5 +211,84 @@ test.group('Array Schema', () => {
         )
       })
     })
+  })
+
+  test('SLICE function should have correct parameters', ({ assert }) => {
+    const schema = arrayFunctionSchemas.SLICE
+
+    assert.equal(schema.name, 'SLICE')
+    assert.equal(schema.description, 'Extracts a slice of an array')
+    assert.equal(schema.category, 'array')
+    assert.equal(schema.parameters.length, 3)
+    assert.equal(schema.parameters[0].name, 'arr')
+    assert.equal(schema.parameters[1].name, 'start')
+    assert.equal(schema.parameters[2].name, 'end')
+    assert.equal(schema.parameters[2].required, false)
+  })
+
+  test('JOIN function should have correct parameters', ({ assert }) => {
+    const schema = arrayFunctionSchemas.JOIN
+
+    assert.equal(schema.name, 'JOIN')
+    assert.equal(schema.description, 'Joins an array into a string with a separator')
+    assert.equal(schema.category, 'array')
+    assert.equal(schema.parameters.length, 2)
+    assert.equal(schema.parameters[0].name, 'arr')
+    assert.equal(schema.parameters[1].name, 'separator')
+    assert.equal(schema.parameters[1].required, false)
+    assert.equal(schema.returns.type, 'string')
+  })
+
+  test('CONCAT function should have variadic parameter', ({ assert }) => {
+    const schema = arrayFunctionSchemas.CONCAT
+
+    assert.equal(schema.name, 'CONCAT')
+    assert.equal(schema.parameters.length, 1)
+    assert.equal(schema.parameters[0].name, 'arrays')
+    assert.equal(schema.parameters[0].variadic, true)
+    assert.equal(schema.returns.type, 'array')
+  })
+
+  test('RANGE function should have correct parameters', ({ assert }) => {
+    const schema = arrayFunctionSchemas.RANGE
+
+    assert.equal(schema.name, 'RANGE')
+    assert.equal(schema.description, 'Creates an array of numbers within a specified range.')
+    assert.equal(schema.category, 'array')
+    assert.equal(schema.parameters.length, 3)
+    assert.equal(schema.parameters[0].name, 'start')
+    assert.equal(schema.parameters[1].name, 'end')
+    assert.equal(schema.parameters[2].name, 'step')
+    assert.equal(schema.parameters[2].required, false)
+  })
+
+  test('EVERY function should have correct schema', ({ assert }) => {
+    const schema = arrayFunctionSchemas.EVERY
+
+    assert.equal(schema.name, 'EVERY')
+    assert.equal(schema.description, 'Checks if all elements in an array are truthy.')
+    assert.equal(schema.category, 'array')
+    assert.equal(schema.parameters.length, 1)
+    assert.equal(schema.returns.type, 'boolean')
+  })
+
+  test('SOME function should have correct schema', ({ assert }) => {
+    const schema = arrayFunctionSchemas.SOME
+
+    assert.equal(schema.name, 'SOME')
+    assert.equal(schema.description, 'Checks if any element in an array is truthy.')
+    assert.equal(schema.category, 'array')
+    assert.equal(schema.parameters.length, 1)
+    assert.equal(schema.returns.type, 'boolean')
+  })
+
+  test('NONE function should have correct schema', ({ assert }) => {
+    const schema = arrayFunctionSchemas.NONE
+
+    assert.equal(schema.name, 'NONE')
+    assert.equal(schema.description, 'Checks if no elements in an array are truthy.')
+    assert.equal(schema.category, 'array')
+    assert.equal(schema.parameters.length, 1)
+    assert.equal(schema.returns.type, 'boolean')
   })
 })

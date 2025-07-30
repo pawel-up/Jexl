@@ -3,39 +3,18 @@
  */
 
 /**
- * Gets the length of an array.
- * @param arr - The array to get the length of.
- * @returns The length of the array.
- */
-export const length = (arr: unknown[]) => arr.length
-
-/**
- * Checks if an array is empty.
- * @param arr - The array to check.
- * @returns True if the array is empty, false otherwise.
- */
-export const isEmpty = (arr: unknown[]) => arr.length === 0
-
-/**
- * Checks if an array is not empty.
- * @param arr - The array to check.
- * @returns True if the array is not empty, false otherwise.
- */
-export const isNotEmpty = (arr: unknown[]) => arr.length > 0
-
-/**
  * Gets the first element of an array.
  * @param arr - The array to get the first element from.
  * @returns The first element, or undefined if empty.
  */
-export const first = (arr: unknown[]) => arr[0]
+export const FIRST = (arr: unknown[]) => arr[0]
 
 /**
  * Gets the last element of an array.
  * @param arr - The array to get the last element from.
  * @returns The last element, or undefined if empty.
  */
-export const last = (arr: unknown[]) => arr[arr.length - 1]
+export const LAST = (arr: unknown[]) => arr[arr.length - 1]
 
 /**
  * Gets the element at a specific index.
@@ -43,38 +22,7 @@ export const last = (arr: unknown[]) => arr[arr.length - 1]
  * @param index - The index to get.
  * @returns The element at the index, or undefined if out of bounds.
  */
-export const at = (arr: unknown[], index: number) => arr[index]
-
-/**
- * Checks if an array contains a specific value.
- * @param arr - The array to search in.
- * @param value - The value to search for.
- * @returns True if the array contains the value, false otherwise.
- */
-export const contains = (arr: unknown[], value: unknown) => arr.includes(value)
-
-/**
- * Finds the index of a value in an array.
- * @param arr - The array to search in.
- * @param value - The value to search for.
- * @returns The index of the value, or -1 if not found.
- */
-export const indexOf = (arr: unknown[], value: unknown) => arr.indexOf(value)
-
-/**
- * Finds the last index of a value in an array.
- * @param arr - The array to search in.
- * @param value - The value to search for.
- * @returns The last index of the value, or -1 if not found.
- */
-export const lastIndexOf = (arr: unknown[], value: unknown) => arr.lastIndexOf(value)
-
-/**
- * Reverses an array.
- * @param arr - The array to reverse.
- * @returns A new reversed array.
- */
-export const reverse = (arr: unknown[]) => [...arr].reverse()
+export const AT = (arr: unknown[], index: number) => arr[index]
 
 /**
  * Sorts an array.
@@ -82,7 +30,7 @@ export const reverse = (arr: unknown[]) => [...arr].reverse()
  * @param compareFn - Optional comparison function.
  * @returns A new sorted array.
  */
-export const sort = (arr: unknown[], compareFn?: (a: unknown, b: unknown) => number) => {
+export const SORT = (arr: unknown[], compareFn?: (a: unknown, b: unknown) => number) => {
   return [...arr].sort(compareFn)
 }
 
@@ -91,7 +39,7 @@ export const sort = (arr: unknown[], compareFn?: (a: unknown, b: unknown) => num
  * @param arr - The array to sort.
  * @returns A new sorted array.
  */
-export const sortAsc = (arr: (number | string)[]) => {
+export const SORT_ASC = (arr: (number | string)[]) => {
   return [...arr].sort((a, b) => (a > b ? 1 : a < b ? -1 : 0))
 }
 
@@ -100,7 +48,7 @@ export const sortAsc = (arr: (number | string)[]) => {
  * @param arr - The array to sort.
  * @returns A new sorted array.
  */
-export const sortDesc = (arr: (number | string)[]) => {
+export const SORT_DESC = (arr: (number | string)[]) => {
   return [...arr].sort((a, b) => (a < b ? 1 : a > b ? -1 : 0))
 }
 
@@ -111,7 +59,7 @@ export const sortDesc = (arr: (number | string)[]) => {
  * @param end - The end index (optional).
  * @returns A new array with the sliced elements.
  */
-export const slice = (arr: unknown[], start: number, end?: number) => arr.slice(start, end)
+export const SLICE = (arr: unknown[], start: number, end?: number) => arr.slice(start, end)
 
 /**
  * Joins array elements into a string.
@@ -119,7 +67,7 @@ export const slice = (arr: unknown[], start: number, end?: number) => arr.slice(
  * @param separator - The separator to use (default: ',').
  * @returns The joined string.
  */
-export const join = (arr: unknown[], separator = ',') => arr.join(separator)
+export const JOIN = (arr: unknown[], separator = ',') => arr.join(separator)
 
 /**
  * Concatenates arrays or values.
@@ -127,7 +75,7 @@ export const join = (arr: unknown[], separator = ',') => arr.join(separator)
  * @param args - Arrays or values to concatenate.
  * @returns A new concatenated array.
  */
-export const concat = (...args: unknown[]) => {
+export const CONCAT = (...args: unknown[]) => {
   const result: unknown[] = []
   for (const arg of args) {
     if (Array.isArray(arg)) {
@@ -144,21 +92,21 @@ export const concat = (...args: unknown[]) => {
  * @param arr - The array to deduplicate.
  * @returns A new array with unique values.
  */
-export const unique = (arr: unknown[]) => [...new Set(arr)]
+export const UNIQUE = (arr: unknown[]) => [...new Set(arr)]
 
 /**
  * Flattens an array by one level.
  * @param arr - The array to flatten.
  * @returns A new flattened array.
  */
-export const flatten = (arr: unknown[]) => arr.flat()
+export const FLATTEN = (arr: unknown[]) => arr.flat()
 
 /**
  * Flattens an array deeply.
  * @param arr - The array to flatten.
  * @returns A new deeply flattened array.
  */
-export const flattenDeep = (arr: unknown[]) => arr.flat(Infinity)
+export const FLATTEN_DEEP = (arr: unknown[]) => arr.flat(Infinity)
 
 /**
  * Chunks an array into smaller arrays of specified size.
@@ -166,7 +114,7 @@ export const flattenDeep = (arr: unknown[]) => arr.flat(Infinity)
  * @param size - The size of each chunk.
  * @returns An array of chunks.
  */
-export const chunk = (arr: unknown[], size: number) => {
+export const CHUNK = (arr: unknown[], size: number) => {
   const chunks: unknown[][] = []
   for (let i = 0; i < arr.length; i += size) {
     chunks.push(arr.slice(i, i + size))
@@ -179,7 +127,7 @@ export const chunk = (arr: unknown[], size: number) => {
  * @param arr - The array to compact.
  * @returns A new array with falsy values removed.
  */
-export const compact = (arr: unknown[]) => arr.filter(Boolean)
+export const COMPACT = (arr: unknown[]) => arr.filter(Boolean)
 
 /**
  * Gets the difference between arrays or values.
@@ -188,7 +136,7 @@ export const compact = (arr: unknown[]) => arr.filter(Boolean)
  * @param args - Arrays or values to find differences between.
  * @returns A new array with values from the first array that are not in others.
  */
-export const difference = (...args: unknown[]) => {
+export const DIFFERENCE = (...args: unknown[]) => {
   if (args.length < 2) return Array.isArray(args[0]) ? [...args[0]] : [args[0]]
 
   const [first, ...rest] = args
@@ -205,7 +153,7 @@ export const difference = (...args: unknown[]) => {
  * @param args - Arrays or values to find intersection of.
  * @returns A new array with values that exist in all arrays.
  */
-export const intersection = (...args: unknown[]) => {
+export const INTERSECTION = (...args: unknown[]) => {
   if (args.length < 2) return Array.isArray(args[0]) ? [...args[0]] : [args[0]]
 
   const [first, ...rest] = args
@@ -225,8 +173,8 @@ export const intersection = (...args: unknown[]) => {
  * @param args - Arrays or values to union.
  * @returns A new array with unique values from all arguments.
  */
-export const union = (...args: unknown[]) => {
-  return unique(concat(...args))
+export const UNION = (...args: unknown[]) => {
+  return UNIQUE(CONCAT(...args))
 }
 
 /**
@@ -234,7 +182,7 @@ export const union = (...args: unknown[]) => {
  * @param args - The arrays to zip together.
  * @returns An array of tuples containing elements from each array.
  */
-export const zip = (...args: unknown[][]) => {
+export const ZIP = (...args: unknown[][]) => {
   if (args.length === 0) return []
   if (args.length === 1) return args[0].map((item) => [item])
 
@@ -253,7 +201,7 @@ export const zip = (...args: unknown[][]) => {
  * @param arr - The array to shuffle.
  * @returns A new shuffled array.
  */
-export const shuffle = (arr: unknown[]) => {
+export const SHUFFLE = (arr: unknown[]) => {
   const result = [...arr]
   for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
@@ -267,7 +215,7 @@ export const shuffle = (arr: unknown[]) => {
  * @param arr - The array to get a random element from.
  * @returns A random element from the array.
  */
-export const sample = (arr: unknown[]) => {
+export const SAMPLE = (arr: unknown[]) => {
   return arr[Math.floor(Math.random() * arr.length)]
 }
 
@@ -277,8 +225,8 @@ export const sample = (arr: unknown[]) => {
  * @param count - The number of elements to sample.
  * @returns An array of random elements.
  */
-export const sampleSize = (arr: unknown[], count: number) => {
-  return shuffle(arr).slice(0, Math.min(count, arr.length))
+export const SAMPLE_SIZE = (arr: unknown[], count: number) => {
+  return SHUFFLE(arr).slice(0, Math.min(count, arr.length))
 }
 
 /**
@@ -286,7 +234,7 @@ export const sampleSize = (arr: unknown[], count: number) => {
  * @param arr - The array to count values in.
  * @returns An object with value counts.
  */
-export const countBy = (arr: unknown[]) => {
+export const COUNT_BY = (arr: unknown[]) => {
   const counts: Record<string, number> = {}
   for (const item of arr) {
     const key = String(item)
@@ -295,23 +243,23 @@ export const countBy = (arr: unknown[]) => {
   return counts
 }
 
-/**
- * Groups array elements by a property or function result.
- * @param arr - The array to group.
- * @param keyFn - Function to get the grouping key.
- * @returns An object with grouped arrays.
- */
-export const groupBy = (arr: unknown[], keyFn: (item: unknown) => string) => {
-  const groups: Record<string, unknown[]> = {}
-  for (const item of arr) {
-    const key = keyFn(item)
-    if (!groups[key]) {
-      groups[key] = []
-    }
-    groups[key].push(item)
-  }
-  return groups
-}
+// /**
+//  * Groups array elements by a property or function result.
+//  * @param arr - The array to group.
+//  * @param keyFn - Function to get the grouping key.
+//  * @returns An object with grouped arrays.
+//  */
+// export const GROUP_BY = (arr: unknown[], keyFn: (item: unknown) => string) => {
+//   const groups: Record<string, unknown[]> = {}
+//   for (const item of arr) {
+//     const key = keyFn(item)
+//     if (!groups[key]) {
+//       groups[key] = []
+//     }
+//     groups[key].push(item)
+//   }
+//   return groups
+// }
 
 /**
  * Sums numeric values in an array or spread arguments.
@@ -320,7 +268,7 @@ export const groupBy = (arr: unknown[], keyFn: (item: unknown) => string) => {
  * @param args - Array of numbers or individual numbers to sum.
  * @returns The sum of all numbers.
  */
-export const sum = (...args: unknown[]) => {
+export const SUM = (...args: unknown[]) => {
   if (Array.isArray(args[0])) {
     return (args[0] as number[]).reduce((sum, num) => sum + num, 0)
   }
@@ -334,14 +282,14 @@ export const sum = (...args: unknown[]) => {
  * @param args - Array of numbers or individual numbers to average.
  * @returns The average of all numbers.
  */
-export const average = (...args: unknown[]) => {
+export const AVERAGE = (...args: unknown[]) => {
   if (Array.isArray(args[0])) {
     const arr = args[0] as number[]
     if (arr.length === 0) return 0
-    return sum(arr) / arr.length
+    return SUM(arr) / arr.length
   }
   if (args.length === 0) return 0
-  return sum(...(args as number[])) / args.length
+  return SUM(...(args as number[])) / args.length
 }
 
 /**
@@ -351,7 +299,7 @@ export const average = (...args: unknown[]) => {
  * @param args - Array of numbers or individual numbers.
  * @returns The minimum value.
  */
-export const min = (...args: unknown[]) => {
+export const MIN = (...args: unknown[]) => {
   if (Array.isArray(args[0])) {
     return Math.min(...(args[0] as number[]))
   }
@@ -365,7 +313,7 @@ export const min = (...args: unknown[]) => {
  * @param args - Array of numbers or individual numbers.
  * @returns The maximum value.
  */
-export const max = (...args: unknown[]) => {
+export const MAX = (...args: unknown[]) => {
   if (Array.isArray(args[0])) {
     return Math.max(...(args[0] as number[]))
   }
@@ -379,7 +327,7 @@ export const max = (...args: unknown[]) => {
  * @param step - The step size (default: 1).
  * @returns An array of numbers in the range.
  */
-export const range = (start: number, end: number, step = 1) => {
+export const RANGE = (start: number, end: number, step = 1) => {
   const result: number[] = []
   for (let i = start; i < end; i += step) {
     result.push(i)
@@ -393,7 +341,7 @@ export const range = (start: number, end: number, step = 1) => {
  * @param count - The number of times to repeat.
  * @returns An array with the repeated value.
  */
-export const repeat = (value: unknown, count: number) => {
+export const FILL = (value: unknown, count: number) => {
   return Array(count).fill(value)
 }
 
@@ -402,37 +350,37 @@ export const repeat = (value: unknown, count: number) => {
  * @param arr - The array to check.
  * @returns True if all elements are truthy, false otherwise.
  */
-export const every = (arr: unknown[]) => arr.every(Boolean)
+export const EVERY = (arr: unknown[]): boolean => arr.every(Boolean)
 
 /**
  * Checks if any element in an array is truthy.
  * @param arr - The array to check.
  * @returns True if any element is truthy, false otherwise.
  */
-export const some = (arr: unknown[]) => arr.some(Boolean)
+export const SOME = (arr: unknown[]): boolean => arr.some(Boolean)
 
 /**
  * Checks if no elements in an array are truthy.
  * @param arr - The array to check.
  * @returns True if no elements are truthy, false otherwise.
  */
-export const none = (arr: unknown[]) => !arr.some(Boolean)
+export const NONE = (arr: unknown[]) => !arr.some(Boolean)
 
-/**
- * Partitions an array into two arrays based on a predicate.
- * @param arr - The array to partition.
- * @param predicate - Function to test each element.
- * @returns An array with two arrays: [truthy, falsy].
- */
-export const partition = (arr: unknown[], predicate: (item: unknown) => boolean) => {
-  const truthy: unknown[] = []
-  const falsy: unknown[] = []
-  for (const item of arr) {
-    if (predicate(item)) {
-      truthy.push(item)
-    } else {
-      falsy.push(item)
-    }
-  }
-  return [truthy, falsy]
-}
+// /**
+//  * Partitions an array into two arrays based on a predicate.
+//  * @param arr - The array to partition.
+//  * @param predicate - Function to test each element.
+//  * @returns An array with two arrays: [truthy, falsy].
+//  */
+// export const PARTITION = (arr: unknown[], predicate: (item: unknown) => boolean) => {
+//   const truthy: unknown[] = []
+//   const falsy: unknown[] = []
+//   for (const item of arr) {
+//     if (predicate(item)) {
+//       truthy.push(item)
+//     } else {
+//       falsy.push(item)
+//     }
+//   }
+//   return [truthy, falsy]
+// }

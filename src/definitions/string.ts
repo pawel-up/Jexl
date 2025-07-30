@@ -3,14 +3,14 @@
  * @param val - The string to convert.
  * @returns The uppercase string.
  */
-export const upper = (val: string) => val.toUpperCase()
+export const UPPER = (val: string) => val.toUpperCase()
 
 /**
  * Converts a string to lowercase.
  * @param val - The string to convert.
  * @returns The lowercase string.
  */
-export const lower = (val: string) => val.toLowerCase()
+export const LOWER = (val: string) => val.toLowerCase()
 
 /**
  * Extracts a substring from a string.
@@ -19,7 +19,7 @@ export const lower = (val: string) => val.toLowerCase()
  * @param end - The ending index (optional).
  * @returns The extracted substring.
  */
-export const substr = (val: string, start: number, end?: number) => val.substring(start, end)
+export const SUBSTR = (val: string, start: number, end?: number) => val.substring(start, end)
 
 /**
  * Splits a string into an array of substrings.
@@ -27,15 +27,7 @@ export const substr = (val: string, start: number, end?: number) => val.substrin
  * @param separator - The separator to use for splitting.
  * @returns An array of substrings.
  */
-export const split = (val: string, separator: string) => val.split(separator)
-
-/**
- * Joins an array of elements into a string.
- * @param val - The array to join.
- * @param separator - The separator to use for joining.
- * @returns The joined string.
- */
-export const join = (val: unknown[], separator: string) => val.join(separator)
+export const SPLIT = (val: string, separator: string) => val.split(separator)
 
 /**
  * Replaces the first occurrence of a substring with another string.
@@ -44,28 +36,14 @@ export const join = (val: unknown[], separator: string) => val.join(separator)
  * @param newStr - The replacement string.
  * @returns The string with the first occurrence replaced.
  */
-export const replace = (val: string, oldStr: string, newStr: string) => val.replace(oldStr, newStr)
-
-/**
- * Removes whitespace from both ends of a string.
- * @param val - The string to trim.
- * @returns The trimmed string.
- */
-export const trim = (val: string) => val.trim()
-
-/**
- * Gets the length of a string or array.
- * @param val - The string or array to get the length of.
- * @returns The length of the string or array.
- */
-export const len = (val: string | unknown[]) => val.length
+export const REPLACE = (val: string, oldStr: string, newStr: string) => val.replace(oldStr, newStr)
 
 /**
  * Capitalizes the first letter of a string.
  * @param val - The string to capitalize.
  * @returns The capitalized string.
  */
-export const capitalize = (val: string) => {
+export const CAPITALIZE = (val: string) => {
   if (!val) return val
   return val.charAt(0).toUpperCase() + val.slice(1).toLowerCase()
 }
@@ -75,7 +53,7 @@ export const capitalize = (val: string) => {
  * @param val - The string to title case.
  * @returns The title cased string.
  */
-export const titleCase = (val: string) => {
+export const TITLE_CASE = (val: string) => {
   return val.replace(/\b\w/g, (char) => char.toUpperCase())
 }
 
@@ -84,7 +62,7 @@ export const titleCase = (val: string) => {
  * @param val - The string to convert.
  * @returns The camelCase string.
  */
-export const camelCase = (val: string) => {
+export const CAMEL_CASE = (val: string) => {
   let trimmed = val.trim()
   trimmed = trimmed
     // Convert sequences of uppercase letters to first uppercase, rest lowercase
@@ -102,7 +80,7 @@ export const camelCase = (val: string) => {
  * @param val - The string to convert.
  * @returns The PascalCase string.
  */
-export const pascalCase = (val: string) => {
+export const PASCAL_CASE = (val: string) => {
   let trimmed = val.trim()
   trimmed = trimmed
     // Convert sequences of uppercase letters to first uppercase, rest lowercase
@@ -123,7 +101,7 @@ export const pascalCase = (val: string) => {
  * @param val - The string to convert.
  * @returns The snake_case string.
  */
-export const snakeCase = (val: string) => {
+export const SNAKE_CASE = (val: string) => {
   let trimmed = val.trim()
   trimmed =
     trimmed
@@ -140,7 +118,7 @@ export const snakeCase = (val: string) => {
  * @param val - The string to convert.
  * @returns The kebab-case string.
  */
-export const kebabCase = (val: string) => {
+export const KEBAB_CASE = (val: string) => {
   let trimmed = val.trim()
   trimmed =
     trimmed
@@ -159,7 +137,7 @@ export const kebabCase = (val: string) => {
  * @param padString - The string to pad with (default: ' ').
  * @returns The padded string.
  */
-export const pad = (val: string, targetLength: number, padString = ' ') => {
+export const PAD = (val: string, targetLength: number, padString = ' ') => {
   return val.padStart(targetLength, padString)
 }
 
@@ -170,7 +148,7 @@ export const pad = (val: string, targetLength: number, padString = ' ') => {
  * @param padString - The string to pad with (default: ' ').
  * @returns The left-padded string.
  */
-export const padLeft = (val: string, targetLength: number, padString = ' ') => {
+export const PAD_START = (val: string, targetLength: number, padString = ' ') => {
   return val.padStart(targetLength, padString)
 }
 
@@ -181,7 +159,7 @@ export const padLeft = (val: string, targetLength: number, padString = ' ') => {
  * @param padString - The string to pad with (default: ' ').
  * @returns The right-padded string.
  */
-export const padRight = (val: string, targetLength: number, padString = ' ') => {
+export const PAD_END = (val: string, targetLength: number, padString = ' ') => {
   return val.padEnd(targetLength, padString)
 }
 
@@ -191,17 +169,8 @@ export const padRight = (val: string, targetLength: number, padString = ' ') => 
  * @param count - The number of times to repeat.
  * @returns The repeated string.
  */
-export const repeat = (val: string, count: number) => {
+export const REPEAT = (val: string, count: number) => {
   return val.repeat(count)
-}
-
-/**
- * Reverses a string.
- * @param val - The string to reverse.
- * @returns The reversed string.
- */
-export const reverse = (val: string) => {
-  return [...(val || '')].reverse().join('')
 }
 
 /**
@@ -211,7 +180,7 @@ export const reverse = (val: string) => {
  * @param suffix - The suffix to add if truncated (default: '...').
  * @returns The truncated string.
  */
-export const truncate = (val: string, maxLength: number, suffix = '...') => {
+export const TRUNCATE = (val: string, maxLength: number, suffix = '...') => {
   if (val.length <= maxLength) return val
   return val.substring(0, maxLength - suffix.length) + suffix
 }
@@ -222,7 +191,7 @@ export const truncate = (val: string, maxLength: number, suffix = '...') => {
  * @param searchString - The substring to search for.
  * @returns True if the string starts with the substring, false otherwise.
  */
-export const startsWith = (val: string, searchString: string) => {
+export const STARTS_WITH = (val: string, searchString: string) => {
   return val.startsWith(searchString)
 }
 
@@ -232,38 +201,8 @@ export const startsWith = (val: string, searchString: string) => {
  * @param searchString - The substring to search for.
  * @returns True if the string ends with the substring, false otherwise.
  */
-export const endsWith = (val: string, searchString: string) => {
+export const ENDS_WITH = (val: string, searchString: string) => {
   return val.endsWith(searchString)
-}
-
-/**
- * Checks if a string contains a specified substring.
- * @param val - The string to check.
- * @param searchString - The substring to search for.
- * @returns True if the string contains the substring, false otherwise.
- */
-export const contains = (val: string, searchString: string) => {
-  return val.includes(searchString)
-}
-
-/**
- * Finds the index of a substring in a string.
- * @param val - The string to search in.
- * @param searchString - The substring to search for.
- * @returns The index of the substring, or -1 if not found.
- */
-export const indexOf = (val: string, searchString: string) => {
-  return val.indexOf(searchString)
-}
-
-/**
- * Finds the last index of a substring in a string.
- * @param val - The string to search in.
- * @param searchString - The substring to search for.
- * @returns The last index of the substring, or -1 if not found.
- */
-export const lastIndexOf = (val: string, searchString: string) => {
-  return val.lastIndexOf(searchString)
 }
 
 /**
@@ -273,7 +212,7 @@ export const lastIndexOf = (val: string, searchString: string) => {
  * @param replaceValue - The value to replace with.
  * @returns The string with all occurrences replaced.
  */
-export const replaceAll = (val: string, searchValue: string, replaceValue: string) => {
+export const REPLACE_ALL = (val: string, searchValue: string, replaceValue: string) => {
   return val.replaceAll(searchValue, replaceValue)
 }
 
@@ -282,7 +221,14 @@ export const replaceAll = (val: string, searchValue: string, replaceValue: strin
  * @param val - The string to trim.
  * @returns The trimmed string.
  */
-export const trimStart = (val: string) => {
+export const TRIM = (val: string) => val.trim()
+
+/**
+ * Removes whitespace from both ends of a string.
+ * @param val - The string to trim.
+ * @returns The trimmed string.
+ */
+export const TRIM_START = (val: string) => {
   return val.trimStart()
 }
 
@@ -291,26 +237,8 @@ export const trimStart = (val: string) => {
  * @param val - The string to trim.
  * @returns The trimmed string.
  */
-export const trimEnd = (val: string) => {
+export const TRIM_END = (val: string) => {
   return val.trimEnd()
-}
-
-/**
- * Checks if a string is empty or contains only whitespace.
- * @param val - The string to check.
- * @returns True if the string is empty or whitespace, false otherwise.
- */
-export const isEmpty = (val: string) => {
-  return !val || val.trim().length === 0
-}
-
-/**
- * Checks if a string is not empty and contains non-whitespace characters.
- * @param val - The string to check.
- * @returns True if the string is not empty, false otherwise.
- */
-export const isNotEmpty = (val: string) => {
-  return !isEmpty(val)
 }
 
 /**
@@ -318,7 +246,7 @@ export const isNotEmpty = (val: string) => {
  * @param val - The string to convert.
  * @returns The slug string.
  */
-export const slug = (val: string) => {
+export const SLUG = (val: string) => {
   return val
     .toLowerCase()
     .trim()
@@ -332,7 +260,7 @@ export const slug = (val: string) => {
  * @param val - The string to escape.
  * @returns The escaped string.
  */
-export const escapeHtml = (val: string) => {
+export const ESCAPE_HTML = (val: string) => {
   const htmlEscapes: Record<string, string> = {
     '&': '&amp;',
     '<': '&lt;',
@@ -348,7 +276,7 @@ export const escapeHtml = (val: string) => {
  * @param val - The string to unescape.
  * @returns The unescaped string.
  */
-export const unescapeHtml = (val: string) => {
+export const UNESCAPE_HTML = (val: string) => {
   const htmlUnescapes: Record<string, string> = {
     '&amp;': '&',
     '&lt;': '<',
@@ -364,7 +292,7 @@ export const unescapeHtml = (val: string) => {
  * @param val - The string to count words in.
  * @returns The number of words.
  */
-export const wordCount = (val: string) => {
+export const WORD_COUNT = (val: string) => {
   if (!val || val.trim().length === 0) return 0
   return val
     .trim()
@@ -377,7 +305,7 @@ export const wordCount = (val: string) => {
  * @param val - The string to count characters in.
  * @returns The number of characters.
  */
-export const charCount = (val: string) => {
+export const CHAR_COUNT = (val: string) => {
   return val.length
 }
 
@@ -386,7 +314,7 @@ export const charCount = (val: string) => {
  * @param val - The string to extract initials from.
  * @returns The initials string.
  */
-export const initials = (val: string) => {
+export const INITIALS = (val: string) => {
   if (!val || val.trim().length === 0) return ''
   return val
     .trim()
@@ -401,7 +329,7 @@ export const initials = (val: string) => {
  * @param val - The string to split into lines.
  * @returns An array of lines.
  */
-export const lines = (val: string) => {
+export const LINES = (val: string) => {
   return val.split(/\r?\n/)
 }
 
@@ -410,7 +338,7 @@ export const lines = (val: string) => {
  * @param val - The string to normalize.
  * @returns The normalized string.
  */
-export const normalizeSpace = (val: string) => {
+export const NORMALIZE_SPACE = (val: string) => {
   return val.replace(/\s+/g, ' ').trim()
 }
 
@@ -422,7 +350,7 @@ export const normalizeSpace = (val: string) => {
  * @param visibleEnd - Number of characters to keep visible at the end (default: 0).
  * @returns The masked string.
  */
-export const mask = (val: string, maskChar = '*', visibleStart = 0, visibleEnd = 0) => {
+export const MASK = (val: string, maskChar = '*', visibleStart = 0, visibleEnd = 0) => {
   if (val.length <= visibleStart + visibleEnd) return val
 
   const start = val.substring(0, visibleStart)
@@ -439,7 +367,7 @@ export const mask = (val: string, maskChar = '*', visibleStart = 0, visibleEnd =
  * @param endDelim - The end delimiter.
  * @returns The extracted substring.
  */
-export const between = (val: string, startDelim: string, endDelim: string) => {
+export const BETWEEN = (val: string, startDelim: string, endDelim: string) => {
   const start = val.indexOf(startDelim)
   if (start === -1) return ''
 

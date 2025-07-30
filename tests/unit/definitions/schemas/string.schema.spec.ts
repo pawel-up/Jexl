@@ -9,38 +9,46 @@ import {
 
 test.group('String Schema', () => {
   test('should have correct metadata', ({ assert }) => {
-    assert.equal(stringLibrarySchema.title, 'Jexl String Functions')
-    assert.equal(stringLibrarySchema.description, 'String manipulation and utility functions for Jexl expressions')
+    assert.equal(stringLibrarySchema.title, 'String Functions')
+    assert.equal(stringLibrarySchema.description, 'String manipulation and utility functions')
     assert.equal(stringLibrarySchema.version, '1.0.0')
     assert.isTrue(stringLibrarySchema.$id.includes('string.schema.json'))
   })
 
   test('should contain all expected functions', ({ assert }) => {
     const expectedFunctions = [
-      'upper',
-      'lower',
-      'substr',
-      'split',
-      'join',
-      'replace',
-      'replaceAll',
-      'trim',
-      'trimStart',
-      'trimEnd',
-      'padStart',
-      'padEnd',
-      'charAt',
-      'charCodeAt',
-      'fromCharCode',
-      'indexOf',
-      'lastIndexOf',
-      'includes',
-      'startsWith',
-      'endsWith',
-      'match',
-      'search',
-      'repeat',
-      'slice',
+      'UPPER',
+      'LOWER',
+      'SUBSTR',
+      'SPLIT',
+      'REPLACE',
+      'CAPITALIZE',
+      'TITLE_CASE',
+      'CAMEL_CASE',
+      'PASCAL_CASE',
+      'SNAKE_CASE',
+      'KEBAB_CASE',
+      'PAD',
+      'PAD_START',
+      'PAD_END',
+      'REPEAT',
+      'TRUNCATE',
+      'STARTS_WITH',
+      'ENDS_WITH',
+      'REPLACE_ALL',
+      'TRIM',
+      'TRIM_START',
+      'TRIM_END',
+      'SLUG',
+      'ESCAPE_HTML',
+      'UNESCAPE_HTML',
+      'WORD_COUNT',
+      'CHAR_COUNT',
+      'INITIALS',
+      'LINES',
+      'NORMALIZE_SPACE',
+      'MASK',
+      'BETWEEN',
     ]
 
     const actualFunctions = Object.keys(stringLibrarySchema.functions)
@@ -57,10 +65,10 @@ test.group('String Schema', () => {
     })
   })
 
-  test('upper function should have correct schema', ({ assert }) => {
-    const schema = stringFunctionSchemas.upper
+  test('UPPER function should have correct schema', ({ assert }) => {
+    const schema = stringFunctionSchemas.UPPER
 
-    assert.equal(schema.name, 'upper')
+    assert.equal(schema.name, 'UPPER')
     assert.equal(schema.description, 'Converts a string to uppercase')
     assert.equal(schema.category, 'string')
     assert.equal(schema.parameters.length, 1)
@@ -73,10 +81,10 @@ test.group('String Schema', () => {
     assert.isTrue((schema.examples?.length || 0) > 0)
   })
 
-  test('lower function should have correct schema', ({ assert }) => {
-    const schema = stringFunctionSchemas.lower
+  test('LOWER function should have correct schema', ({ assert }) => {
+    const schema = stringFunctionSchemas.LOWER
 
-    assert.equal(schema.name, 'lower')
+    assert.equal(schema.name, 'LOWER')
     assert.equal(schema.description, 'Converts a string to lowercase')
     assert.equal(schema.category, 'string')
     assert.equal(schema.parameters.length, 1)
@@ -87,10 +95,10 @@ test.group('String Schema', () => {
     assert.deepEqual(schema.returns, { type: 'string', description: 'The lowercase string' })
   })
 
-  test('substr function should have correct schema', ({ assert }) => {
-    const schema = stringFunctionSchemas.substr
+  test('SUBSTR function should have correct schema', ({ assert }) => {
+    const schema = stringFunctionSchemas.SUBSTR
 
-    assert.equal(schema.name, 'substr')
+    assert.equal(schema.name, 'SUBSTR')
     assert.equal(schema.description, 'Extracts a substring from a string')
     assert.equal(schema.parameters.length, 3)
 
@@ -114,39 +122,19 @@ test.group('String Schema', () => {
     assert.deepEqual(schema.returns, { type: 'string', description: 'The extracted substring' })
   })
 
-  test('split function should have correct schema', ({ assert }) => {
-    const schema = stringFunctionSchemas.split
+  test('SPLIT function should have correct schema', ({ assert }) => {
+    const schema = stringFunctionSchemas.SPLIT
 
-    assert.equal(schema.name, 'split')
+    assert.equal(schema.name, 'SPLIT')
     assert.equal(schema.description, 'Splits a string into an array of substrings')
     assert.equal(schema.parameters.length, 2)
     assert.deepEqual(schema.returns, { type: 'array', description: 'An array of substrings' })
   })
 
-  test('join function should have correct schema', ({ assert }) => {
-    const schema = stringFunctionSchemas.join
+  test('REPLACE function should have correct schema', ({ assert }) => {
+    const schema = stringFunctionSchemas.REPLACE
 
-    assert.equal(schema.name, 'join')
-    assert.equal(schema.description, 'Joins an array of elements into a string')
-    assert.equal(schema.parameters.length, 2)
-
-    // First parameter should be array
-    assert.equal(schema.parameters[0].name, 'arr')
-    assert.equal(schema.parameters[0].schema.description, 'The array to join')
-    assert.deepEqual(schema.parameters[0].schema, { type: 'array', description: 'The array to join' })
-
-    // Second parameter should be string
-    assert.equal(schema.parameters[1].name, 'separator')
-    assert.equal(schema.parameters[1].schema.description, 'The separator to use for joining')
-    assert.deepEqual(schema.parameters[1].schema, { type: 'string', description: 'The separator to use for joining' })
-
-    assert.deepEqual(schema.returns, { type: 'string', description: 'The joined string' })
-  })
-
-  test('replace function should have correct schema', ({ assert }) => {
-    const schema = stringFunctionSchemas.replace
-
-    assert.equal(schema.name, 'replace')
+    assert.equal(schema.name, 'REPLACE')
     assert.equal(schema.description, 'Replaces the first occurrence of a substring with another string')
     assert.equal(schema.parameters.length, 3)
 
@@ -163,17 +151,17 @@ test.group('String Schema', () => {
     assert.deepEqual(schema.returns, { type: 'string', description: 'The string with the first occurrence replaced' })
   })
 
-  test('replaceAll function should have correct schema', ({ assert }) => {
-    const schema = stringFunctionSchemas.replaceAll
+  test('REPLACE_ALL function should have correct schema', ({ assert }) => {
+    const schema = stringFunctionSchemas.REPLACE_ALL
 
-    assert.equal(schema.name, 'replaceAll')
+    assert.equal(schema.name, 'REPLACE_ALL')
     assert.equal(schema.description, 'Replaces all occurrences of a substring with another string')
     assert.equal(schema.parameters.length, 3)
     assert.deepEqual(schema.returns, { type: 'string', description: 'The string with all occurrences replaced' })
   })
 
   test('trim functions should have correct schemas', ({ assert }) => {
-    const trimFunctions = ['trim', 'trimStart', 'trimEnd'] as const
+    const trimFunctions = ['TRIM', 'TRIM_START', 'TRIM_END'] as const
 
     trimFunctions.forEach((funcName) => {
       const schema = stringFunctionSchemas[funcName]
@@ -187,7 +175,7 @@ test.group('String Schema', () => {
   })
 
   test('pad functions should have correct schemas', ({ assert }) => {
-    const padFunctions = ['padStart', 'padEnd'] as const
+    const padFunctions = ['PAD_START', 'PAD_END'] as const
 
     padFunctions.forEach((funcName) => {
       const schema = stringFunctionSchemas[funcName]
@@ -216,90 +204,48 @@ test.group('String Schema', () => {
     })
   })
 
-  test('charAt function should have correct schema', ({ assert }) => {
-    const schema = stringFunctionSchemas.charAt
+  test('CAPITALIZE function should have correct schema', ({ assert }) => {
+    const schema = stringFunctionSchemas.CAPITALIZE
 
-    assert.equal(schema.name, 'charAt')
-    assert.equal(schema.description, 'Returns the character at a specified index')
-    assert.equal(schema.parameters.length, 2)
+    assert.equal(schema.name, 'CAPITALIZE')
+    assert.equal(schema.description, 'Capitalizes the first letter of a string')
+    assert.equal(schema.parameters.length, 1)
 
     // First parameter: string
     assert.equal(schema.parameters[0].name, 'str')
-    assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to get character from' })
+    assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to capitalize' })
 
-    // Second parameter: index
-    assert.equal(schema.parameters[1].name, 'index')
-    assert.deepEqual(schema.parameters[1].schema, { type: 'number', description: 'The index of the character' })
-
-    assert.deepEqual(schema.returns, { type: 'string', description: 'The character at the specified index' })
+    assert.deepEqual(schema.returns, { type: 'string', description: 'The capitalized string' })
   })
 
-  test('charCodeAt function should have correct schema', ({ assert }) => {
-    const schema = stringFunctionSchemas.charCodeAt
+  test('TITLE_CASE function should have correct schema', ({ assert }) => {
+    const schema = stringFunctionSchemas.TITLE_CASE
 
-    assert.equal(schema.name, 'charCodeAt')
-    assert.equal(schema.description, 'Returns the Unicode code point of the character at a specified index')
-    assert.equal(schema.parameters.length, 2)
-
-    // Should return number (code point)
-    assert.deepEqual(schema.returns, { type: 'number', description: 'The Unicode code point of the character' })
-  })
-
-  test('fromCharCode function should have correct schema', ({ assert }) => {
-    const schema = stringFunctionSchemas.fromCharCode
-
-    assert.equal(schema.name, 'fromCharCode')
-    assert.equal(schema.description, 'Creates a string from Unicode code points')
+    assert.equal(schema.name, 'TITLE_CASE')
+    assert.equal(schema.description, 'Converts a string to title case')
     assert.equal(schema.parameters.length, 1)
 
-    // Should have variadic parameter
-    assert.equal(schema.parameters[0].name, 'codes')
-    assert.deepEqual(schema.parameters[0].schema, { type: 'number', description: 'Unicode code points' })
-    assert.equal(schema.parameters[0].required, true)
-    assert.equal(schema.parameters[0].variadic, true)
-
-    assert.deepEqual(schema.returns, { type: 'string', description: 'The string created from the code points' })
+    // Should return string
+    assert.deepEqual(schema.returns, { type: 'string', description: 'The title-cased string' })
   })
 
-  test('indexOf and lastIndexOf functions should have correct schemas', ({ assert }) => {
-    const indexFunctions = ['indexOf', 'lastIndexOf'] as const
+  test('WORD_COUNT function should have correct schema', ({ assert }) => {
+    const schema = stringFunctionSchemas.WORD_COUNT
 
-    indexFunctions.forEach((funcName) => {
-      const schema = stringFunctionSchemas[funcName]
-      assert.equal(schema.name, funcName)
-      assert.equal(schema.parameters.length, 3)
+    assert.equal(schema.name, 'WORD_COUNT')
+    assert.equal(schema.description, 'Counts the number of words in a string')
+    assert.equal(schema.parameters.length, 1)
 
-      // First parameter: string to search in
-      assert.equal(schema.parameters[0].name, 'str')
-      assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to search in' })
-      assert.equal(schema.parameters[0].required, true)
+    // Should have string parameter
+    assert.equal(schema.parameters[0].name, 'str')
+    assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to count words in' })
+    assert.equal(schema.parameters[0].required, true)
 
-      // Second parameter: search string
-      assert.equal(schema.parameters[1].name, 'searchStr')
-      assert.deepEqual(schema.parameters[1].schema, { type: 'string', description: 'The substring to search for' })
-      assert.equal(schema.parameters[1].required, true)
-
-      // Third parameter: from index (optional)
-      assert.equal(schema.parameters[2].name, 'fromIndex')
-      assert.deepEqual(schema.parameters[2].schema, {
-        type: 'number',
-        description: 'The index to start searching from (optional)',
-      })
-      assert.equal(schema.parameters[2].required, false)
-
-      // Should return number (index)
-      assert.deepEqual(schema.returns, {
-        type: 'number',
-        description:
-          funcName === 'indexOf'
-            ? 'The index of the first occurrence, or -1 if not found'
-            : 'The index of the last occurrence, or -1 if not found',
-      })
-    })
+    assert.deepEqual(schema.returns, { type: 'number', description: 'The number of words in the string' })
   })
 
   test('boolean returning functions should have correct schemas', ({ assert }) => {
-    const booleanFunctions = ['includes', 'startsWith', 'endsWith'] as const
+    const booleanFunctions = ['STARTS_WITH', 'ENDS_WITH'] as const
 
     booleanFunctions.forEach((funcName) => {
       const schema = stringFunctionSchemas[funcName]
@@ -312,44 +258,38 @@ test.group('String Schema', () => {
     })
   })
 
-  test('match function should have correct schema', ({ assert }) => {
-    const schema = stringFunctionSchemas.match
+  test('MASK function should have correct schema', ({ assert }) => {
+    const schema = stringFunctionSchemas.MASK
 
-    assert.equal(schema.name, 'match')
-    assert.equal(schema.description, 'Matches a string against a regular expression')
-    assert.equal(schema.parameters.length, 2)
+    assert.equal(schema.name, 'MASK')
+    assert.equal(schema.description, 'Masks a string by replacing characters with a specified character')
+    assert.equal(schema.parameters.length, 4)
 
-    // First parameter: string to match
+    // First parameter: string to mask
     assert.equal(schema.parameters[0].name, 'str')
-    assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to match' })
+    assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to mask' })
     assert.equal(schema.parameters[0].required, true)
 
-    // Second parameter: regex pattern
-    assert.equal(schema.parameters[1].name, 'regexp')
-    assert.deepEqual(schema.parameters[1].schema, { type: 'string', description: 'The regular expression' })
-    assert.equal(schema.parameters[1].required, true)
-
-    // Should return array of strings
-    assert.equal(schema.returns.type, 'array')
-    assert.deepEqual(schema.returns.items, { type: 'string' })
-    assert.equal(schema.returns.description, 'An array of matches, or null if no match')
+    // Should return string
+    assert.equal(schema.returns.type, 'string')
+    assert.equal(schema.returns.description, 'The masked string')
   })
 
-  test('search function should have correct schema', ({ assert }) => {
-    const schema = stringFunctionSchemas.search
+  test('SLUG function should have correct schema', ({ assert }) => {
+    const schema = stringFunctionSchemas.SLUG
 
-    assert.equal(schema.name, 'search')
-    assert.equal(schema.description, 'Searches for a match against a regular expression')
-    assert.equal(schema.parameters.length, 2)
+    assert.equal(schema.name, 'SLUG')
+    assert.equal(schema.description, 'Converts a string to a URL-friendly slug')
+    assert.equal(schema.parameters.length, 1)
 
-    // Should return number (index)
-    assert.deepEqual(schema.returns, { type: 'number', description: 'The index of the first match, or -1 if no match' })
+    // Should return string (slug)
+    assert.deepEqual(schema.returns, { type: 'string', description: 'The URL-friendly slug' })
   })
 
-  test('repeat function should have correct schema', ({ assert }) => {
-    const schema = stringFunctionSchemas.repeat
+  test('REPEAT function should have correct schema', ({ assert }) => {
+    const schema = stringFunctionSchemas.REPEAT
 
-    assert.equal(schema.name, 'repeat')
+    assert.equal(schema.name, 'REPEAT')
     assert.equal(schema.description, 'Repeats a string a specified number of times')
     assert.equal(schema.parameters.length, 2)
 
@@ -360,35 +300,38 @@ test.group('String Schema', () => {
 
     // Second parameter: count
     assert.equal(schema.parameters[1].name, 'count')
-    assert.deepEqual(schema.parameters[1].schema, { type: 'number', description: 'The number of times to repeat' })
+    assert.deepEqual(schema.parameters[1].schema, {
+      type: 'number',
+      description: 'The number of times to repeat the string',
+    })
     assert.equal(schema.parameters[1].required, true)
 
     assert.deepEqual(schema.returns, { type: 'string', description: 'The repeated string' })
   })
 
-  test('slice function should have correct schema', ({ assert }) => {
-    const schema = stringFunctionSchemas.slice
+  test('BETWEEN function should have correct schema', ({ assert }) => {
+    const schema = stringFunctionSchemas.BETWEEN
 
-    assert.equal(schema.name, 'slice')
-    assert.equal(schema.description, 'Extracts a section of a string')
+    assert.equal(schema.name, 'BETWEEN')
+    assert.equal(schema.description, 'Extracts a substring between two delimiters')
     assert.equal(schema.parameters.length, 3)
 
-    // First parameter: string to slice
+    // First parameter: string to extract from
     assert.equal(schema.parameters[0].name, 'str')
-    assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to slice' })
+    assert.deepEqual(schema.parameters[0].schema, { type: 'string', description: 'The string to extract from' })
     assert.equal(schema.parameters[0].required, true)
 
-    // Second parameter: start index
+    // Second parameter: start delimiter
     assert.equal(schema.parameters[1].name, 'start')
-    assert.deepEqual(schema.parameters[1].schema, { type: 'number', description: 'The start index' })
+    assert.deepEqual(schema.parameters[1].schema, { type: 'string', description: 'The start delimiter' })
     assert.equal(schema.parameters[1].required, true)
 
-    // Third parameter: end index (optional)
+    // Third parameter: end delimiter
     assert.equal(schema.parameters[2].name, 'end')
-    assert.deepEqual(schema.parameters[2].schema, { type: 'number', description: 'The end index (optional)' })
-    assert.equal(schema.parameters[2].required, false)
+    assert.deepEqual(schema.parameters[2].schema, { type: 'string', description: 'The end delimiter' })
+    assert.equal(schema.parameters[2].required, true)
 
-    assert.deepEqual(schema.returns, { type: 'string', description: 'The extracted section' })
+    assert.deepEqual(schema.returns, { type: 'string', description: 'The extracted substring' })
   })
 
   test('all functions should have required fields', ({ assert }) => {
@@ -433,9 +376,9 @@ test.group('String Schema', () => {
   })
 
   test('getStringFunction should return correct schema', ({ assert }) => {
-    const schema = getStringFunction('upper')
+    const schema = getStringFunction('UPPER')
     assert.isNotNull(schema)
-    assert.equal(schema.name, 'upper')
+    assert.equal(schema.name, 'UPPER')
 
     const nonExistent = getStringFunction('nonExistent')
     assert.isUndefined(nonExistent)
@@ -445,18 +388,17 @@ test.group('String Schema', () => {
     const names = getStringFunctionNames()
     assert.isArray(names)
     assert.isTrue(names.length > 0)
-    assert.isTrue(names.includes('upper'))
-    assert.isTrue(names.includes('lower'))
-    assert.isTrue(names.includes('trim'))
-    assert.isTrue(names.includes('split'))
-    assert.isTrue(names.includes('join'))
+    assert.isTrue(names.includes('UPPER'))
+    assert.isTrue(names.includes('LOWER'))
+    assert.isTrue(names.includes('TRIM'))
+    assert.isTrue(names.includes('SPLIT'))
   })
 
   test('getStringFunctionCount should return correct count', ({ assert }) => {
     const count = getStringFunctionCount()
     assert.isNumber(count)
     assert.equal(count, Object.keys(stringFunctionSchemas).length)
-    assert.isTrue(count > 20) // We have 24 functions
+    assert.isTrue(count > 30) // We have 32 functions
   })
 
   test('should have valid JSON schema structure', ({ assert }) => {
@@ -530,8 +472,8 @@ test.group('String Schema', () => {
 
   test('functions should have consistent naming', ({ assert }) => {
     Object.values(stringFunctionSchemas).forEach((schema) => {
-      // Function names should be camelCase
-      assert.isTrue(/^[a-z][a-zA-Z0-9]*$/.test(schema.name), `Function ${schema.name} should be camelCase`)
+      // Function names should be UPPER_CASE
+      assert.isTrue(/^[A-Z][A-Z0-9_]*$/.test(schema.name), `Function ${schema.name} should be UPPER_CASE`)
 
       // Function names should be descriptive
       assert.isTrue(schema.name.length > 2, `Function ${schema.name} should have a descriptive name`)
